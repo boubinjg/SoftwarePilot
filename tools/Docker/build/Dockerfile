@@ -56,16 +56,8 @@ RUN $ANDROID_HOME/tools/bin/sdkmanager --update && \
     "platform-tools" && \
     $ANDROID_HOME/tools/bin/sdkmanager "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2"
 
-#Add SSH Key for Repository to keychain
-#REMOVE THIS WHEN WE OPEN SOURCE!!!!!!!!!!!!!!!!!!!!!!!!!
-COPY key /home/
-RUN mkdir ~/.ssh && \
-    cp /home/key ~/.ssh/ && \
-    chmod 600 ~/.ssh/key && \
-    eval $(ssh-agent) && \
-    ssh-add ~/.ssh/key && \
 #Install Codebase
-    cd /home && \
+RUN cd /home && \
     git clone https://github.com/boubinjg/OpenFAAS.git
 
 #Set General environment variables
@@ -75,9 +67,6 @@ ENV LC_ALL=C.UTF-8 \
     AUAVHOME=/home/reroutlab.cstewart.code.auav 
 #Fix Path Variable 
 ENV PATH=$PATH:$GRADLE_HOME \ JAVA_HOME=/usr/lib/jvm/java-8-oracle
-
-#Add ssh-init to startup
-RUN printf "if [ -z \"$SSH_AUTH_SOCK\" ] ; then \n eval \`ssh-agent -s\` \n ssh-add ~/.ssh/key \n fi" >> ~/.bashrc
 
 #Expose ports
 EXPOSE 12013
