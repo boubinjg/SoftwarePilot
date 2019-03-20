@@ -1,0 +1,137 @@
+[
+    {
+        "Id": "sha256:1bc977b44a5fd7f9e34c02b4f09448038a3d5be13a1e20911c21627bfbf864cf",
+        "RepoTags": [
+            "auavlinux:latest"
+        ],
+        "RepoDigests": [],
+        "Parent": "sha256:d182c1910a88fea079a8375a0c8ed595f5f71c81dbbc6f9a809a7e540e9e0e05",
+        "Comment": "",
+        "Created": "2018-09-21T17:33:16.942714642Z",
+        "Container": "24067973793e4d85b73819bb1c63ff1fb021f10cde7901edab3bb6531412a9e7",
+        "ContainerConfig": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "12013/tcp": {},
+                "5117/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/gradle-4.4/bin",
+                "SDK_URL=https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip",
+                "ANDROID_HOME=/usr/local/android-sdk",
+                "ANDROID_VERSION=26",
+                "ANDROID_BUILD_TOOLS_VERSION=26.0.2",
+                "LC_ALL=C.UTF-8",
+                "LANG=C.UTF-8",
+                "GRADLE_HOME=/usr/local/gradle-4.4/bin",
+                "AUAVHOME=/home/reroutlab.cstewart.code.auav",
+                " JAVA_HOME=/usr/lib/jvm/java-8-oracle"
+            ],
+            "Cmd": [
+                "/bin/sh",
+                "-c",
+                "apt-get update &&     apt-get install -y iputils-ping &&     apt-get install -y net-tools"
+            ],
+            "ArgsEscaped": true,
+            "Image": "sha256:d182c1910a88fea079a8375a0c8ed595f5f71c81dbbc6f9a809a7e540e9e0e05",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "description": "AUAVLinux Dockerfile using Reroutlab Git",
+                "version": "1.0"
+            }
+        },
+        "DockerVersion": "18.06.0-ce",
+        "Author": "Jayson Boubin",
+        "Config": {
+            "Hostname": "",
+            "Domainname": "",
+            "User": "",
+            "AttachStdin": false,
+            "AttachStdout": false,
+            "AttachStderr": false,
+            "ExposedPorts": {
+                "12013/tcp": {},
+                "5117/tcp": {}
+            },
+            "Tty": false,
+            "OpenStdin": false,
+            "StdinOnce": false,
+            "Env": [
+                "PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/gradle-4.4/bin",
+                "SDK_URL=https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip",
+                "ANDROID_HOME=/usr/local/android-sdk",
+                "ANDROID_VERSION=26",
+                "ANDROID_BUILD_TOOLS_VERSION=26.0.2",
+                "LC_ALL=C.UTF-8",
+                "LANG=C.UTF-8",
+                "GRADLE_HOME=/usr/local/gradle-4.4/bin",
+                "AUAVHOME=/home/reroutlab.cstewart.code.auav",
+                " JAVA_HOME=/usr/lib/jvm/java-8-oracle"
+            ],
+            "Cmd": [
+                "/bin/bash"
+            ],
+            "ArgsEscaped": true,
+            "Image": "sha256:d182c1910a88fea079a8375a0c8ed595f5f71c81dbbc6f9a809a7e540e9e0e05",
+            "Volumes": null,
+            "WorkingDir": "",
+            "Entrypoint": null,
+            "OnBuild": null,
+            "Labels": {
+                "description": "AUAVLinux Dockerfile using Reroutlab Git",
+                "version": "1.0"
+            }
+        },
+        "Architecture": "amd64",
+        "Os": "linux",
+        "Size": 6365179923,
+        "VirtualSize": 6365179923,
+        "GraphDriver": {
+            "Data": {
+                "LowerDir": "/var/lib/docker/overlay2/81c0bd0ad163bfc47bd7318ea3d6d34fb52f173c044f4610af39e2d07e10d1f7/diff:/var/lib/docker/overlay2/5d05f3f32f25b516ec730747ff34f0fa6448dd23dcc554852f6afa7993e5ede2/diff:/var/lib/docker/overlay2/d3d5c85e3883ebd4c22503ed5b0c194ba6a7ee19a6b41a539556e04bee1a66dc/diff:/var/lib/docker/overlay2/15d077e2cc54ce0e25561ebdda511d6c1dccf3830aa2af6373297ac6845a70dc/diff:/var/lib/docker/overlay2/9b25926de054c4efd3b1ab643ec1be471b8a988618c5cf41221fc051f7b9d7a6/diff:/var/lib/docker/overlay2/0181a0ee9ead3445cf8ccc5f8a297aa31ba5f1a1d0de70b0f851084e8d7c6be2/diff:/var/lib/docker/overlay2/fbb892c9043c56fe5b61641861187a186248e8566a5cbe3459a90f6da806d476/diff:/var/lib/docker/overlay2/98bc18e5e1b368f7868e774bd59a18941bde1f76a14d557f740afa69ef43bd70/diff:/var/lib/docker/overlay2/376d5ba39be186db9fcd0bf0385dd59c4d1010783dfe62545e4abe97143f322b/diff:/var/lib/docker/overlay2/213cf0679c98b4affacf4bedae30b7696ef113ef40ad9f45cce8a1937675bdaa/diff:/var/lib/docker/overlay2/f3d1183d44166e8c2fae878ea1ddd82b051118ff6fa96e0c8b9a2de0a0be5ee0/diff:/var/lib/docker/overlay2/a78bf3ef1daa01ca5c2f7170447dabaafc722eebc60b2674b6cea48cc95b2475/diff:/var/lib/docker/overlay2/c4901c661d80caa53bd449cc7ae3fd3b6f9453b829e87e65821e1a11ae50fa31/diff:/var/lib/docker/overlay2/3de8cd3dd04c3bde65216692fde3f6ed8ff4d63ce182fc77c22389f7e2484642/diff:/var/lib/docker/overlay2/bc56b3d8d2f1fa4157283190bb8be470f8a0854e516182ea55f1adc876c1eb9f/diff:/var/lib/docker/overlay2/fed75738e3eb42bd2826529b59679598ebbb132b097087c8ec873aece72416a2/diff:/var/lib/docker/overlay2/42ea2dd3bca0bf4a61718559ce730287e33724b90edd903714e5dbed13e576c4/diff:/var/lib/docker/overlay2/7877f00afc36d85b561d2c9a545e12ad8f326fbe61b41709138ce828e8013310/diff",
+                "MergedDir": "/var/lib/docker/overlay2/54262fd4c5ca1dd3d04190c6ade87f600fd1063f1d3262f09e99e52b5998c57d/merged",
+                "UpperDir": "/var/lib/docker/overlay2/54262fd4c5ca1dd3d04190c6ade87f600fd1063f1d3262f09e99e52b5998c57d/diff",
+                "WorkDir": "/var/lib/docker/overlay2/54262fd4c5ca1dd3d04190c6ade87f600fd1063f1d3262f09e99e52b5998c57d/work"
+            },
+            "Name": "overlay2"
+        },
+        "RootFS": {
+            "Type": "layers",
+            "Layers": [
+                "sha256:f49017d4d5ce9c0f544c82ed5cbc0672fbcb593be77f954891b22b4d0d4c0a84",
+                "sha256:8f2b771487e9d63540804b8fba7d310204ae26719d3a03a37089925a26a736cd",
+                "sha256:ccd4d61916aaa2159429c5d8c81357de29711da04ab7ee5224055361609df1a1",
+                "sha256:c01d74f99de40e097c737be5aa00e888fe368bfbbf1f8d4f86831c71b9305f8b",
+                "sha256:268a067217b5fe78e000ce16cafd38eae8aa503d887cb918c3ecd3e65a8c54b3",
+                "sha256:85512b69cf8e926d28a0caddbfa54e02bd5cfdb2fddd9040f4d46c153dabb73d",
+                "sha256:901dd14f7a79c3f8853801d4084851c3824b35be714970ba7f30b730fcd2df4b",
+                "sha256:6d743b04209f21a9dcffe29d0bd92edb8bcedf7684477a0b2b3304b7d7d0113b",
+                "sha256:31f33aa9e1f7c98183a62aaaf8c2fbd733262ad058b9b964a9b19c8efeacf5d6",
+                "sha256:5bee406e2e95dfda056c305ba9b209f8bfdcf6e08ef807b4da457a2eecd1c5be",
+                "sha256:1b05b61a38ac632fc7a150e4017f6a2c0898284f18e1dd2ff3ec4b28896167c7",
+                "sha256:a9920009ae870536e37deb251eb8c06acd539d4c2309ea23c34d069acd09d96f",
+                "sha256:25016c22c6d4f043dcb9b41928269d611da8a4522062ffd87b3d5f7796bcc79f",
+                "sha256:b4baf15209f84b3e5d8654078146375dd8d71a07dfc25bcc78bd176dc3f3a846",
+                "sha256:04db1ccb5de80b263aed68948f4ab9c20bf4b7ab73547f8affdadd9be6ce3fdb",
+                "sha256:d6dc6ebffdf66b4feed19e5d670d6f534397b6c4a49d9145b00c8df670584e2f",
+                "sha256:a8436b47477e8d9e91939f3ce40a038effc7b18fcc9bdea75b278315aa50c22e",
+                "sha256:9d730b29d81bc6fd613160bbacc1a6c2da7ec852a8c751a4c3c98e0a75df1d37",
+                "sha256:9fda2fd3a4c33555558cb9bd55f097cfc71c0035b2da2c42ff7759b4394744b2"
+            ]
+        },
+        "Metadata": {
+            "LastTagTime": "2018-09-21T13:33:17.123786278-04:00"
+        }
+    }
+]

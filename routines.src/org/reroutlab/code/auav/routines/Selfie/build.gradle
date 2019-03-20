@@ -1,0 +1,36 @@
+apply plugin: 'java'
+sourceCompatibility = 1.7
+targetCompatibility = 1.7
+
+jar.baseName = 'org.reroutlab.code.auav.routines.Selfie'
+def AUAVHOME = System.getenv('AUAVHOME')
+
+repositories {
+   flatDir {
+              dirs "$AUAVHOME/libs"
+   }
+   flatDir {
+	      dirs "$AUAVHOME/external"
+   }
+   flatDir {
+	      dirs "$AUAVHOME/apps"
+   }
+       jcenter()
+        maven { url 'https://maven.google.com' }
+        maven {
+            url 'https://maven.google.com/'
+            name 'Google'
+        }
+        google()	 
+}
+
+dependencies {
+   compile fileTree(dir: "$AUAVHOME/libs", include: ['*.jar'])
+   compile fileTree(dir: "$AUAVHOME/external/", include: ['*.jar'])
+   compile fileTree(dir: "$AUAVHOME/apps/", include: ['*.jar'])
+   compile fileTree(dir: ".", include: ['*.jar'])	
+	 compile ('com.dji:dji-sdk:4.6')
+   compile ('com.dji:dji-sdk-provided:4.6')
+
+}
+
