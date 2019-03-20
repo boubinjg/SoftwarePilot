@@ -1,0 +1,2 @@
+include ':app', ':dji_android_sdk'
+include ':openCVLibrary2411'

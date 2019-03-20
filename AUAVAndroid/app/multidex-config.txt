@@ -1,0 +1,2 @@
+org/reroutlab/code/auav/kernels/auavandroid/MainActivitiy.class
+org/reroutlab/code/auav/drivers/DroneGimbalDriver.class
