@@ -1,0 +1,12 @@
+BatteryMAH=3447
+BatteryVoltage=11.4
+Left=         175.54, 2
+Right=        175.54, 2
+Up=           173.16, 2
+Down=         161.44, 2
+Forward=      197.3, 2
+Backward=     192.3, 2
+TakeoffLand=  78.7,  14
+GimbalMove=   154.47, 1
+ImageCapture= 130.23,   5
+Hover=        88.92,   1
