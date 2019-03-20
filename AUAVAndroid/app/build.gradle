@@ -1,0 +1,97 @@
+
+
+apply plugin: 'com.android.application'
+//def AUAVHOME = "/stash/gitd/reroutlab.cstewart.code.auav/"
+def AUAVHOME = "$System.env.AUAVHOME/"
+
+android {
+    compileSdkVersion 26 //26
+    buildToolsVersion '27.0.3' //26
+    defaultConfig {
+        applicationId "org.reroutlab.code.auav.kernels.auavandroid"
+        minSdkVersion 23
+        targetSdkVersion 26 //26
+        versionCode 1
+        versionName "1.0"
+        testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
+        multiDexEnabled true
+        ndk {
+            abiFilters "armeabi", "armeabi-v7a", "x86", "mips"
+        }
+    }
+    buildTypes {
+        release {
+            minifyEnabled false
+            proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
+        }
+    }
+    packagingOptions {
+        doNotStrip "*/*/libdjivideo.so"
+        doNotStrip "*/*/libSDKRelativeJNI.so"
+        doNotStrip "*/*/libFlyForbid.so"
+        doNotStrip "*/*/libduml_vision_bokeh.so"
+        doNotStrip "*/*/libyuv2.so"
+        doNotStrip "*/*/libGroudStation.so"
+        doNotStrip "*/*/libFRCorkscrew.so"
+        doNotStrip "*/*/libUpgradeVerify.so"
+        exclude 'META-INF/DEPENDENCIES'
+        exclude 'META-INF/NOTICE'
+        exclude 'META-INF/LICENSE'
+        exclude 'META-INF/LICENSE.txt'
+        exclude 'META-INF/NOTICE.txt'
+        exclude 'epl-v10.html'
+        exclude 'notice.html'
+        exclude 'edl-v10.html'
+        exclude 'META-INF/rxjava.properties'
+    }
+    compileOptions {
+        sourceCompatibility = 1.7
+        targetCompatibility = 1.7
+    }//
+
+}
+
+repositories {
+    flatDir {
+        dirs "$AUAVHOME/libs"
+    }
+    flatDir {
+        dirs "$AUAVHOME/external"
+    }
+    flatDir {
+        dirs "$AUAVHOME/apps"
+    }
+}
+dependencies {
+    //compile fileTree(dir: 'libs', include: ['*.jar'])//uncomment
+    apk fileTree(dir: "$AUAVHOME/libs", include: ['*.jar'])
+    compile files("$AUAVHOME/libs/interfaces.jar")
+    compile files("$AUAVHOME//external/californium-core-1.1.0-SNAPSHOT.jar")
+    compile files("$AUAVHOME//external/element-connector-1.1.0-SNAPSHOT.jar")
+    compile files("$AUAVHOME//external/h2-1.4.196.jar")
+
+    compile fileTree(dir: "$AUAVHOME//external/", exclude: ['djiClasses.jar','android.jar', 'sqlcipher.jar'])
+    compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
+    
+    compile project(':dji_android_sdk')
+    //compile ('com.dji:dji-sdk:4.2.1')
+    //provided ('com.dji:dji-sdk-provided:4.3.1')
+    compile project(':openCVLibrary2411')
+
+    //compile files("$AUAVHOME/external/dji-eventbus.jar")
+    //compile files("$AUAVHOME/external/dji-gson.jar")
+    //compile fileTree(dir: "$AUAVHOME/external/", include: ['*.jar'])//uncomment
+    apk fileTree(dir: "$AUAVHOME/routines/", include: ['*.jar'])
+
+    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+        exclude group: 'com.android.support', module: 'support-annotations'
+    })
+    compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support:multidex:1.0.2'
+    //compile 'com.android.support:appcompat-v7:26.+'
+    compile 'com.android.support.constraint:constraint-layout:1.0.2'
+    compile 'com.android.support:design:26.+'
+    //compile 'com.android.support:design:26.+'
+    //testCompile 'junit:junit:4.12'
+
+}
