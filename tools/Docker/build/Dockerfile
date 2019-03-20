@@ -64,15 +64,13 @@ RUN cd /home && \
 ENV LC_ALL=C.UTF-8 \
     LANG=C.UTF-8 \ 
     GRADLE_HOME=/usr/local/gradle-4.4/bin \
-    AUAVHOME=/home/reroutlab.cstewart.code.auav 
+    AUAVHOME=/home/OpenFAAS
 #Fix Path Variable 
 ENV PATH=$PATH:$GRADLE_HOME \ JAVA_HOME=/usr/lib/jvm/java-8-oracle
 
 #Expose ports
 EXPOSE 12013
 EXPOSE 5117
-
-RUN chmod 600 /home/reroutlab.cstewart.code.auav/tools/AUAV
 
 RUN apt-get update && \
     apt-get install -y iputils-ping && \
