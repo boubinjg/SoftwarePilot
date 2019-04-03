@@ -54,6 +54,7 @@ Software prerequisites include:
 * **[Christopher Stewart](http://web.cse.ohio-state.edu/~stewart.962/)**
 * **[Shiqi Zhang](https://github.com/shiqi7)**
 * **[Naveen Tumkur Ramesh Babu](https://naveentr.com/)**
+* [Zichen Zhang](https://github.com/Winchester1896)
 
 See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
 
