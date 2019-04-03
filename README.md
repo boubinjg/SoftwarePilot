@@ -1,3 +1,5 @@
+# ![SoftwarePilot Logo](http://jaysonboubin.com/SoftwarePilot.png)
+
 # SoftwarePilot v0.1
 
 SoftwarePilot is an open source software middleware and API that supports aerial applications.
