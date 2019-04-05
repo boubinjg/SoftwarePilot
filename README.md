@@ -2,9 +2,9 @@
 
 # SoftwarePilot v0.1
 
-SoftwarePilot is an open source software middleware and API that supports aerial applications.
+SoftwarePilot is an open source middleware and API that supports aerial applications.
 SoftwarePilot allows users to connect consumer DJI drones to 
-programmable Java routines that include access to the drones flight controller, camera, and navigation system as well as computer vision and deep learning software packages
+programmable Java routines that provide access to the drones flight controller, camera, and navigation system as well as computer vision and deep learning software packages
 like OpenCV, DLIB, and Tensorflow.
 
 SoftwarePilot comes with a dockerfile and installation scripts for all requisite
