@@ -58,7 +58,7 @@ Software prerequisites include:
 * **[Naveen Tumkur Ramesh Babu](https://naveentr.com/)**
 * **[Zichen Zhang](https://github.com/Winchester1896)**
 
-See also the list of [contributors](https://github.com/your/project/contributors) who participated in this project.
+See also the list of [contributors](https://github.com/boubinjg/SoftwarePilot/contributors) who participated in this project.
 
 ## License
 
