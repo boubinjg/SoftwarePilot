@@ -35,7 +35,7 @@ Software prerequisites include:
 
 * [Docker](http://www.docker.com) 
 * [VirtualBox](http://www.virtualbox.org)
-* The SoftwarePilot [Virtual Machine](http://www.reroutlab.org/vb/android.ova)
+* The SoftwarePilot [Virtual Machine](http://www.reroutlab.org/softwarepilot/SoftwarePilot.ova)
 
 ## Built With
 
