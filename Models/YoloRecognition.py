@@ -13,8 +13,9 @@ YOLOv3 Implementation of image detection
 CONFIDENCE = 0.5
 NMS_SUPPRESS = 0.4
 # YOLOv3 path 
-YOLO = '/home/SoftwarePilot/Models/yolov3'
-
+#YOLO = '/home/SoftwarePilot/Models/yolov3'
+YOLO = 'yolov3'
+# TODO: add GPU toggle
 def getOutputLayers(net):
     layerNames = net.getLayerNames()
     outputLayers = [layerNames[i[0] - 1] for i in net.getUnconnectedOutLayers()]
@@ -42,8 +43,8 @@ if(not os.path.exists(os.path.join(YOLO, 'yolov3.weights'))):
 weights = os.path.join(YOLO, 'yolov3.weights')
 cfg = os.path.join(YOLO, 'yolov3.cfg')
 classfile = os.path.join(YOLO, 'coco.names')
-imgPath = '/home/SoftwarePilot/Models/test.jpg'
-
+#imgPath = '/home/SoftwarePilot/Models/test.jpg'
+imgPath = 'test.jpg'
 # replace with optional args
 if args.image:
     imgPath = args.image
@@ -99,7 +100,7 @@ for i in indicies:
     box = boxes[i]
     (x, y, w, h) = box[:4]
     # print bounding box and draw in image
-    print(box)
+    print("{} {:.0f}% : {}".format(classes[classIds[i]], confidences[i] * 100, box))
     drawBoundingBox(image, classIds[i], confidences[i], round(x), round(y), round(x + w), round(y + h))
 
 # display output - for GUI display only
