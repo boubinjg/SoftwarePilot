@@ -4,7 +4,7 @@ import argparse
 import cv2
 import numpy as np
 import time
-import gdown
+
 '''
 Nat Shineman
 26SEP2019
