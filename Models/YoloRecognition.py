@@ -4,6 +4,7 @@ import argparse
 import cv2
 import numpy as np
 import time
+import gdown
 '''
 Nat Shineman
 26SEP2019
@@ -14,7 +15,9 @@ CONFIDENCE = 0.5
 NMS_SUPPRESS = 0.4
 # YOLOv3 path 
 #YOLO = '/home/SoftwarePilot/Models/yolov3'
-YOLO = 'yolov3'
+#YOLO = 'yolov3'
+YOLO = 'yoloface'
+
 # TODO: add GPU toggle
 def getOutputLayers(net):
     layerNames = net.getLayerNames()
@@ -38,11 +41,21 @@ argp.add_argument('-cl', '--classes', help = 'path to classes text file')
 args = argp.parse_args()
 
 # default values and import weights
+#if(not os.path.exists(os.path.join(YOLO, 'yolov3.weights'))):
+    #os.system('wget https://pjreddie.com/media/files/yolov3.weights -P /home/SoftwarePilot/Models/yolov3')
+#if(not os.path.exists(os.path.join(YOLO, 'yoloface.weights'))):
+ #   gdown.download('wget https://drive.google.com/uc?id=pQqb&id=1xYasjU52whXMLT5MtF7RCPQkV66993oR', 'yoloface.weights', quiet=True)
+
+# wget'ing from google docs is far from ideal
 if(not os.path.exists(os.path.join(YOLO, 'yolov3.weights'))):
-    os.system('wget https://pjreddie.com/media/files/yolov3.weights -P /home/SoftwarePilot/Models/yolov3')
+    os.system('''wget --load-cookies /tmp/cookies.txt -r "https://docs.google.com/uc?export=download&confirm=$(wget --quiet --save-cookies /tmp/cookies.txt --keep-session-cookies --no-check-certificate 'https://docs.google.com/uc?export=download&id=13gFDLFhhBqwMw6gf8jVUvNDH2UrgCCrX' -O- | sed -rn 's/.*confirm=([0-9A-Za-z_]+).*/\1\n/p')&id=13gFDLFhhBqwMw6gf8jVUvNDH2UrgCCrX" -O yoloface/yoloface.weights.zip && rm -rf /tmp/cookies.txt''')
+    os.system('rm -rf /tmp/cookies.txt')
+    os.system('unzip -q yoloface/yoloface.weights.zip -d yoloface')
+    os.system('mv yoloface/yolov3-wider_16000.weights yoloface/yolov3.weights')
+
 weights = os.path.join(YOLO, 'yolov3.weights')
 cfg = os.path.join(YOLO, 'yolov3.cfg')
-classfile = os.path.join(YOLO, 'coco.names')
+classfile = os.path.join(YOLO, 'class.names')
 #imgPath = '/home/SoftwarePilot/Models/test.jpg'
 imgPath = 'test.jpg'
 # replace with optional args
