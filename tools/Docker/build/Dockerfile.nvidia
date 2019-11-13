@@ -13,7 +13,8 @@ RUN apt-get install -y git   && \
     apt-get install -y cmake && \
     apt-get install -y curl  && \
     apt-get install -y unzip && \
-    apt-get install -y nano
+    apt-get install -y nano && \
+    apt-get install -y wget
 
 #Install python3
 RUN apt-get install -y python3.6 && \
@@ -21,7 +22,9 @@ RUN apt-get install -y python3.6 && \
     apt-get install -y python3-dev
 
 #install DLIB and face_recognition
-RUN pip3 install face_recognition
+#manually installing dlib here should allow it to compile for GPU
+RUN pip3 install dlib && \
+    pip3 install face_recognition
 
 #install OpenCV
 RUN pip3 install opencv-python && \

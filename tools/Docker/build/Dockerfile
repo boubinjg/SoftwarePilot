@@ -13,8 +13,8 @@ RUN apt-get install -y git   && \
     apt-get install -y cmake && \
     apt-get install -y curl  && \
     apt-get install -y unzip && \
-    apt-get install -y nano
-
+    apt-get install -y nano && \
+    apt-get install -y wget
 #Install python3
 RUN apt-get install -y python3.6 && \
     apt-get install -y python3-pip 
@@ -26,7 +26,11 @@ RUN pip3 install face_recognition
 RUN pip3 install opencv-python && \
     apt-get install -y libfontconfig1 libxrender1 && \
     apt-get install -y libsm6 libxext6
-
+    
+#install pydarknet for CPU
+RUN apt-get install -y pkg-config && \
+    pip3 install yolo34py
+    
 #install java8
 #RUN echo oracle-java8-installer shared/accepted-oracle-license-v1-1 select true | debconf-set-selections && apt-get update &&   apt-get install -y software-properties-common &&  add-apt-repository -y ppa:webupd8team/java &&   apt-get update &&   apt-get install -y oracle-java8-installer  &&   rm -rf /var/lib/apt/lists/* &&   rm -rf /var/cache/oracle-jdk8-installer
 
