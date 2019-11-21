@@ -113,7 +113,8 @@ for i in indicies:
     box = boxes[i]
     (x, y, w, h) = box[:4]
     # print bounding box and draw in image
-    print("{} {:.0f}% : {}".format(classes[classIds[i]], confidences[i] * 100, box))
+    # print("{} {:.0f}% : [ {} {} {} {} ]".format(classes[classIds[i]], confidences[i] * 100, round(x), round(y), round(x + w), round(x + h)))
+    print("[ {} {} {} {} ]".format(round(x), round(y), round(x + w), round(x + h)))
     drawBoundingBox(image, classIds[i], confidences[i], round(x), round(y), round(x + w), round(y + h))
 
 # display output - for GUI display only
