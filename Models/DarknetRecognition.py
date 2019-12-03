@@ -59,7 +59,7 @@ for cat, score, bounds in results:
     # print("{} {}% : [ {} {} {} {} ]".format(str(cat.decode('utf-8')), int(score*100), int(x), int(y), int(w), int(h)))
     #print("{} {}% : [ {} {} {} {} ]".format(str(cat.decode('utf-8')), int(score*100), int(x - w / 2), int(y - h /2), int(x + w / 2), int(y + h / 2)))
 
-    print("[ {} {} {} {} ]".format(str(cat.decode('utf-8')), int(score*100), int(x - w / 2), int(y - h /2), int(x + w / 2), int(y + h / 2)))
+    print("[ {} {} {} {} ]".format(int(x - w / 2), int(y - h /2), int(x + w / 2), int(y + h / 2)))
     
     cv2.rectangle(img, (int(x - w / 2), int(y - h /2)), (int(x + w / 2), int(y + h / 2)), (255, 0, 0), thickness = 2)
     cv2.putText(img, str(cat.decode('utf-8')), (int(x), int(y)), cv2.FONT_HERSHEY_COMPLEX, 1, (255, 255, 0))
