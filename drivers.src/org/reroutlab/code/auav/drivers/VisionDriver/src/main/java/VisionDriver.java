@@ -235,10 +235,13 @@ public class VisionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers { 
                             }*/
                             try{
                                 System.out.println("Creating CMD");
-                                String cmd = "python3 ../Models/FaceRecognition.py";
+                                // String cmd = "python3 ../Models/YoloRecognition.py"
+				String cmd = "python3 ../Models/FaceRecognition.py";
                                 System.out.println("Reading Pic");
-                                byte[] pic = readPic();
-                                writeByte(pic);
+				if(!AUAVsim){ 
+					byte[] pic = readPic();
+					writeByte(pic);
+				}
                                 Process p = Runtime.getRuntime().exec(cmd);
                                 BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
                                 String ret = in.readLine();
@@ -250,6 +253,33 @@ public class VisionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers { 
                                 ce.respond("Vision Error");
                             }
                             ce.respond("Done");
+			// not sure what this arg should actually equal
+			} else if (args[0].equals("dc=yolo")) {
+				System.out.println("in yolo");
+				String fName = "";
+				try {
+					System.out.println("Creating CMD");
+					String cmd = "python3 ../Models/DarknetRecognition.py";
+					if(AUAVsim) {	
+						cmd = "python3 ../../Models/DarknetRecognition.py";
+					}
+					System.out.println("Reading Pic");
+					if(!AUAVsim){ 
+						byte[] pic = readPic();
+						writeByte(pic);
+					}
+					System.out.println(cmd);
+					Process p = Runtime.getRuntime().exec(cmd);
+					BufferedReader in = new BufferedReader(new InputStreamReader(p.getInputStream()));
+					String ret = in.readLine();
+					System.out.println("Face Box: " + ret);
+					ce.respond(ret);
+				} catch(Exception e) {
+					System.out.println("VisionError");
+					e.printStackTrace();
+					ce.respond("Vision Error");
+				}
+				ce.respond("Done");
                         } else if (args[0].equals("dc=knn")) {
                             String featFile = args[1].substring(3);
                             String features = "";
