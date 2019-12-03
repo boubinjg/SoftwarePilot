@@ -14,6 +14,8 @@ using yoloface for weights
 '''
 #YOLO = 'yolov3'
 YOLO = 'yoloface'
+# absolute path for testing
+YOLO = '/home/SoftwarePilot/Models/yoloface'
 # command line args for testing
 argp = argparse.ArgumentParser()
 argp.add_argument('-i', '--image', help = 'path to input image')
@@ -38,8 +40,8 @@ if(not os.path.exists(os.path.join(YOLO, 'yolov3.weights'))):
 weights = os.path.join(YOLO, 'yolov3.weights')
 cfg = os.path.join(YOLO, 'yolov3.cfg')
 classfile = os.path.join(YOLO, 'yolo.data')
-imgPath = 'test.jpg'
-
+#imgPath = 'test.jpg'
+imgPath = '/tmp/pictmp.jpg'
 # replace with optional args
 if args.image:
     imgPath = args.image
@@ -51,7 +53,8 @@ with contextlib.redirect_stdout(None):
     startTime = time.time()
     results = net.detect(darknetImg)
     endTime = time.time()
-print("Image Processed, took {:.6f} seconds".format(endTime - startTime))
+# remove this for properly formatted output
+# print("Image Processed, took {:.6f} seconds".format(endTime - startTime))
 
 for cat, score, bounds in results:
     # print box location and draw in image
