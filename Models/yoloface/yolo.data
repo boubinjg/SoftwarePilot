@@ -1,5 +1,9 @@
 classes = 1
 #train = 
-#valid = 
+#valid =
+# absolute paths for use in docker container
 names = /home/SoftwarePilot/Models/yoloface/class.names
 eval = /home/SoftwarePilot/Models/yoloface
+# relative paths for use out of docker
+# names = yoloface/class.names
+# eval = yoloface
