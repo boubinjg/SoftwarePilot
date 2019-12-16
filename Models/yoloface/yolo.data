@@ -1,5 +1,5 @@
 classes = 1
 #train = 
 #valid = 
-names = yoloface/class.names
-eval = yoloface
+names = /home/SoftwarePilot/Models/yoloface/class.names
+eval = /home/SoftwarePilot/Models/yoloface
