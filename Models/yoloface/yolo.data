@@ -1,5 +1,9 @@
 classes = 1
 #train = 
 #valid = 
-names = yoloface/class.names
-eval = yoloface
+# relative paths for testing off Docker
+#names = yoloface/class.names
+#eval = yoloface
+# absolute paths for running with drivers
+names = /home/SoftwarePilot/Models/yoloface/class.names
+eval = /home/SofwarePilot/Models/yoloface/
