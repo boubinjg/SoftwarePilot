@@ -1,5 +1,6 @@
 classes = 1
 #train = 
+<<<<<<< HEAD
 #valid =
 # absolute paths for use in docker container
 names = /home/SoftwarePilot/Models/yoloface/class.names
