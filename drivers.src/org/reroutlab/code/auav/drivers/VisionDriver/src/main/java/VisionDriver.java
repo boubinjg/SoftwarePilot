@@ -259,10 +259,7 @@ public class VisionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers { 
 				String fName = "";
 				try {
 					System.out.println("Creating CMD");
-					String cmd = "python3 ../Models/DarknetRecognition.py";
-					if(AUAVsim) {	
-						cmd = "python3 ../../Models/DarknetRecognition.py";
-					}
+					String cmd = "python3 /home/SoftwarePilot/Models/DarknetRecognition.py";
 					System.out.println("Reading Pic");
 					if(!AUAVsim){ 
 						byte[] pic = readPic();
