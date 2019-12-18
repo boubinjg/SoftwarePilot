@@ -2,7 +2,7 @@ apply plugin: 'java'
 sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
-jar.baseName = 'org.reroutlab.code.auav.routines.VisionTest'
+jar.baseName = 'org.reroutlab.code.auav.routines.YoloVisionTest'
 def AUAVHOME = System.getenv('AUAVHOME')
 
 repositories {
