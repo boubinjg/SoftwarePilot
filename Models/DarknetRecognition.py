@@ -15,7 +15,8 @@ using yoloface for weights
 #YOLO = 'yolov3'
 YOLO = 'yoloface'
 # absolute path for testing
-YOLO = '/home/SoftwarePilot/Models/yoloface'
+# YOLO = '/home/SoftwarePilot/Models/yoloface'
+YOLO = os.path.join(os.environ['AUAVHOME'], 'Models/yoloface')
 # command line args for testing
 argp = argparse.ArgumentParser()
 argp.add_argument('-i', '--image', help = 'path to input image')
