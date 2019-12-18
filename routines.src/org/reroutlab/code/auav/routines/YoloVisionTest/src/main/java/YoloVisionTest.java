@@ -80,7 +80,7 @@ import java.util.*;
  * @version 1.0.0
  * @since   2018-5-13
  */
-public class VisionTest extends org.reroutlab.code.auav.routines.AuavRoutines {
+public class YoloVisionTest extends org.reroutlab.code.auav.routines.AuavRoutines {
 		/**
 		 *	 Check forceStop often and safely end routine if set
 		 */
@@ -738,7 +738,7 @@ public class VisionTest extends org.reroutlab.code.auav.routines.AuavRoutines {
 		private Thread t = null;
 
 
-		public VisionTest() {
+		public YoloVisionTest() {
 			//configFile = new java.util.Properties();
 			/*try{
 				File cfg = new File(Environment.getExternalStorageDirectory().getPath() + "/AUAVAssets/routineConfig.cfg");
