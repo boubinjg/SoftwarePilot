@@ -23,9 +23,9 @@ while [ "$1" != "" ]; do
 	shift
 done
 if [ "$gpu" = "1" ]; then
-	sudo docker run --gpus all -it -p 5117:5117/udp -p 12013:12013 auavlinux/nvidia /bin/bash
+    sudo docker run --gpus all -it -p 5117:5117/udp -p 12013:12013 auavlinux/nvidia /bin/bash
 elif [ "$gpu" = "2" ]; then
-	sudo docker run -it -p 5117:5117/udp -p 12013:12013 auavlinux/nvidia /bin/bash	
+    sudo docker run -it -p 5117:5117/udp -p 12013:12013 auavlinux/nvidia /bin/bash
 else 
-	sudo docker run -it -p 5117:5117/udp -p 12013:12013 auavlinux /bin/bash
+    sudo docker run -it -p 5117:5117/udp -p 12013:12013 auavlinux /bin/bash
 fi
