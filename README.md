@@ -12,10 +12,6 @@ software, and an Android-x86 VM to communicate with DJI drones from most systems
 
 SoftwarePilot provides sample routines and demos ranging from simple flight control applications to fully autonomous aerial systems. A simulation framework for fully autonomous aerial systems that use SoftwarePilot is also provided. The simulation framework can be used to aid development and profiling of complicated aerial systems.
 
-This is an early release of SoftwarePilot, and is still rough around the edges.
-Future releases (1.0 +) will improve the user experience and expand the
-number of provided routines.
-
 ## Getting Started
 
 Please review our comprehensive user guide [here](https://reroutlab.org/softwarepilot/SoftwarePilot_User_Guide_1-0.pdf)
