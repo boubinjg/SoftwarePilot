@@ -19,7 +19,7 @@ number of provided routines.
 ## Getting Started
 
 Please review our comprehensive user guide [here](https://reroutlab.org/softwarepilot/SoftwarePilot_User_Guide_1-0.pdf)
-for installation instructions, and our development guide [here (https://reroutlab.org/softwarepilot/SoftwarePilot_Development_Guide_1-0.pdf) to learn about adding to SoftwarePilot.
+for installation instructions, and our development guide [here] (https://reroutlab.org/softwarepilot/SoftwarePilot_Development_Guide_1-0.pdf) to learn about adding to SoftwarePilot.
 
 ### Prerequisits
 
