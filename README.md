@@ -1,6 +1,6 @@
 # ![SoftwarePilot Logo](http://jaysonboubin.com/SoftwarePilot.png)
 
-# SoftwarePilot v0.1
+# SoftwarePilot v1.0
 
 SoftwarePilot is an open source middleware and API that supports aerial applications.
 SoftwarePilot allows users to connect consumer DJI drones to 
