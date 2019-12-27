@@ -66,48 +66,30 @@ import com.drew.metadata.iptc.IptcReader;
 import java.util.*;
 
 /**
- * Detect takes off, calibrates camera, and takes a picture
- * It dumps the image to a user provided directory, then determines
- * whether that image contains a human face
- * If it does, it writes the image to trace.data/selfies
- * Invoke this routine through external commands driver
- * <br><b>URL: coap:\\localhost:port\cr?</b>
- * <br>Example: coap:\\127.0.0.1:5117\cr?dn=rtn-dc=start-dp=Selfie-dp=../trace.data/PicTraceDriver/PicTrace
- * <br>
- * Note: all AUAV drivers have resource component "cr" for coap resource
+ * BasicRoutine is SoftwarePilots routine template. 
+ * Copy this template to create a new routine as described
+ * in the SoftwarePilot development guide.
  *
  * @author Jayson Boubin
- * @version 1.0.0
- * @since   2018-9-17
+ * @version 1.1.0
+ * @since   2019-12-27
  */
 public class BasicRoutine extends org.reroutlab.code.auav.routines.AuavRoutines {
 		/**
 		 *	 Check forceStop often and safely end routine if set
 		 */
 		public boolean forceStop = false;
-		public long TIMEOUT = 10000;
-		public int MAX_TRIES = 10;
-		private Properties configFile;
-		//public final double CAMERA_FOV_HORIZ;
-		//public final double CAMERA_FOV_VERT;
-		//public final String [] MODELS;
-		//public final String [] MODEL_NAMES;
+		public long TIMEOUT = 10000;	
         	static byte[] pic;
         	public String succ = "";
         	public String IP = "";
         	/**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
-		 * @version 1.0.1
-		 * @since   2018-5-13
+		 * @version 1.1.0
+		 * @since   2019-12-27
 		 */
 		public void run() {
-			/*reads in a parameter: picDirectory
-			 *picDirectory refers to the directory where
-			 *the camera will dump the images when
-			 *it captures them. Pictrace then reads the
-			 *images from said directory.
-			 */
 
             		String args[] = params.split("-"); //Arguments from the coap input string
             		config();
@@ -117,19 +99,19 @@ public class BasicRoutine extends org.reroutlab.code.auav.routines.AuavRoutines 
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
             		auavSpin();
 
-            		auavLock("Left");
+            		auavLock("Move");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=vec-dp=1-dp=p-dp=0-dp=p-dp=0-dp=p-dp=0-dp=p-dp=1000", auavResp.ch);
             		auavSpin();
 
-            		auavLock("Left");
+            		auavLock("Move");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver",  "dc=vec-dp=0-dp=p-dp=1-dp=p-dp=0-dp=p-dp=0-dp=p-dp=1000", auavResp.ch);
             		auavSpin();
 
-            		auavLock("Left");
+            		auavLock("Move");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver",  "dc=vec-dp=1-dp=m-dp=0-dp=p-dp=0-dp=p-dp=0-dp=p-dp=1000", auavResp.ch);
             		auavSpin();
 
-            		auavLock("Left");
+            		auavLock("Move");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver",  "dc=vec-dp=0-dp=p-dp=1-dp=m-dp=0-dp=p-dp=0-dp=p-dp=1000", auavResp.ch);
             		auavSpin();
 

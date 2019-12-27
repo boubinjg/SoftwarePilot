@@ -1,6 +1,7 @@
 import argparse
 import os
 import subprocess
+import sys
 
 parser = argparse.ArgumentParser()
 parser.add_argument('-drv', action='store_true',help='Compile drivers')
@@ -16,6 +17,9 @@ parser.add_argument('-ins', type=str,help='Install APK on VM (Requires IP addres
 args = parser.parse_args()
 
 auavhome = os.environ['AUAVHOME']
+
+if(len(sys.argv) == 1):
+    args.code = True
 
 if(args.cln):
     print("\n===================Cleaning===================")
