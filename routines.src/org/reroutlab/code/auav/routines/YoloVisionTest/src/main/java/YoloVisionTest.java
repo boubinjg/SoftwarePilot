@@ -66,11 +66,11 @@ import com.drew.metadata.iptc.IptcReader;
 import java.util.*;
 
 /**
- * YoloVisionTest is SoftwarePilots routine template. 
- * Copy this template to create a new routine as described
- * in the SoftwarePilot development guide.
+ * YoloVisionTest is SoftwarePilots vision driver test.
+ * Testing routine for the Darknet implementation of computer
+ * vision using the YOLOv3 algorithm
  *
- * @author Jayson Boubin
+ * @author Nat Shineman
  * @version 1.1.0
  * @since   2019-12-27
  */
@@ -92,8 +92,12 @@ public class YoloVisionTest extends org.reroutlab.code.auav.routines.AuavRoutine
 		public void run() {
 
             		String args[] = params.split("-"); //Arguments from the coap input string
-            		config();
-
+            		if(Arrays.asList(args).contains("dp=auavsim")) {
+				configSim();
+			} else {
+				config();
+			}
+			/* 
             		//takes off the UAV
             		auavLock("Takeoff");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
@@ -114,6 +118,23 @@ public class YoloVisionTest extends org.reroutlab.code.auav.routines.AuavRoutine
             		auavLock("Move");
             		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver",  "dc=vec-dp=0-dp=p-dp=1-dp=m-dp=0-dp=p-dp=0-dp=p-dp=1000", auavResp.ch);
             		auavSpin();
+			*/
+			/**
+			 * Takes picutre and performs facial recognition
+			 */ 
+			// takeImg()
+			// readImg()
+			auavLock("Process image");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.VisionDriver", "dc=yolo", auavResp.ch);
+			System.out.println("Sending vision command");
+			/*
+			try {
+				sendToPort(b, meta);
+			} catch(Exception e) {
+				e.printStackTrace();
+			}
+			*/
+			auavSpin();
 
             		//lands the UAV
             		auavLock("land");
@@ -195,6 +216,18 @@ public class YoloVisionTest extends org.reroutlab.code.auav.routines.AuavRoutine
 			succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
 			auavSpin();
         	}
+		void configSim(){
+		    	setSimOn();
+			/*
+			auavLock("ssm");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
+			auavSpin();
+
+			auavLock("ConfigFlight");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
+			auavSpin();
+        		*/
+		}
         	//reads the last captured preview image from the UAV
        		byte[] readPreview(int picNum) {
 			byte[] pic = new byte[0];
