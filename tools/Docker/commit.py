@@ -9,6 +9,10 @@ for i in op:
             print([i[0], i[1]])
             op = subprocess.check_output(["sudo","docker","commit",i[0], i[1]])
             print(op)
+        elif(i[1] == "auavlinux/nvidia"):
+            print([i[0], i[1]])
+            op = subprocess.check_output(["sudo","docker","commit",i[0], i[1]])
+            print(op)
             break;
     except:
         pass

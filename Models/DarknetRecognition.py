@@ -42,7 +42,7 @@ weights = os.path.join(YOLO, 'yolov3.weights')
 cfg = os.path.join(YOLO, 'yolov3.cfg')
 classfile = os.path.join(YOLO, 'yolo.data')
 #imgPath = 'test.jpg'
-imgPath = os.path.join(os.envirion['AUAVHOME'],'/tmp/pictmp.jpg')
+imgPath = os.path.join(os.environ['AUAVHOME'],'/tmp/pictmp.jpg')
 # replace with optional args
 if args.image:
     imgPath = args.image
