@@ -1,0 +1,18 @@
+CN docker container has scripts to run Cassandra and run cqlsh, the cassandra CLI tool
+
+In the CLI tool:
+    CN test keyspace created using the followig line:
+    CREATE KEYSPACE CN1 WITH replication = {'class':'SimpleStrategy', 'replication_factor' : 1};
+
+
+    CN test table created using the following line:
+    CREATE TABLE CN1.test (id varchar PRIMARY KEY, image blob);
+
+Python script "insert.py" inserts image "DJI_0006.JPG" from /home/ into 
+the test database. The image is encoded as base64 and sent to the DB. 
+
+
+Open Questions:
+    -DBs Don't persist over docker commit
+        How to store?
+    -How to send data between EN/CN/Cloud?
