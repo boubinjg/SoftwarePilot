@@ -175,6 +175,9 @@ VOLUME /var/lib/cassandra
 RUN pip3 install setuptools
 RUN pip3 install cassandra-driver
 
+RUN mkdir /home/tools
+COPY /Code/tools /home/tools
+
 # 7000: intra-node communication
 # 7001: TLS intra-node communication
 # 7199: JMX
