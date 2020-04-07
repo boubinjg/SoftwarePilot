@@ -12,7 +12,85 @@ Python script "insert.py" inserts image "DJI_0006.JPG" from /home/ into
 the test database. The image is encoded as base64 and sent to the DB. 
 
 
-Open Questions:
-    -DBs Don't persist over docker commit
-        How to store?
-    -How to send data between EN/CN/Cloud?
+Closed Questions:
+    -DBs Don't persist over docker commit: Solved! Use Docker Volumes
+    -How to send data between EN/CN/Cloud:
+        -use import/export in Cassandra and SCP it over
+    -How to SSHtunnel cassandra DB to CQL on remote:
+        ssh -R 9042:localhost:9042 user@remote
+
+
+Open questions:
+
+Design:
+    -3 node tier system: EN, CN, and Cloud
+        EN: Edge node which has a small amount of data available
+        CN: central node which has a moderate amount of data available
+            (all data available at connected edge nodes from beginning of execution 
+                + some collected throughout depending on update policy)
+        Cloud: cloud node which has a all data available at all egde/CN from start of execution
+                + some collected throughout depending on update policy)
+
+    -Each node has its own controller
+        -writtern in python
+
+    EN controller:
+        -runs simulation UAV at edge level.
+        -Execution process:
+            -takes in images from autonomy cube
+            -analyzes images using either MLQN or DQN to find next movement direction
+            -adds images into cassandra database (base64 image + features?)
+        -periodic operations:
+            Infer: Run DQN or MLQN to classify an image and return a direction
+            Retrain: Retrain DQN (this doesn't apply to MLQN) with new data
+            Memory Update: Get new, better memory from cloud/CN or send data to CN
+                (DQN replay memory or MLQN dataset)
+
+    CN controller:
+        -Potentially runs simulation of UAV at the CN level
+        -Execution process:
+            -reads images over network from autonomy cube on remote system
+            -analyes images using either MLQN or DQN to find next movement direction
+            -adds images into cassandra DB on CN (images also held on EN)
+        -periodic operations:
+            infer: Run DQN or MLQN to classify an image and return a direction
+                (image->EN->CN->result->EN)
+            Retrain: retrain DQN with new data
+            Memory update: Get new, better memory from cloud/send data to edge
+                (DQN replay memory or MLQN dataset)
+
+    EN controller:
+        -Potentially runs simulation of UAV at the cloud level
+        -Execution process:
+            -reads images over network through EN from CN
+            -analyzes images using either MLQN or DQN to find next movement direction
+            -adds images into cassandra DB on cloud (also added in CN/EN)
+        -periodic operations:
+            infer: run DQN or MLQN to classify an image and return a direction 
+                (image->EN->CN->CLOUD->result->CN->EN)
+            Retrain: retrain DQN with new data
+            memory update: get new, better memory from cloud/send data to edge
+                (DQN replay memory of MLQN dataset)
+
+    Next Steps:
+        -Implement the basic MLQN simulation for EN in a docker container 
+            -load docker container with image data for simulation + autonomy cubes
+            -add each image and feature vector to a local cassandra DB after inference
+        
+        -Implement the CN process with MLQN:
+            -load docker container with autonomy cube of images on EN
+            -add each image and feature vector to edge and local DBs
+
+        Implement the cloud process with MLQN:
+            -load docker container with AC of images on EN
+            -hop through CN to get images
+            -add each image and feature vector to EN/CN/Cloud databases
+
+        -Implement memory update for MLQN:
+            -for EN/CN/Cloud:
+                load each with prebuild datasets 
+                allow EN/CN to periodically push data up to cloud
+                allow EN/CN to periodically request a memory update
+                    -CN/Cloud finds best memory for EN/CN, pushes down
+
+        -Implement DQN with memory update and retraining

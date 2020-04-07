@@ -5,7 +5,7 @@ LABEL version="1.0"
 LABEL description="AUAVLinux Dockerfile using Reroutlab Git"
 
 #Update Sources
-RUN apt-get update
+RUN apt-get update -y
 
 #Install basic applications
 RUN apt-get install -y git   && \
