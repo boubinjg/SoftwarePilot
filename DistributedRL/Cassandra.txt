@@ -94,3 +94,33 @@ Design:
                     -CN/Cloud finds best memory for EN/CN, pushes down
 
         -Implement DQN with memory update and retraining
+
+Cassandra Replication Procedure:
+    When I finish a mission, encapsulate this into something that python understands as sensed data
+    serialize this out with a key that denotes the worker who is working on this data (send just the key, not data)
+    When the CN sees that each node is ready, pull the actual data values
+
+    -Use this data to retrain on CN and then push the model out to all ENs under the CN
+        (replicate to all)
+
+    -Worker node (before it starts next round) checks to see if there is a new model in cassandra
+        -if yes, pull the model and run that
+
+    Note: a round is not a single image, it is a fully autonomous mission.
+        After each mission is complete, send all data to CN->retrain->add model to cassandra for local to pull
+
+        At local: when a mission completes and another mission should start: should I wait for a new model? use old model? how long should I wait?
+
+    Note: all of this can be virtualized. You can use Docker to run every experiment such that you have 
+    virtual cassandra servers at CN and cloud, and you can toggle on EN whether you want to go directly to cloud or hop through CN
+    Requirement: A docker node to run EN->CN and a docker node to run EN->Cloud
+
+    Two type of images:
+        worker image:
+            -Can execute RL algorithm 
+        server image:
+            -holds data overall
+
+    New Server: Stewart03
+        -do a PS and see if someone is running heavy tests
+        chris05.cse.ohio-state.edu

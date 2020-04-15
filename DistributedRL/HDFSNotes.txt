@@ -1,0 +1,40 @@
+Experimenting with HDFS instead of cassandra.
+
+To set up:
+    Install Docker, Docker-compose, and Docker-machine
+    Pull this repo https://github.com/big-data-europe/docker-hadoop
+    sudo docker-compose up -d in the repo to build docker containers far HDFS
+
+    ^^ This runs HDFS on local at IP 127.0.0.1
+    from a docker container also run on local you can use the following commands:
+        List files:
+            put file in HDFS
+                hadoop fs -put input/test.txt hdfs://127.0.0.1:9000
+            
+            ls remote:
+                hadoop fs -ls hdfs://127.0.0.1:9000/test/
+
+            copy from HDFS to local
+                fs -get hdfs://127.0.0.1:9000/test/f1.txt
+
+Design:
+    When a mission finishes, send mission data to HDFS in a directory associated with 
+    that mission number and server
+
+    When CN sees that each node is ready, pull all data values to local
+
+    Use this data to train on CN, then push the model to HDFS so CNs can see the new model
+
+    Worker node (before it starts a new round) checks to see if there is a new model in HDFS
+        -if yes, decide whether to pull the model and then run
+
+    At local: When a mission completes and another mission should start: Should I wait for a new model? Use old model? How long should I wait?
+
+Docker Design:
+    -Spin up one docker HDFS system on local (using the docker HDFS repo)
+    -Create a script or docker compose.yaml file to spin up N worker nodes and N server nodes 
+        -Workers are ENs who run RL
+        -Severs and CNs who retrain models
+        -Give each server a name to use (ENV?)
+            -Tell workers who their master is
+            -Tell Servers who their slave is
