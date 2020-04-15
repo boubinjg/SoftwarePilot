@@ -1,0 +1,4 @@
+Requirements:
+	Docker
+	Docker-compose
+	Docker-machine

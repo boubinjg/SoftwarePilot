@@ -1,1 +1,1 @@
-sudo docker build -t spcn -f Dockerfile build/. --rm
+sudo docker build -t spcn -f build/Dockerfile build/. --rm
