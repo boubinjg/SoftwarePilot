@@ -1,1 +1,1 @@
-sudo docker run -v /ENData:/var/lib/cassandra -it --network "DRLSIM" spen /bin/bash
+sudo docker run -v /ENData:/var/lib/cassandra -it --network "host" spen /bin/bash

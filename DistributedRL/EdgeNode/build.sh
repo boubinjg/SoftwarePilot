@@ -1,1 +1,1 @@
-sudo docker build -t spen -f Dockerfile build/. --rm
+sudo docker build -t spen -f build/Dockerfile build/. --rm
