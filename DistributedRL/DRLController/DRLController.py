@@ -2,6 +2,9 @@ import subprocess
 import os
 import argparse
 
+DATA_LOC='/home/boubin/Images/'
+CUBE_LOC='/home/boubin/SoftwarePilot/DistributedRL/Data/'
+
 def consoleLog(string):
 	print("#################################################")
 	print("##############DRL Controller:")
@@ -39,7 +42,10 @@ def startWorkers(numServs, numWorkers):
 		for j in range(0,numWorkers):
 			subprocess.call(['docker', 'run', '--net=host',
 					 '-e SERVERNUM='+str(i),'-e WORKERNUM='+str(j),
-					 '--name','worker'+str(i)+'_'+str(j), 'spen', '/bin/bash'])
+					 '--name','worker'+str(i)+'_'+str(j), 
+					 '-v',CUBE_LOC+"Worker"+str(i)+'_'+str(j) + ':/home/mydata:Z',
+					 '-v',DATA_LOC + ':/home/imageData:Z',
+					 'spen', '/bin/bash'])
 			consoleLog("Worker" + str(i)+'_'+str(j)+" Started")
 			workerList.append("worker"+str(i)+'_'+str(j))
 	os.chdir(pwd)
@@ -73,7 +79,6 @@ if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Distributed RL Controller')
 	parser.add_argument('servers', metavar='S', type=int, nargs='+', help='Number of Server Nodes to Start')
 	parser.add_argument('workers', metavar='W', type=int, nargs='+', help='Number of Worker Nodes to Start per Server')
-
 	args = parser.parse_args()
 
 	consoleLog("DRL Controller Starting")
@@ -89,10 +94,10 @@ if __name__ == "__main__":
 		#Not Yet Implemented
 
 	#Stop Servers
-	#consoleLog("Stopping Servers")
-	#stopServers(serverList);
-	#consoleLog("Stopping Workers")
-	#stopWorkers(workerList)
+	consoleLog("Stopping Servers")
+	stopServers(serverList);
+	consoleLog("Stopping Workers")
+	stopWorkers(workerList)
 	consoleLog("Killing HDFS")
 	#killHDFS();
 
