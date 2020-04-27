@@ -21,7 +21,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     rsync \
     ssh \
-    openjdk-8-jdk
+    openjdk-8-jdk \
+    iputils-ping \
+    net-tools
+
 #Install python3
 RUN apt-get install -y python3.6 && \
     apt-get install -y python3-pip 
@@ -74,11 +77,10 @@ RUN pip3 install cassandra-driver
 
 RUN mkdir /home/tools
 COPY /Code/tools /home/tools
+COPY /Code/sim /home/sim
 
 #Expose ports
 EXPOSE 12013
 EXPOSE 5117
 
-RUN apt-get update && \
-    apt-get install -y iputils-ping && \
-    apt-get install -y net-tools
+run pip3 install sklearn
