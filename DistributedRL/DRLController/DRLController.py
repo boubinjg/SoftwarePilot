@@ -1,6 +1,7 @@
 import subprocess
 import os
 import argparse
+import time
 
 DATA_LOC='/home/boubin/Images/'
 CUBE_LOC='/home/boubin/SoftwarePilot/DistributedRL/Data/'
@@ -40,20 +41,17 @@ def startWorkers(numServs, numWorkers):
 	os.chdir('../EdgeNode')
 	for i in range(0, numServs):
 		for j in range(0,numWorkers):
-			subprocess.call(['docker', 'run', '--net=host',
-					 '-e SERVERNUM='+str(i),'-e WORKERNUM='+str(j),
-					 '--name','worker'+str(i)+'_'+str(j), 
-					 '-v',CUBE_LOC+"Worker"+str(i)+'_'+str(j) + ':/home/mydata:Z',
-					 '-v',DATA_LOC + ':/home/imageData:Z',
-					 'spen', '/bin/bash'])
+			#subprocess.call(['docker', 'run', '--net=host',
+			#		 '-e SERVERNUM='+str(i),'-e WORKERNUM='+str(j),
+			#		 '--name','worker'+str(i)+'_'+str(j), 
+			#		 '-v',CUBE_LOC+"Worker"+str(i)+'_'+str(j) + ':/home/mydata:Z',
+			#		 '-v',DATA_LOC + ':/home/imageData:Z',
+			#		 'spen', '/bin/bash', '-c \"bash run.sh\"'])
+			subprocess.call(['bash','runEN_Sim.sh',str(i), str(j),"worker"+str(i)+'_'+str(j)])
 			consoleLog("Worker" + str(i)+'_'+str(j)+" Started")
 			workerList.append("worker"+str(i)+'_'+str(j))
 	os.chdir(pwd)
 	return workerList
-
-#Give workers and servers names
-
-#Give workers and servers data
 
 #start simulation
 
@@ -84,6 +82,8 @@ if __name__ == "__main__":
 	consoleLog("DRL Controller Starting")
 	#Start HDFS Docker cluster
 	consoleLog("Starting HDFS Cluster")
+
+	#Currently Assuming HDFS instance runs independently of DRL Controller
 	#startHDFS()
 	consoleLog("Starting Servers")
 	serverList = startServers(args.servers[0])
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 	workerList = startWorkers(args.servers[0], args.workers[0])
 
 	#Run Simulation
-		#Not Yet Implemented
+	time.sleep(60)
 
 	#Stop Servers
 	consoleLog("Stopping Servers")
@@ -100,4 +100,5 @@ if __name__ == "__main__":
 	stopWorkers(workerList)
 	consoleLog("Killing HDFS")
 	#killHDFS();
+
 
