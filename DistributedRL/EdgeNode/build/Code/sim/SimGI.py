@@ -8,6 +8,8 @@ import copy
 import os 
 from shutil import copyfile
 from shutil import rmtree
+import glob
+import subprocess
 
 imagedata = []
 knndata = None
@@ -240,6 +242,16 @@ def writeIms(visited,imdata):
                 copyfile(imagePath,"tmp/"+fileName)
 
 
+#def writeHDFS():
+#    exe = sys.argv[4]
+#    workerNum = os.environ["WORKERNUM"]
+#    serverNum = os.environ["SERVERNUM"]
+#    direc = str(serverNum)+"_"+str(workerNum)+"_"+str(exe)+"/"
+#    subprocess.call(["hadoop","fs","-mkdir","hdfs://127.0.0.1:9000/"+direc])
+#    for f in glob.glob("/home/sim/tmp/*"):
+#        subprocess.call(["hadoop","fs","-put",f,"hdfs://127.0.0.1:9000/"+direc])
+
+
 if __name__ == '__main__':
     readInData()
     imagedata = imagedata[1:]
@@ -338,7 +350,8 @@ if __name__ == '__main__':
         means.append(mean)
 
         writeIms(visited, imagedata)
-
+        #writeHDFS()
+        
         for v in range(0, len(visited)):
             row = int(visited[v].split(',')[0][1:])
             col = int(visited[v].split(',')[1][0:-1])

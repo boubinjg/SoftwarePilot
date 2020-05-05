@@ -78,6 +78,7 @@ RUN pip3 install cassandra-driver
 RUN mkdir /home/tools
 COPY /Code/tools /home/tools
 COPY /Code/sim /home/sim
+COPY /Code/run.sh run.sh
 
 #Expose ports
 EXPOSE 12013
