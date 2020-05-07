@@ -5,7 +5,7 @@ op = op.split("\n")
 for i in op:
     i = i.split()
     try:
-        if(i[1] == "spcn"):
+        if(i[1] == "spen"):
             print([i[0], i[1]])
             op = subprocess.check_output(["sudo","docker","commit",i[0], i[1]])
             print(op)
