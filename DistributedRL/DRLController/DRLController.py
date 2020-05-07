@@ -58,13 +58,13 @@ def startWorkers(numServs, numWorkers):
 #Stop Servers
 def stopServers(serverList):
 	for server in serverList:
-		subprocess.call(["docker", "rm",server])
+		subprocess.call(["docker", "rm", "-f", server])
 		consoleLog("Server " + server + " Stopped")
 
 #Stop Workers
 def stopWorkers(workerList):
 	for worker in workerList:
-		subprocess.call(["docker", "rm",worker])
+		subprocess.call(["docker", "rm", "-f", worker])
 		consoleLog("Worker " + worker + " Stopped")
 #kill HDFS
 def killHDFS():
@@ -91,7 +91,7 @@ if __name__ == "__main__":
 	workerList = startWorkers(args.servers[0], args.workers[0])
 
 	#Run Simulation
-	time.sleep(60)
+	time.sleep(300)
 
 	#Stop Servers
 	consoleLog("Stopping Servers")

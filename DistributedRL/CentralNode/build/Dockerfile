@@ -2,7 +2,7 @@ FROM ubuntu:18.04
 #author information
 MAINTAINER Jayson Boubin
 LABEL version="1.0"
-LABEL description="SoftwarePilot DRL Central Node Dockerfile"
+LABEL description="SoftwarePilot DRL Edge Node Dockerfile"
 
 ENV HADOOP_HOME /opt/hadoop
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64
@@ -21,7 +21,10 @@ RUN apt-get update && apt-get install -y \
     wget \
     rsync \
     ssh \
-    openjdk-8-jdk
+    openjdk-8-jdk \
+    iputils-ping \
+    net-tools
+
 #Install python3
 RUN apt-get install -y python3.6 && \
     apt-get install -y python3-pip 
@@ -67,16 +70,18 @@ RUN apt-get update && \
     apt-get install -y ca-certificates-java && \
     apt-get clean && \
     update-ca-certificates -f
+VOLUME /var/lib/cassandra
 
 RUN pip3 install setuptools
+RUN pip3 install cassandra-driver
 
 RUN mkdir /home/tools
 COPY /Code/tools /home/tools
+COPY /Code/sim /home/sim
+COPY /Code/run.sh run.sh
 
 #Expose ports
 EXPOSE 12013
 EXPOSE 5117
 
-RUN apt-get update && \
-    apt-get install -y iputils-ping && \
-    apt-get install -y net-tools
+run pip3 install sklearn
