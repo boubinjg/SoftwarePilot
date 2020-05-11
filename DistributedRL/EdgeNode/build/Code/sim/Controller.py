@@ -27,7 +27,7 @@ for f in csvs:
 
     subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
 
-    for x in glob.glob("*.JPG"):
+    for x in glob.glob("*.*"):
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put',x,'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/"+x])
         print(x)
     os.chdir(cwd)

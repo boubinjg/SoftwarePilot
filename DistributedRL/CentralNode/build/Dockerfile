@@ -84,4 +84,5 @@ COPY /Code/run.sh run.sh
 EXPOSE 12013
 EXPOSE 5117
 
-run pip3 install sklearn
+run pip3 install pillow
+run pip3 install numpy
