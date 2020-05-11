@@ -15,7 +15,7 @@ sn=os.environ["SERVERNUM"]
 wn=os.environ["WORKERNUM"]
     
 try:
-    subprocess.call(['hadoop','fs','-mkdir', 'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn])
+    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir', 'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn])
 except Exception as e:
     print(e)
 
@@ -25,10 +25,10 @@ for f in csvs:
     subprocess.call(['bash','runGI.bash','/home/mydata/'+f,'10', str(count)])
     os.chdir('tmp/')
 
-    subprocess.call(['hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
+    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
 
     for x in glob.glob("*.JPG"):
-        subprocess.call(['hadoop','fs','-put',x,'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/"+x])
+        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put',x,'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/"+x])
         print(x)
     os.chdir(cwd)
     count += 1

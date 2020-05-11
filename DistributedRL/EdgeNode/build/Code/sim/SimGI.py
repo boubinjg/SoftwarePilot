@@ -224,6 +224,32 @@ def findLength(visited):
         totalDist += manhattanDist(visited[i], visited[i+1])
     return totalDist
 
+def writeUtil(visited, imdata):
+    print("WRITE UTIL")
+    print(visited)
+    for im in visited:
+        for line in imdata:
+            if(im == line[1]):
+                imageName = line[3][17:].split("/")[-1]
+                #util = float(line[12].split(',')[12].split('=')[1][:-1])
+                #print(util)
+                utilList = []
+                for i in range(4):
+                    im2 = line[i+4]
+                    if(im2 in visited):
+                        im2Line = getImage(im2)
+                        im2util = float(im2Line[12].split(',')[12].split('=')[1][:-1])
+                        utilList.append(im2util)
+                    else:
+                        utilList.append('0')
+                print(imageName)
+                print(utilList)
+                fname = imageName.split('.')[0]
+                print(fname)
+                with open('tmp/'+fname+'.csv','w') as f:
+                    writer = csv.writer(f)
+                    writer.writerow(utilList)
+
 def writeIms(visited,imdata):
     print(visited)
     try:
@@ -350,6 +376,7 @@ if __name__ == '__main__':
         means.append(mean)
 
         writeIms(visited, imagedata)
+        writeUtil(visited, imagedata)
         #writeHDFS()
         
         for v in range(0, len(visited)):
