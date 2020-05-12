@@ -64,7 +64,7 @@ class Parser {
                 scriptFeatures.add(output);
             }
             scriptToFeatures.get(num).put(script.get(num), scriptFeatures);
-            System.out.println(cmd);
+            //System.out.println(cmd);
             //System.out.println(System.currentTimeMillis()-startTime);
         } catch(Exception e) {
             e.printStackTrace();

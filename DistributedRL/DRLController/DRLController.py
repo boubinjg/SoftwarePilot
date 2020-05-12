@@ -27,8 +27,9 @@ def startServers(numServs):
 	pwd = os.getcwd()
 	os.chdir('../CentralNode')
 	for i in range(0, numServs):
-		subprocess.call(['docker', 'run', '--net=host', '-e SERVERNUM='+str(i),
-				 '--name','server'+str(i), 'spcn', '/bin/bash'])
+		#subprocess.call(['docker', 'run', '--net=host', '-e SERVERNUM='+str(i),
+		#		 '--name','server'+str(i), 'spcn', '/bin/bash'])
+		subprocess.call(['bash','runCN_Sim.sh', str(i),'server'+str(i)])
 		consoleLog("Server" + str(i)+" Started")
 		serverList.append("server"+str(i))
 	os.chdir(pwd)
@@ -91,7 +92,7 @@ if __name__ == "__main__":
 	workerList = startWorkers(args.servers[0], args.workers[0])
 
 	#Run Simulation
-	time.sleep(300)
+	time.sleep(600)
 
 	#Stop Servers
 	consoleLog("Stopping Servers")

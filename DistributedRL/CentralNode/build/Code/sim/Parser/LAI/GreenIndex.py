@@ -20,8 +20,8 @@ speed = 8
 
 leafcount = 0
 total = 0
-for i in range(0, imWidth/speed):
-	for j in range(0, imHeight/speed):
+for i in range(0, int(imWidth/speed)):
+	for j in range(0, int(imHeight/speed)):
 		R,G,B = RGB.getpixel((i*speed,j*speed))
 		if R*ratg < G and B*ratgb < G and B*ratr < R:
 			leafcount = leafcount + 1
