@@ -30,5 +30,6 @@ for f in csvs:
     for x in glob.glob("*.*"):
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put',x,'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/"+x])
         print(x)
+    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-touchz','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/done"])
     os.chdir(cwd)
     count += 1
