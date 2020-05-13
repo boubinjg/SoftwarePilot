@@ -98,7 +98,7 @@ if __name__ == "__main__":
 	consoleLog("Stopping Servers")
 	stopServers(serverList);
 	consoleLog("Stopping Workers")
-	stopWorkers(workerList)
+	#stopWorkers(workerList)
 	consoleLog("Killing HDFS")
 	#killHDFS();
 
