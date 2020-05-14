@@ -25,11 +25,11 @@ def startHDFS():
 def startServers(numServs):
 	serverList = []
 	pwd = os.getcwd()
-	os.chdir('../CentralNode')
+	os.chdir('../Gateway')
 	for i in range(0, numServs):
 		#subprocess.call(['docker', 'run', '--net=host', '-e SERVERNUM='+str(i),
 		#		 '--name','server'+str(i), 'spcn', '/bin/bash'])
-		subprocess.call(['bash','runCN_Sim.sh', str(i),'server'+str(i)])
+		subprocess.call(['bash','runGateway_Sim.sh', str(i),'server'+str(i)])
 		consoleLog("Server" + str(i)+" Started")
 		serverList.append("server"+str(i))
 	os.chdir(pwd)
@@ -39,7 +39,7 @@ def startServers(numServs):
 def startWorkers(numServs, numWorkers):
 	workerList = []
 	pwd = os.getcwd()
-	os.chdir('../EdgeNode')
+	os.chdir('../Worker')
 	for i in range(0, numServs):
 		for j in range(0,numWorkers):
 			#subprocess.call(['docker', 'run', '--net=host',
@@ -48,7 +48,7 @@ def startWorkers(numServs, numWorkers):
 			#		 '-v',CUBE_LOC+"Worker"+str(i)+'_'+str(j) + ':/home/mydata:Z',
 			#		 '-v',DATA_LOC + ':/home/imageData:Z',
 			#		 'spen', '/bin/bash', '-c \"bash run.sh\"'])
-			subprocess.call(['bash','runEN_Sim.sh',str(i), str(j),"worker"+str(i)+'_'+str(j)])
+			subprocess.call(['bash','runWorker_Sim.sh',str(i), str(j),"worker"+str(i)+'_'+str(j)])
 			consoleLog("Worker" + str(i)+'_'+str(j)+" Started")
 			workerList.append("worker"+str(i)+'_'+str(j))
 	os.chdir(pwd)
