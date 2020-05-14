@@ -2,3 +2,6 @@ Requirements:
 	Docker
 	Docker-compose
 	Docker-machine
+
+NB:
+	Must disable SELinux
