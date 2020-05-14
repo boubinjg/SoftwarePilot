@@ -116,26 +116,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	public String csvFile = "/TODO.csv";
 	public String line = "";
 	public String seperator = ",";
-
+	private WaypointMissionOperatorListener listener;
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
-
-	//private class AuavWaypoint extends dji.common.mission.waypoint {
-		//int num;
-		//Waypoint current;
-		//Waypoint left;
-		//Waypoint right;
-		//Waypoint forward;
-		//Waypoint back;
-
-		// This is the constructor of the class AuavWaypoint
-		//public AuavWaypoint(Waypoint w) {
-			//this.current = w;
-		//}
-
-		//public
-
-	//}
         /**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -172,7 +155,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //[4]-[7] NSWE (int)
 	    ArrayList<String[]> wObjectList = new ArrayList<String[]>();
 	    String currentW;
-	    List<Waypoint> wList = new ArrayList<Waypoint>();
+	    List<Waypoint> wList = new ArrayList<>();
 
 	    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))){
 		   line = br.readLine();
@@ -180,8 +163,11 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			   String[] waypointObject = line.split(seperator);
 			   double lat = Double.parseDouble(waypointObject[1]);
 			   double lon = Double.parseDouble(waypointObject[2]);
+			   String act = waypointObject[3];
 			   wObjectList.add(waypointObject);
 			   Waypoint w = new Waypoint(lat, lon, altitude);
+			   //Assume one action for each waypoint
+			   w.addAction(new WaypointAction(WaypointActionType.STAY,1));
 			   wList.add(w);
 			   line = br.readLine();
 
@@ -198,7 +184,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    if (builder == null){
 	    	builder = new WaypointMission.Builder();
 	    }
+	    //get the first waypoint
 	    builder.addWaypoint(wList.get(Integer.parseInt(currentW)));
+	    
 	    builder.finishedAction(wMissionFinishedAction);
 	    if(builder.checkParameters() == null){
 	            wMission = builder.build();
@@ -212,19 +200,21 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    while(true) {	//TODO: add conditions to loop argument
 		    wMissionOperator.loadMission(wMission);
 		    //Upload the mission if check conditions are satisfied
-		    if((wMissionOperator.getLoadedMission() == null) && (wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_UPLOAD)) {
+		    if((wMissionOperator.getLoadedMission() == null) && (wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_UPLOAD))
+		    {
 			    wMissionOperator.uploadMission(new CommonCallbacks.CompletionCallback() {
                     @Override
-                    public void onResult(DJIError error) {
+                    public void onResult(DJIError error)
+		    {
                         if (error == null) {
                             System.out.println("Mission upload successfully!");
                         } else {
                             System.out.println("Mission upload failed, error: " + error.getDescription() );
                         }
                     }
-                });
-		    }
-
+               	 });
+		 }
+		
 		    //Execute the mission
 		    if(wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
 			    wMissionOperator.startMission(new CommonCallbacks.CompletionCallback() {
@@ -236,7 +226,11 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		    }
 
 		    //TODO: add listeners
-
+		    if(wMissionOperator!=null && listener!=null){
+			    wMissionOperator.addListener(listener);
+		    }
+			
+/*
 		    //Create a new mission based on the neighbors of the current waypoint
 		    int max = 8;
 		    int min = 4;
@@ -252,10 +246,13 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		    } else{
 			    System.out.print(builder.checkParameters());
 	            }
-	    }
+*/	    }
 
 
         }
+	//TODO:Missing stop mission section
+	//
+	//
         //captures image using the UAVs camera, downloads the image to the VM
          void takeImg(boolean full){
                 System.out.println("taking the image entry to function..");
