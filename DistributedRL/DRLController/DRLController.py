@@ -54,6 +54,12 @@ def startWorkers(numServs, numWorkers):
 	os.chdir(pwd)
 	return workerList
 
+def startGlobal():
+	pwd = os.getcwd()
+	os.chdir("../Global")
+	subprocess.call(['bash','runGlobal_Sim.sh',"global"])
+	consoleLog("Global Started")
+
 #start simulation
 
 #Stop Servers
@@ -67,6 +73,11 @@ def stopWorkers(workerList):
 	for worker in workerList:
 		subprocess.call(["docker", "rm", "-f", worker])
 		consoleLog("Worker " + worker + " Stopped")
+
+def stopGlobal():
+	subprocess.call(["docker","rm","-f","global"])
+	consoleLog("Global Stopped")
+
 #kill HDFS
 def killHDFS():
 	consoleLog("Exiting Simulation")
@@ -86,6 +97,9 @@ if __name__ == "__main__":
 
 	#Currently Assuming HDFS instance runs independently of DRL Controller
 	#startHDFS()
+	
+	consoleLog("Starting Global")
+	startGlobal()
 	consoleLog("Starting Servers")
 	serverList = startServers(args.servers[0])
 	consoleLog("Starting Workers")
@@ -95,6 +109,8 @@ if __name__ == "__main__":
 	time.sleep(600)
 
 	#Stop Servers
+	consoleLog("Stopping Global")
+	stopGlobal()
 	consoleLog("Stopping Servers")
 	stopServers(serverList);
 	consoleLog("Stopping Workers")
