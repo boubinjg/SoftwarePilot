@@ -203,13 +203,13 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    builder.finishedAction(wMissionFinishedAction);
 	    builder.repeatTimes(0);
 
-           System.out.println("finish before mission built");
+            //System.out.println("finish before mission built");
 
 
 	    builder.waypointList(wList).waypointCount(wList.size());
 	    //if(builder.checkParameters() == null){
 	    wMission = builder.build();
-            System.out.println("Finish build mission");
+            //System.out.println("Finish build mission");
 	    //} else{
 	    //	    System.out.print(builder.checkParameters());
 	    //}
@@ -234,9 +234,11 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                         }
                     }
                	 });
+		 }else{
+			 System.out.println("Cannot upload a mission to Operator");
 		 }
-		
-		    //Execute the mission
+		  // System.out.println("Mission uploaded");	  
+	       	    //Execute the mission
 		    if(wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
 			    wMissionOperator.startMission(new CommonCallbacks.CompletionCallback() {
                     @Override
