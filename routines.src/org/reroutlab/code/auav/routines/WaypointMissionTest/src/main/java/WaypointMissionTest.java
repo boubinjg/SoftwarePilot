@@ -70,6 +70,9 @@ import dji.common.error.DJIError;
 
 import java.io.BufferedReader;
 import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
 import dji.common.mission.waypoint.Waypoint;
 import dji.common.mission.waypoint.WaypointAction;
 import dji.common.mission.waypoint.WaypointActionType;
@@ -113,7 +116,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         public String succ = "";
         public String IP = "";
 
-	public String csvFile = "/TODO.csv";
+	public String csvFile = "/home/SoftwarePilot/huh/test.txt";
 	public String line = "";
 	public String seperator = ",";
 	private WaypointMissionOperatorListener listener;
@@ -153,23 +156,27 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //[2] GPS Lon (double)
 	    //[3] action (String)
 	    //[4]-[7] NSWE (int)
-	    ArrayList<String[]> wObjectList = new ArrayList<String[]>();
+	    //ArrayList<String[]> wObjectList = new ArrayList<String[]>();
 	    String currentW;
 	    List<Waypoint> wList = new ArrayList<>();
 
-	    try (BufferedReader br = new BufferedReader(new FileReader(csvFile))){
-		   line = br.readLine();
-		   while ((line != null)) {
-			   String[] waypointObject = line.split(seperator);
+	    try{
+		   File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
+		   
+		   System.out.print(f);
+		   Scanner s = new Scanner(f);
+		   while (s.hasNextLine()) {
+			   String data = s.nextLine();
+			   String[] waypointObject = data.split(seperator);
 			   double lat = Double.parseDouble(waypointObject[1]);
 			   double lon = Double.parseDouble(waypointObject[2]);
-			   String act = waypointObject[3];
-			   wObjectList.add(waypointObject);
+			   //String act = waypointObject[3];
+			   //wObjectList.add(waypointObject);
 			   Waypoint w = new Waypoint(lat, lon, altitude);
 			   //Assume one action for each waypoint
 			   w.addAction(new WaypointAction(WaypointActionType.STAY,1));
 			   wList.add(w);
-			   line = br.readLine();
+			   //line = br.readLine();
 
 		   }
 
@@ -185,7 +192,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    	builder = new WaypointMission.Builder();
 	    }
 	    //get the first waypoint
-	    builder.addWaypoint(wList.get(Integer.parseInt(currentW)));
+	    builder.addWaypoint(wList.get(0));
 	    
 	    builder.finishedAction(wMissionFinishedAction);
 	    if(builder.checkParameters() == null){
