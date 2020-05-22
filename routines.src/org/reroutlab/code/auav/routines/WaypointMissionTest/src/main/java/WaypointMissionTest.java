@@ -116,7 +116,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         public String succ = "";
         public String IP = "";
 
-	public String csvFile = "/home/SoftwarePilot/huh/test.txt";
+	//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
 	public String line = "";
 	public String seperator = ",";
 	private WaypointMissionOperatorListener listener;
@@ -183,31 +183,45 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    } catch (IOException e) {
 	    	   e.printStackTrace();
 	    }
-
+	    //System.out.println("Finish add waypointList");
 	    //Create a waypoint mission with the first waypoint
-	    currentW = "0";
-        WaypointMission wMission = null;
+	    //currentW = "0";
+            WaypointMission wMission = null;
 
-	    if (builder == null){
-	    	builder = new WaypointMission.Builder();
-	    }
+	    //if (builder == null){
+	    builder = new WaypointMission.Builder();
+	    //}
+	    builder.autoFlightSpeed(1f);
+	    builder.maxFlightSpeed(15f);
+	    builder.setExitMissionOnRCSignalLostEnabled(false);
+	    builder.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+	    builder.gotoFirstWaypointMode(WaypointMissionGotoWaypointMode.SAFELY);
+	    builder.headingMode(WaypointMissionHeadingMode.AUTO);
 	    //get the first waypoint
-	    builder.addWaypoint(wList.get(0));
+	    //builder.addWaypoint(wList.get(0));
 	    
 	    builder.finishedAction(wMissionFinishedAction);
-	    if(builder.checkParameters() == null){
-	            wMission = builder.build();
-	    } else{
-		    System.out.print(builder.checkParameters());
-	    }
+	    builder.repeatTimes(0);
+
+           System.out.println("finish before mission built");
+
+
+	    builder.waypointList(wList).waypointCount(wList.size());
+	    //if(builder.checkParameters() == null){
+	    wMission = builder.build();
+            System.out.println("Finish build mission");
+	    //} else{
+	    //	    System.out.print(builder.checkParameters());
+	    //}
 
 	    //Instantiate a mission operator
 	    WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
-
-	    while(true) {	//TODO: add conditions to loop argument
-		    wMissionOperator.loadMission(wMission);
+	    int count =1;
+	    while(count==1) {	//TODO: add conditions to loop argument
+		    count=count-1;
+		    DJIError errorss = wMissionOperator.loadMission(wMission);
 		    //Upload the mission if check conditions are satisfied
-		    if((wMissionOperator.getLoadedMission() == null) && (wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_UPLOAD))
+		    if((errorss == null))
 		    {
 			    wMissionOperator.uploadMission(new CommonCallbacks.CompletionCallback() {
                     @Override
@@ -236,24 +250,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		    if(wMissionOperator!=null && listener!=null){
 			    wMissionOperator.addListener(listener);
 		    }
-			
-/*
-		    //Create a new mission based on the neighbors of the current waypoint
-		    int max = 8;
-		    int min = 4;
-            Random r = new Random();
-		    int rand = r.nextInt((max-min) + 1)+ min;
-		    currentW = wObjectList.get(Integer.parseInt(currentW))[rand];
-
-		    builder = new WaypointMission.Builder();
-		    builder.addWaypoint(wList.get(Integer.parseInt(currentW)));
-		    builder.finishedAction(wMissionFinishedAction);
-		    if(builder.checkParameters() == null) {
-			    wMission = builder.build();
-		    } else{
-			    System.out.print(builder.checkParameters());
-	            }
-*/	    }
+	    }
 
 
         }
@@ -326,9 +323,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         void config(){
             setSimOff();
 
-			auavLock("ssm");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
-			auavSpin();
+			//auavLock("ssm");
+			//succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
+			//auavSpin();
 
 			auavLock("ConfigFlight");
 			succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
