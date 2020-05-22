@@ -161,9 +161,13 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    List<Waypoint> wList = new ArrayList<>();
 
 	    try{
+<<<<<<< HEAD
 		   File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
 		   
 		   System.out.print(f);
+=======
+		   File f = new File(csvFile);
+>>>>>>> 81263f6bd5c79a85b1d8a7985e08e51f41dd59b7
 		   Scanner s = new Scanner(f);
 		   while (s.hasNextLine()) {
 			   String data = s.nextLine();
