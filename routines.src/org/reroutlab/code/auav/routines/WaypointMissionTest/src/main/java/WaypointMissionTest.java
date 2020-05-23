@@ -120,9 +120,19 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
 	public String line = "";
 	public String seperator = ",";
-	private WaypointMissionOperatorListener listener;
 	//public static WaypointMission.Builder builder;
 	public WaypointMissionOperator instance;
+	private WaypointMissionOperatorListener listener{
+		@Override
+		public void onExecutionStart(@Nullable final DJIError error) {
+			System.out.println("Execution started: " + (error == null ? "Success!" : error.getDescription()));
+		}
+
+		@Override
+		public void onExecutionFinish(@Nullable final DJIError error) {
+			System.out.println("Execution finished: " + (error == null ? "Success!" : error.getDescription()));
+		}
+	}
         /**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -251,9 +261,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                         }
                     }
                	 });
-		 }else{
-			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
-		 }
+		 }//else{
+			 //System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
+		 //}
 		 try{
 			 Thread.sleep(3000);
 		    }catch(Exception e){
@@ -271,10 +281,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                 });
 		    }
 
-		    //TODO: add listeners
-		    //if(instance!=null && listener!=null){
-		    //	    instance.addListener(listener);
-		    //}
+		    if(instance!=null && listener!=null){
+		    	    instance.addListener(listener);
+		    }
 	    }
 
 
