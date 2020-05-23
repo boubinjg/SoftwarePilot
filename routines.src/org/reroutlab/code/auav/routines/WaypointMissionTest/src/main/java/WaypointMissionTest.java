@@ -126,7 +126,11 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	private WaypointMissionOperator instance;
 	//public static WaypointMission.Builder builder;
 	public WaypointMissionOperator instance;
-	private WaypointMissionOperatorListener listener{
+	private WaypointMissionOperatorListener listener = new WaypointMissionOperatorListern() {
+		@Override
+		public void onUploadUpdate(@Nullable final DJIError error) {
+			System.out.println("Upload finished: " + (error == null ? "Success!" : error.getDescription()));
+		}
 		@Override
 		public void onExecutionStart(@Nullable final DJIError error) {
 			System.out.println("Execution started: " + (error == null ? "Success!" : error.getDescription()));
