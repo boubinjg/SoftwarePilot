@@ -269,7 +269,6 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		 }else{
 			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator"+builder.checkParameters()+"checkStatus:"+instance.getCurrentState());
 		 }
-=======
 		 }//else{
 			 //System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
 		 //}
