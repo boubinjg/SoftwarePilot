@@ -120,27 +120,25 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
 	public String line = "";
 	public String seperator = ",";
-	private WaypointMissionOperatorListener listener;
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
-	private WaypointMissionOperator instance;
 	//public static WaypointMission.Builder builder;
-	public WaypointMissionOperator instance;
-	private WaypointMissionOperatorListener listener = new WaypointMissionOperatorListern() {
+	private WaypointMissionOperator instance;
+	private WaypointMissionOperatorListener listener = new WaypointMissionOperatorListener() {
 		@Override
-		public void onUploadUpdate(@Nullable final DJIError error) {
+		public void onUploadUpdate(final DJIError error) {
 			System.out.println("Upload finished: " + (error == null ? "Success!" : error.getDescription()));
 		}
 		@Override
-		public void onExecutionStart(@Nullable final DJIError error) {
+		public void onExecutionStart(final DJIError error) {
 			System.out.println("Execution started: " + (error == null ? "Success!" : error.getDescription()));
 		}
 
 		@Override
-		public void onExecutionFinish(@Nullable final DJIError error) {
+		public void onExecutionFinish(final DJIError error) {
 			System.out.println("Execution finished: " + (error == null ? "Success!" : error.getDescription()));
 		}
-	}
+	};
         /**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -208,7 +206,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //currentW = "0";
         WaypointMission wMission = null;
 
-	    dji.common.waypoint.WaypointMission.Builder builder = new dji.common.mission.waypoint.WaypointMission.Builder();
+	    builder = new WaypointMission.Builder();
 	    builder.autoFlightSpeed(1f);
 	    builder.maxFlightSpeed(15f);
 	    builder.setExitMissionOnRCSignalLostEnabled(false);
