@@ -248,7 +248,28 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    int count =1;
 	    while(count==1) {	//TODO: add conditions to loop argument
 		    count=count-1;
+            // check the current states of the mission operator before and after loadMission()
+            if (WaypointMissionState.UNKNOWN.equals(instance.getCurrentState())){
+                System.out.println("Operator state: UNKNOWN");
+            } else if (WaypointMissionState.DISCONNECTED.equals(instance.getCurrentState())){
+                System.out.println("Operator state: DISCONNECTED");
+            } else if (WaypointMissionState.NOT_SUPPORTED.equals(instance.getCurrentState())){
+                System.out.println("Operator state: NOT_SUPPORTED");
+            } else{
+                System.out.println("Operator state: mysterious");
+            }
 		    DJIError errorss = instance.loadMission(wMission);
+            if (WaypointMissionState.UNKNOWN.equals(instance.getCurrentState())){
+                System.out.println("Operator state: UNKNOWN");
+            } else if (WaypointMissionState.DISCONNECTED.equals(instance.getCurrentState())){
+                System.out.println("Operator state: DISCONNECTED");
+            } else if (WaypointMissionState.NOT_SUPPORTED.equals(instance.getCurrentState())){
+                System.out.println("Operator state: NOT_SUPPORTED");
+            } else if (WaypointMissionState.READY_TO_UPLOAD.equals(instance.getCurrentState())){
+                System.out.println("Operator state: READY_TO_UPLOAD");
+            } else{
+                System.out.println("Operator state: mysterious");
+            }
 		    //Upload the mission if check conditions are satisfied
 		    try{
 		    		Thread.sleep(3000);
