@@ -88,7 +88,8 @@ import dji.common.mission.waypoint.WaypointMissionUploadEvent;
 import dji.sdk.mission.MissionControl;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
-
+import dji.sdk.sdkmanager.DJISDKManager;
+import java.lang.*;
 /**
  * WaypointMission is a routine that
  * 1) Reads in a waypoint file
@@ -122,6 +123,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	private WaypointMissionOperatorListener listener;
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
+	private WaypointMissionOperator instance;
         /**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -137,7 +139,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 */
 
             String args[] = params.split("-"); //Arguments from the coap input string
-            config();
+            //config();
 
             //takes off the UAV
             //auavLock("Takeoff");
@@ -207,23 +209,31 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 
 
 	    builder.waypointList(wList).waypointCount(wList.size());
-	    //if(builder.checkParameters() == null){
-	    wMission = builder.build();
+	    if(builder.checkParameters() == null){
+	    	wMission = builder.build();
             //System.out.println("Finish build mission");
-	    //} else{
-	    //	    System.out.print(builder.checkParameters());
-	    //}
+	    } else{
+	    	    System.out.print("check here: "+builder.checkParameters());
+	    }
 
 	    //Instantiate a mission operator
-	    WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
+	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
+	    if (instance == null){
+		    instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    }
 	    int count =1;
 	    while(count==1) {	//TODO: add conditions to loop argument
 		    count=count-1;
-		    DJIError errorss = wMissionOperator.loadMission(wMission);
+		    DJIError errorss = instance.loadMission(wMission);
 		    //Upload the mission if check conditions are satisfied
-		    if((errorss == null))
+		    try{
+		    		Thread.sleep(3000);
+			}catch(Exception e){
+				System.out.println(e);
+			}
+		    if(errorss == null)
 		    {
-			    wMissionOperator.uploadMission(new CommonCallbacks.CompletionCallback() {
+			    instance.uploadMission(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError error)
 		    {
@@ -235,12 +245,18 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                     }
                	 });
 		 }else{
-			 System.out.println("Cannot upload a mission to Operator");
+			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator"+builder.checkParameters()+"checkStatus:"+instance.getCurrentState());
 		 }
+		 try{
+			 Thread.sleep(3000);
+		    }catch(Exception e){
+			    System.out.print(e);
+		    }
+		 System.out.println("check errorss:"+errorss+" check currentState:"+instance.getCurrentState());
 		  // System.out.println("Mission uploaded");	  
 	       	    //Execute the mission
-		    if(wMissionOperator.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
-			    wMissionOperator.startMission(new CommonCallbacks.CompletionCallback() {
+		    if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
+			    instance.startMission(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError error) {
                         System.out.println("Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
@@ -249,9 +265,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		    }
 
 		    //TODO: add listeners
-		    if(wMissionOperator!=null && listener!=null){
-			    wMissionOperator.addListener(listener);
-		    }
+		    //if(instance!=null && listener!=null){
+		    //	    instance.addListener(listener);
+		    //}
 	    }
 
 
