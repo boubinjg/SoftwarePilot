@@ -121,8 +121,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	public String line = "";
 	public String seperator = ",";
 	private WaypointMissionOperatorListener listener;
-	public static WaypointMission.Builder builder;
-	private WaypointMission mission;
+	//public static WaypointMission.Builder builder;
 	public WaypointMissionOperator instance;
         /**
 		 *	 Routines are Java Threads.  The run() function is the
@@ -151,34 +150,35 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
             //succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
             //auavSpin()
 
-	    WaypointMissionFinishedAction wMissionFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
-
 	    //[0] Waypoint# (int)
 	    //[1] GPS Lat (double)
 	    //[2] GPS Lon (double)
 	    //[3] action (String)
 	    //[4]-[7] NSWE (int)
 	    //ArrayList<String[]> wObjectList = new ArrayList<String[]>();
-	    String currentW;
+	    String currentW;	// index indicating current waypoint #
 	    List<Waypoint> wList = new ArrayList<>();
 
+        // read in the file
 	    try{
 		   File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
-		   
+
 		   System.out.print(f);
 		   Scanner s = new Scanner(f);
 		   while (s.hasNextLine()) {
+               // initialize waypoint
 			   String data = s.nextLine();
 			   String[] waypointObject = data.split(seperator);
-			   double lat = Double.parseDouble(waypointObject[0]);
+			   double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
 			   double lon = Double.parseDouble(waypointObject[1]);
 			   //String act = waypointObject[3];
 			   //wObjectList.add(waypointObject);
 			   Waypoint w = new Waypoint(lat, lon, altitude);
 			   //Assume one action for each waypoint
-			   w.addAction(new WaypointAction(WaypointActionType.STAY,1));
+			   if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
+                   System.out.println("Failed to add action to waypoint! Check the action count or setup");
+               }
 			   wList.add(w);
-			   //line = br.readLine();
 
 		   }
 
@@ -188,11 +188,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //System.out.println("Finish add waypointList");
 	    //Create a waypoint mission with the first waypoint
 	    //currentW = "0";
-            WaypointMission wMission = null;
+        WaypointMission wMission = null;
 
-	    //if (builder == null){
-	    builder = new WaypointMission.Builder();
-	    //}
+	    dji.common.waypoint.WaypointMission.Builder builder = new dji.common.mission.waypoint.WaypointMission.Builder();
 	    builder.autoFlightSpeed(1f);
 	    builder.maxFlightSpeed(15f);
 	    builder.setExitMissionOnRCSignalLostEnabled(false);
@@ -202,19 +200,28 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //get the first waypoint
 	    //builder.addWaypoint(wList.get(0));
 	    
-	    builder.finishedAction(wMissionFinishedAction);
+	    builder.finishedAction(WaypointMissionFinishedAction.NO_ACTION);
 	    builder.repeatTimes(0);
 
             //System.out.println("finish before mission built");
 
 
 	    builder.waypointList(wList).waypointCount(wList.size());
+
+        // checkParameters() is compatible with waypoint mission object
+        /*
 	    if(builder.checkParameters() == null){
 	    	wMission = builder.build();
             //System.out.println("Finish build mission");
 	    } else{
 	    	    System.out.print("check here: "+builder.checkParameters());
 	    }
+        */
+
+        wMission = builder.build();
+        DJIError checkError = wMission.checkParameters();
+        if (checkError == null) {
+            System.out.println(checkError.getDescription());
 
 	    //Instantiate a mission operator
 	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
