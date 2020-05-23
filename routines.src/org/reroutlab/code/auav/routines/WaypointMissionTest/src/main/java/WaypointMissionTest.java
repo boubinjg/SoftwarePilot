@@ -120,6 +120,10 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
 	public String line = "";
 	public String seperator = ",";
+	private WaypointMissionOperatorListener listener;
+	public static WaypointMission.Builder builder;
+	private WaypointMission mission;
+	private WaypointMissionOperator instance;
 	//public static WaypointMission.Builder builder;
 	public WaypointMissionOperator instance;
 	private WaypointMissionOperatorListener listener = new WaypointMissionOperatorListern() {
@@ -265,9 +269,15 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                         }
                     }
                	 });
+
+		 }else{
+			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator"+builder.checkParameters()+"checkStatus:"+instance.getCurrentState());
+		 }
+=======
 		 }//else{
 			 //System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
 		 //}
+
 		 try{
 			 Thread.sleep(3000);
 		    }catch(Exception e){
@@ -284,7 +294,6 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                     }
                 });
 		    }
-
 		    if(instance!=null && listener!=null){
 		    	    instance.addListener(listener);
 		    }
