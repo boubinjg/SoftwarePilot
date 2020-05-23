@@ -237,9 +237,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 
         wMission = builder.build();
         DJIError checkError = wMission.checkParameters();
-        if (checkError == null) {
-            System.out.println(checkError.getDescription());
-
+        if (checkError != null) {
+            System.out.println("here:"+checkError.getDescription());
+	}
 	    //Instantiate a mission operator
 	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
 	    if (instance == null){
@@ -272,7 +272,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		 }/*else{
 			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator"+builder.checkParameters()+"checkStatus:"+instance.getCurrentState());
 		 }*/
-		 }//else{
+		// }//else{
 			 //System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
 		 //}
 
