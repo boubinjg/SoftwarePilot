@@ -106,16 +106,16 @@ if __name__ == "__main__":
 	workerList = startWorkers(args.servers[0], args.workers[0])
 
 	#Run Simulation
-	time.sleep(600)
+	#time.sleep(3600)
 
 	#Stop Servers
-	consoleLog("Stopping Global")
-	stopGlobal()
-	consoleLog("Stopping Servers")
-	stopServers(serverList);
-	consoleLog("Stopping Workers")
+	#consoleLog("Stopping Global")
+	#stopGlobal()
+	#consoleLog("Stopping Servers")
+	#stopServers(serverList);
+	#consoleLog("Stopping Workers")
 	#stopWorkers(workerList)
-	consoleLog("Killing HDFS")
+	#consoleLog("Killing HDFS")
 	#killHDFS();
 
 
