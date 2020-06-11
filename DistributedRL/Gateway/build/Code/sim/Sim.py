@@ -27,7 +27,7 @@ def getCount():
         count = len(glob.glob1(i, "*.csv"))
         counts.append(count)
 
-    return [min(counts),jobs]
+    return [min(counts)*16,jobs]
 
 def checkForFiles(jobs, count):
     found = 0
@@ -60,6 +60,13 @@ def download(jobs, count):
         out = os.popen(cmd).read()
         print(out)
 
+def removeOldData(jobs, count):
+    sn = os.environ['SERVERNUM']
+    for wn in range(jobs):
+        cmd = '/opt/hadoop/bin/hadoop fs -rm -r hdfs://127.0.0.1:9000/worker'+str(sn)+'_'+str(wn)+'/run_'+str(count)
+        out = os.popen(cmd).read()
+        print(out)
+
 def rebuild(jobs, knndata):
     for i in range(jobs):
         pwd = os.getcwd()
@@ -76,7 +83,7 @@ def rebuild(jobs, knndata):
             line = []
             for feat in out:
                 line.append(float(feat.split('=')[1]))
-        
+            
             data = []
             with open(pwd+'/tmp/'+str(i)+'/'+fname+'.csv') as csvf:
                 reader = csv.reader(csvf)
@@ -86,8 +93,15 @@ def rebuild(jobs, knndata):
                 line.append(float(d))
 
             print(line)
-		
+
             npl = np.asarray(line).reshape((1,17))
+            
+            #Replace repeats in dataset with new info?
+            #print('WHOLE ARR')
+            #print(npl)
+            #print('PART')
+            #print(npl[0][1:13])
+
             knndata = np.concatenate((knndata, npl))
             print(npl.shape)
             print(knndata.shape)
@@ -109,6 +123,7 @@ runs,jobs = getCount()
 count = 0
 
 print(runs)
+
 while(count < runs):
     print(count)
     checkForFiles(jobs, count)
@@ -119,5 +134,7 @@ while(count < runs):
     #print(knndata.shape)
     #upload dataset to HDFS
     upload(knndata, count);
+    #remove build dataset
+    removeOldData(jobs, count)
     count += 1
 

@@ -29,11 +29,13 @@ def getCount():
 
     
     for i in dirs[1:]:
-        if(i.split('/')[2][0:6] == "Worker"):
+        tail = i.split('/')[2]
+        if(tail[0:6] == "Worker" and tail[6] != "_"):
             count = len(glob.glob1(i, "*.csv"))
             counts.append(count)
 
-    return min(counts), jobs
+    print(counts)
+    return min(counts)*16, jobs
 
 def checkForFiles(jobs, count):
     found = 0
@@ -54,7 +56,7 @@ def checkForFiles(jobs, count):
                         print("Global:  Server "+str(i)+" Job "+str(count) + " Complete")
                 except:
                     print("Global:  Server "+str(i)+" Job "+str(count) + " incomplete")
-        #time.sleep(10)
+        time.sleep(10)
     return True
 
 def download(jobs, count):
@@ -113,6 +115,7 @@ def upload(knndata, count):
 
 readInData()
 runs, jobs = getCount()
+print((runs, jobs))
 
 knnSize = getKNNSize(knndata, jobs)
 
