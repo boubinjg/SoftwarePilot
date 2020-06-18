@@ -233,25 +233,26 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			} catch(Exception uee){
 				System.out.println(uee.getMessage());
 			}
+			String[] args = inputLine.split("-");
 			boolean AUAVsim = false;
 			for (String arg : args){
 				if (arg.equals("dp=AUAVsim")) {
 					AUAVsim = true;
 				}
 			}
-			String[] args = inputLine.split("-");//???
+			 
 			if(args[0].equals("dc=help")) {
 				ce.respond(getUsageInfo());
 			}
-			else if(args[0].equals("dc=uploadWaypoint")){
-				continue;
-			}
-			else if(args[0].equals("dc=uploadMission")){
-				continue;
-			}
-			else if(args[0].equals("dc=OnMission")){					
-				continue;
-			}	
+			//else if(args[0].equals("dc=uploadWaypoint")){
+				
+			//}
+			//else if(args[0].equals("dc=uploadMission")){
+			//	
+			//}
+			//else if(args[0].equals("dc=OnMission")){					
+			//	
+			//}	
 			else {
 				ce.respond("Error: unknown command\n");
 			}
