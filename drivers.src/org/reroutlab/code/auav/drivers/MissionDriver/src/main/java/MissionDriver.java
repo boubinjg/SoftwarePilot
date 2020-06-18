@@ -50,6 +50,48 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
 
+import java.util.Properties;
+import java.util.LinkedHashMap;
+import java.util.Map.Entry;
+import java.util.stream.Collectors.*;
+//Metadata Extraction
+import com.drew.metadata.*;
+import com.drew.imaging.ImageMetadataReader;
+import com.drew.imaging.ImageProcessingException;
+import com.drew.imaging.jpeg.JpegMetadataReader;
+import com.drew.imaging.jpeg.JpegProcessingException;
+//import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
+import com.drew.metadata.exif.ExifReader;
+import com.drew.metadata.iptc.IptcReader;
+import java.util.*;
+
+import dji.common.util.CommonCallbacks;
+import dji.common.error.DJIError;
+
+import java.util.concurrent.Semaphore;
+
+import java.io.BufferedReader;
+import java.io.FileReader;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.util.Scanner;
+import dji.common.mission.waypoint.Waypoint;
+import dji.common.mission.waypoint.WaypointAction;
+import dji.common.mission.waypoint.WaypointActionType;
+import dji.common.mission.waypoint.WaypointMission;
+import dji.common.mission.waypoint.WaypointMissionDownloadEvent;
+import dji.common.mission.waypoint.WaypointMissionExecutionEvent;
+import dji.common.mission.waypoint.WaypointMissionFinishedAction;
+import dji.common.mission.waypoint.WaypointMissionFlightPathMode;
+import dji.common.mission.waypoint.WaypointMissionGotoWaypointMode;
+import dji.common.mission.waypoint.WaypointMissionHeadingMode;
+import dji.common.mission.waypoint.WaypointMissionState;
+import dji.common.mission.waypoint.WaypointMissionUploadEvent;
+import dji.sdk.mission.MissionControl;
+import dji.sdk.mission.waypoint.WaypointMissionOperator;
+import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
+import dji.sdk.sdkmanager.DJISDKManager;
+import java.lang.*;
 import java.util.*;
 import java.lang.System.*;
 //import org.reroutlab.code.auav.interfaces.*;
@@ -97,6 +139,37 @@ import dji.common.battery.*;
 //import dji.thirdparty.eventbus.EventBus;
 import dji.common.util.CommonCallbacks;
 
+import dji.common.flightcontroller.ConnectionFailSafeBehavior;
+import dji.common.flightcontroller.FlightControllerState;
+import dji.common.flightcontroller.virtualstick.FlightControlData;
+import dji.common.flightcontroller.virtualstick.FlightCoordinateSystem;
+import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
+import dji.common.flightcontroller.virtualstick.VerticalControlMode;
+import dji.common.flightcontroller.virtualstick.YawControlMode;
+import dji.common.flightcontroller.virtualstick.RollPitchControlMode;
+import dji.common.flightcontroller.virtualstick.VerticalControlMode;
+import dji.common.flightcontroller.ControlMode;
+import dji.common.flightcontroller.virtualstick.*;
+import dji.common.util.CommonCallbacks;
+import dji.sdk.flightcontroller.FlightController;
+import dji.sdk.flightcontroller.FlightAssistant;
+import dji.sdk.products.Aircraft;
+import dji.sdk.remotecontroller.RemoteController;
+import dji.sdk.sdkmanager.DJISDKManager;
+//import dji.thirdparty.eventbus.EventBus;
+import dji.common.util.CommonCallbacks;
+
+import java.io.DataInputStream;
+import java.net.ServerSocket;
+import java.net.Socket;
+import java.io.IOException;
+import java.io.RandomAccessFile;
+import java.nio.MappedByteBuffer;
+import java.io.File;
+import java.nio.channels.FileChannel;
+import java.io.PrintWriter;
+
+import java.util.List;
 /**
  * This is a Driver Template
  * It exists to facilitate the construction of new Drivers
@@ -108,7 +181,7 @@ import dji.common.util.CommonCallbacks;
  */
 public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 
-	private LOG_TAG="MissionDriver";
+	private String LOG_TAG = "MissionDriver";
 	public boolean forceStop = false;
 	public long TIMEOUT = 10000;
 	public int MAX_TRIES = 10;
@@ -170,19 +243,15 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			if(args[0].equals("dc=help")) {
 				ce.respond(getUsageInfo());
 			}
-			else if(args[0].equals("dc=uploadWaypoint"){
-
+			else if(args[0].equals("dc=uploadWaypoint")){
+				continue;
 			}
-			else if(args[0].equals("dc=uploadMission"){
-
-
+			else if(args[0].equals("dc=uploadMission")){
+				continue;
 			}
-			else if(args[0].equals("dc=OnMission"){
-						
-						
-						
+			else if(args[0].equals("dc=OnMission")){					
+				continue;
 			}	
-					
 			else {
 				ce.respond("Error: unknown command\n");
 			}
@@ -230,7 +299,6 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			driver2port = new HashMap<String, String>(m);
 		}
 	}
-}
 
         void writeByte(byte[] b) {
             try{
