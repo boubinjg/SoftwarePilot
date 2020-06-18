@@ -187,18 +187,27 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	public int MAX_TRIES = 10;
 	private Properties configFile;
 	private float altitude = 100.0f; //default altitude of waypoint mission
-	private float mSpeed = 10.0f;	 //default speed
+	//private float mSpeed = 10.0f;	 //default speed
 	static byte[] pic;
         public String succ = "";
         public String IP = "";
 	
-	public String line = "";
+	//public String line = "";
 	public String seperator = ",";
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
 	//public static WaypointMission.Builder builder;
+	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
+	private WaypointMissionHeadingMode tHeadingMode=WaypointMissionHeadingMode.AUTO;
+	private float tSpeed = 10.0f;
+	private float tMaxSpeed = 10.0f;
+
+	private List<Waypoint> waypointList = new ArrayList<>();
+
 	private WaypointMissionOperator instance;
 	private WaypointMissionOperatorListener listener;
+	
+	
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
 	private CoapServer cs;
@@ -244,16 +253,75 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			if(args[0].equals("dc=help")) {
 				ce.respond(getUsageInfo());
 			}
-			//else if(args[0].equals("dc=uploadWaypoint")){
+			else if(args[0].equals("dc=initWaypoint")){
+				float alt=100.0f;
+				double longitude = 39.96;
+				double latitude = 82.99;
+				Waypoint p = new Waypoint(longitude,latitude,alt);
+
+				double longitude2 = 39.97;
+				double latitude2 = 83.00;
+				Waypoint p2 = new Waypoint(longitude2,latitude2,alt);
 				
-			//}
-			//else if(args[0].equals("dc=uploadMission")){
-			//	
-			//}
-			//else if(args[0].equals("dc=OnMission")){					
-			//	
-			//}	
-			else {
+				if (builder != null){
+					waypointList.add(p);
+					waypointList.add(p2);
+					builder.waypointList(waypointList).waypointCount(waypointList.size());
+				}else{
+					builder = new WaypointMission.Builder();
+					waypointList.add(p);
+					waypointList.add(p2);
+					builder.waypointList(waypointList).waypointCount(waypointList.size());
+				}
+
+			}else if(args[0].equals("dc=uploadMission")){
+							
+       	    			//WaypointMission wMission = null;
+				if (builder == null){
+					builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
+									       .headingMode(tHeadingMode)
+									       .autoFlightSpeed(tSpeed)
+									       .maxFlightSpeed(tMaxSpeed)
+									       .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+				}else{
+					builder.finishedAction(tFinishedAction)
+						.headingMode(tHeadingMode)
+						.autoFlightSpeed(tSpeed)
+						.maxFlightSpeed(tMaxSpeed)
+						.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+				}
+
+				if (builder.getWaypointList().size() > 0){
+					for(int i=0; i < builder.getWaypointList().size();i++){
+						builder.getWaypointList().get(i).altitude = altitude;
+					}
+				}
+
+				DJIError error = instance.loadMission(builder.build());
+				if (error == null){
+					System.out.println("uploaded Mission Successfully");
+				}else{
+					System.out.println("load Mission failed:"+ error.getDescription());
+				}	
+			}else if(args[0].equals("dc=startMission")){					
+				instance.startMission(new CommonCallbacks.CompletionCallback() {
+				@Override
+				public void onResult(DJIError error) {
+					if (error != null){
+						System.out.println("Mission stopped:"+error.getDescription());
+					}
+				}
+				});
+			}else if(args[0].equals("dc=stopMission")){					
+				instance.stopMission(new CommonCallbacks.CompletionCallback() {
+				@Override
+				public void onResult(DJIError error) {
+					if (error != null){
+						System.out.println("Mission stopped:"+error.getDescription());
+					}
+				}
+				});
+			}else {
 				ce.respond("Error: unknown command\n");
 			}
 		}
