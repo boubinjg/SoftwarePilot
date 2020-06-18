@@ -2,8 +2,6 @@ package org.reroutlab.code.auav.drivers;
 
 import java.util.HashMap;
 import org.eclipse.californium.core.CoapHandler;
-import org.eclipse.californium.core.CoapResponse;
-
 //sockets
 import java.net.InetSocketAddress;
 import java.net.SocketException;
@@ -11,7 +9,6 @@ import java.net.Socket;
 import java.net.ServerSocket;
 import java.io.InputStream;
 import java.io.ObjectInputStream;
-
 //openCV
 import org.opencv.core.Core;
 import org.opencv.core.Mat;
@@ -25,7 +22,6 @@ import org.opencv.core.MatOfByte;
 import org.opencv.imgproc.Imgproc;
 import org.opencv.objdetect.CascadeClassifier;
 import java.io.*;
-
 import android.app.Activity;
 import android.content.Context;
 import android.os.Bundle;
@@ -33,23 +29,19 @@ import android.util.Log;
 import android.content.res.AssetManager;
 import android.os.Environment;
 import android.util.Base64;
-
 import java.io.File;
 import java.nio.file.*;
 import java.io.RandomAccessFile;
 import java.nio.MappedByteBuffer;
 import java.nio.channels.FileChannel;
-
 import java.io.IOException;
 import java.net.Socket;
 import java.io.DataInputStream;
-
 import java.awt.image.BufferedImage;
 import javax.imageio.ImageIO;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.Map;
-
 import java.util.Properties;
 import java.util.LinkedHashMap;
 import java.util.Map.Entry;
@@ -63,13 +55,7 @@ import com.drew.imaging.jpeg.JpegProcessingException;
 //import com.drew.imaging.jpeg.JpegSegmentMetadataReader;
 import com.drew.metadata.exif.ExifReader;
 import com.drew.metadata.iptc.IptcReader;
-import java.util.*;
-
-import dji.common.util.CommonCallbacks;
-import dji.common.error.DJIError;
-
 import java.util.concurrent.Semaphore;
-
 import java.io.BufferedReader;
 import java.io.FileReader;
 import java.io.File;
@@ -87,10 +73,10 @@ import dji.common.mission.waypoint.WaypointMissionGotoWaypointMode;
 import dji.common.mission.waypoint.WaypointMissionHeadingMode;
 import dji.common.mission.waypoint.WaypointMissionState;
 import dji.common.mission.waypoint.WaypointMissionUploadEvent;
+import dji.common.error.DJIError;
 import dji.sdk.mission.MissionControl;
 import dji.sdk.mission.waypoint.WaypointMissionOperator;
 import dji.sdk.mission.waypoint.WaypointMissionOperatorListener;
-import dji.sdk.sdkmanager.DJISDKManager;
 import java.lang.*;
 import java.util.*;
 import java.lang.System.*;
@@ -99,7 +85,6 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-
 import org.eclipse.californium.core.CoapResource;
 import org.eclipse.californium.core.CoapClient;
 import org.eclipse.californium.core.CoapResponse;
@@ -108,7 +93,6 @@ import org.eclipse.californium.core.network.CoapEndpoint;
 import org.eclipse.californium.core.network.EndpointManager;
 import org.eclipse.californium.core.network.config.NetworkConfig;
 import org.eclipse.californium.core.server.resources.CoapExchange;
-
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.os.BatteryManager;
@@ -116,8 +100,6 @@ import android.content.IntentFilter;
 import android.content.Intent;
 import android.os.Bundle;
 import android.app.Application;
-
-
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -126,7 +108,6 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import org.h2.*;
 import org.h2.jdbcx.JdbcConnectionPool;
-
 import dji.sdk.flightcontroller.FlightController;
 import dji.sdk.flightcontroller.FlightAssistant;
 import dji.sdk.products.Aircraft;
@@ -136,9 +117,6 @@ import dji.sdk.battery.Battery;
 import dji.sdk.remotecontroller.RemoteController;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.common.battery.*;
-//import dji.thirdparty.eventbus.EventBus;
-import dji.common.util.CommonCallbacks;
-
 import dji.common.flightcontroller.ConnectionFailSafeBehavior;
 import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
@@ -151,14 +129,6 @@ import dji.common.flightcontroller.virtualstick.VerticalControlMode;
 import dji.common.flightcontroller.ControlMode;
 import dji.common.flightcontroller.virtualstick.*;
 import dji.common.util.CommonCallbacks;
-import dji.sdk.flightcontroller.FlightController;
-import dji.sdk.flightcontroller.FlightAssistant;
-import dji.sdk.products.Aircraft;
-import dji.sdk.remotecontroller.RemoteController;
-import dji.sdk.sdkmanager.DJISDKManager;
-//import dji.thirdparty.eventbus.EventBus;
-import dji.common.util.CommonCallbacks;
-
 import java.io.DataInputStream;
 import java.net.ServerSocket;
 import java.net.Socket;
@@ -168,7 +138,6 @@ import java.nio.MappedByteBuffer;
 import java.io.File;
 import java.nio.channels.FileChannel;
 import java.io.PrintWriter;
-
 import java.util.List;
 /**
  * This is a Driver Template
