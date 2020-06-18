@@ -205,7 +205,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    //System.out.println("Finish add waypointList");
 	    //Create a waypoint mission with the first waypoint
 	    //currentW = "0";
-        WaypointMission wMission = null;
+       	    WaypointMission wMission = null;
 
 	    builder = new WaypointMission.Builder();
 	    builder.autoFlightSpeed(1f);
