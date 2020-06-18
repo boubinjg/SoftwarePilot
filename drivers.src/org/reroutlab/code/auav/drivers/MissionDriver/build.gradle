@@ -3,7 +3,7 @@ sourceCompatibility = 1.7
 targetCompatibility = 1.7
 
 //Replace "TemplateDriver" in jar.basename to your desired driver name
-jar.baseName = 'org.reroutlab.code.auav.drivers.TemplateDriver'
+jar.baseName = 'org.reroutlab.code.auav.drivers.MissionDriver'
 
 def AUAVHOME = System.getenv('AUAVHOME')
 
