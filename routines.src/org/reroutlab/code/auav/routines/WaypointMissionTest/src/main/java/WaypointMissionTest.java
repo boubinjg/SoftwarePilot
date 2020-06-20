@@ -131,34 +131,19 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		private float altitude = 100.0f; //default altitude of waypoint mission
 		private float mSpeed = 10.0f;	 //default speed
 
-        static byte[] pic;
-        public String succ = "";
-        public String IP = "";
-
-	//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
-	public String line = "";
-	public String seperator = ",";
-	public static WaypointMission.Builder builder;
-	private WaypointMission mission;
-	//public static WaypointMission.Builder builder;
-	private WaypointMissionOperator instance;
-	private WaypointMissionOperatorListener listener;// = new WaypointMissionOperatorListener();
-	/* {
-		@Override
-		public void onUploadUpdate(WaypointMissionUploadEvent uploadEvent) {
-			System.out.println("Upload finished: " + (uploadEvent == null ? "Success!" : uploadEvent.getError().getDescription()));
-		}
-		@Override
-		public void onExecutionStart() {
-			System.out.println("Execution started");
-		}
-
-		@Override
-		public void onExecutionFinish(DJIError error) {
-			System.out.println("Execution finished: " + (error == null ? "Success!" : error.getDescription()));
-		}
-	};*/
-        /**
+	        static byte[] pic;
+        	public String succ = "";
+        	public String IP = "";
+	
+		//public String csvFile = "/home/SoftwarePilot/huh/test.txt";
+		public String line = "";
+		public String seperator = ",";
+		public static WaypointMission.Builder builder;
+		private WaypointMission mission;
+		//public static WaypointMission.Builder builder;
+		private WaypointMissionOperator instance;
+		private WaypointMissionOperatorListener listener;
+        	/**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
 		 * @version 1.0.1
@@ -171,96 +156,89 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 *it captures them. Pictrace then reads the
 			 *images from said directory.
 			 */
+		
+            		//String args[] = params.split("-"); //Arguments from the coap input string
+            		config();
 
-            String args[] = params.split("-"); //Arguments from the coap input string
-            //config();
+            		//takes off the UAV
+            		//auavLock("Takeoff");
+            		//succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
+            		//auavSpin();
 
-            //takes off the UAV
-            //auavLock("Takeoff");
-            //succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
-            //auavSpin();
+            		//lands the UAV
+            		//auavLock("land");
+            		//succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
+            		//auavSpin()
 
-            //lands the UAV
-            //auavLock("land");
-            //succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
-            //auavSpin()
+	    		//[0] Waypoint# (int)
+	    		//[1] GPS Lat (double)
+	    		//[2] GPS Lon (double)
+	    		//[3] action (String)
+	    		//[4]-[7] NSWE (int)
+	    		//ArrayList<String[]> wObjectList = new ArrayList<String[]>();
+	    		//String currentW;	// index indicating current waypoint #
+	    		//List<Waypoint> wList = new ArrayList<>();
 
-	    //[0] Waypoint# (int)
-	    //[1] GPS Lat (double)
-	    //[2] GPS Lon (double)
-	    //[3] action (String)
-	    //[4]-[7] NSWE (int)
-	    //ArrayList<String[]> wObjectList = new ArrayList<String[]>();
-	    String currentW;	// index indicating current waypoint #
-	    List<Waypoint> wList = new ArrayList<>();
+       	    		//read in the file
+	    		try{
+		   		File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
 
-        // read in the file
-	    try{
-		   File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
+		   		System.out.print(f);
+		   		Scanner s = new Scanner(f);
+		   		while (s.hasNextLine()) {
+               	   	   	//initialize waypoint
+			   		String data = s.nextLine();
+			   		String[] waypointObject = data.split(seperator);
+			   		double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
+			   		double lon = Double.parseDouble(waypointObject[1]);
+			   		Waypoint w = new Waypoint(lat, lon, altitude);
+			   		//Assume one action for each waypoint
+			   		//if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
+                   				//System.out.println("Failed to add action to waypoint! Check the action count or setup");
+               				//}
+			  		//wList.add(w);
 
-		   System.out.print(f);
-		   Scanner s = new Scanner(f);
-		   while (s.hasNextLine()) {
-               // initialize waypoint
-			   String data = s.nextLine();
-			   String[] waypointObject = data.split(seperator);
-			   double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
-			   double lon = Double.parseDouble(waypointObject[1]);
-			   //String act = waypointObject[3];
-			   //wObjectList.add(waypointObject);
-			   Waypoint w = new Waypoint(lat, lon, altitude);
-			   //Assume one action for each waypoint
-			   if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
-                   System.out.println("Failed to add action to waypoint! Check the action count or setup");
-               }
-			   wList.add(w);
+		   		}
+	    		} catch (IOException e) {
+	    	   		e.printStackTrace();
+	    		}
+	    		//System.out.println("Finish add waypointList");
+	    		//Create a waypoint mission with the first waypoint
+	    		//currentW = "0";
+            		//WaypointMission wMission = null;
 
-		   }
+            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver", "dc=initWaypoint", auavResp.ch);
 
-	    } catch (IOException e) {
-	    	   e.printStackTrace();
-	    }
-	    //System.out.println("Finish add waypointList");
-	    //Create a waypoint mission with the first waypoint
-	    //currentW = "0";
-        WaypointMission wMission = null;
 
-	    builder = new WaypointMission.Builder();
-	    builder.autoFlightSpeed(1f);
-	    builder.maxFlightSpeed(15f);
-	    builder.setExitMissionOnRCSignalLostEnabled(false);
-	    builder.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
-	    builder.gotoFirstWaypointMode(WaypointMissionGotoWaypointMode.SAFELY);
-	    builder.headingMode(WaypointMissionHeadingMode.AUTO);
+
+            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver", "dc=uploadMission", auavResp.ch);
+		}
+	    //builder = new WaypointMission.Builder();
+	    //builder.autoFlightSpeed(1f);
+	    //builder.maxFlightSpeed(15f);
+	    //builder.setExitMissionOnRCSignalLostEnabled(false);
+	    //builder.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+	    //builder.gotoFirstWaypointMode(WaypointMissionGotoWaypointMode.SAFELY);
+	    //builder.headingMode(WaypointMissionHeadingMode.AUTO);
 	    //get the first waypoint
 	    //builder.addWaypoint(wList.get(0));
 	    
-	    builder.finishedAction(WaypointMissionFinishedAction.NO_ACTION);
-	    builder.repeatTimes(0);
+	    //builder.finishedAction(WaypointMissionFinishedAction.NO_ACTION);
+	    //builder.repeatTimes(0);
 
             //System.out.println("finish before mission built");
 
 
-	    builder.waypointList(wList).waypointCount(wList.size());
+	    //builder.waypointList(wList).waypointCount(wList.size());
 
-        // checkParameters() is compatible with waypoint mission object
-        /*
-	    if(builder.checkParameters() == null){
-	    	wMission = builder.build();
-            //System.out.println("Finish build mission");
-	    } else{
-	    	    System.out.print("check here: "+builder.checkParameters());
-	    }
-        */
-
-        wMission = builder.build();
-        DJIError checkError = wMission.checkParameters();
-        if (checkError != null) {
-            System.out.println("here:"+checkError.getDescription());
-	}
+            //wMission = builder.build();
+       	    //DJIError checkError = wMission.checkParameters();
+            //if (checkError != null) {
+            //    System.out.println("here:"+checkError.getDescription());
+	    //}
 	    //Instantiate a mission operator
 	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
-	    if (instance == null){
+	    /**if (instance == null){
 		    instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 	    }
 	    int count =1;
@@ -308,13 +286,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
                     }
                	 });
 
-		 }/*else{
-			 System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator"+builder.checkParameters()+"checkStatus:"+instance.getCurrentState());
-		 }*/
-		// }//else{
-			 //System.out.println("check here:"+errorss.getDescription()+" Cannot upload a mission to Operator");
-		 //}
-
+		 }
 		 try{
 			 Thread.sleep(3000);
 		    }catch(Exception e){
@@ -322,8 +294,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		    }
 		// System.out.println("check errorss:"+errorss+" check currentState:"+instance.getCurrentState());
 		  // System.out.println("Mission uploaded");	  
-	       	    //Execute the mission
-		    if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
+**/	       
+      		  //Execute the mission
+		    /**if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
 			    instance.startMission(new CommonCallbacks.CompletionCallback() {
                     @Override
                     public void onResult(DJIError error) {
@@ -337,7 +310,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    }
 
 
-        }
+        }**/
 	//TODO:Missing stop mission section
 	//
 	//
