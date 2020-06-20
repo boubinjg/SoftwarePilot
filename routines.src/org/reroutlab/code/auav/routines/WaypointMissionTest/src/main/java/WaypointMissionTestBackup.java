@@ -120,7 +120,7 @@ import java.lang.*;
  * @version 1.0.0
  * @since   2020-1-27
  */
-public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRoutines {
+public class WaypointMissionTestBackup extends org.reroutlab.code.auav.routines.AuavRoutines {
 		/**
 		 *	 Check forceStop often and safely end routine if set
 		 */
@@ -515,7 +515,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		private Thread t = null;
 
 
-		public WaypointMissionTest() {
+		public WaypointMissionTestBackup() {
 			//configFile = new java.util.Properties();
 			/*try{
 				File cfg = new File(Environment.getExternalStorageDirectory().getPath() + "/AUAVAssets/routineConfig.cfg");
