@@ -271,17 +271,45 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					System.out.println("uploaded Mission Successfully");
 				}else{
 					System.out.println("load Mission failed:"+ error.getDescription());
-				}	
-			}else if(args[0].equals("dc=startMission")){					
-				instance.startMission(new CommonCallbacks.CompletionCallback() {
-				@Override
-				public void onResult(DJIError error) {
-					if (error != null){
-						System.out.println("Mission stopped:"+error.getDescription());
-					}
 				}
-				});
+				
+		    		if(error == null){
+					instance.uploadMission(new CommonCallbacks.CompletionCallback() {
+                    				@Override
+                    				public void onResult(DJIError error){
+                        				if (error == null) {
+                            					System.out.println("Mission upload successfully!");
+                        				} else {
+                            					System.out.println("Mission upload failed, error: " + error.getDescription() );
+                        				}
+                    				}
+               	 			});
+		 		}
+
+			}else if(args[0].equals("dc=startMission")){					
+				
+	    			if (instance == null){
+					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			}
+
+		    		if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
+					instance.startMission(new CommonCallbacks.CompletionCallback() {
+                    				@Override
+                    				public void onResult(DJIError error) {
+                        				
+							if (error != null){
+								System.out.println("Mission stopped:"+error.getDescription());
+							}else{
+								System.out.println("Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
+							}
+						}
+                			});
+		    		}
+
 			}else if(args[0].equals("dc=stopMission")){					
+	    			if (instance == null){
+					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			}
 				instance.stopMission(new CommonCallbacks.CompletionCallback() {
 				@Override
 				public void onResult(DJIError error) {
@@ -385,6 +413,87 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             return ret;
         }
        
-}
+	CommonCallbacks.CompletionCallback fddHandler = new CommonCallbacks.CompletionCallback() {
+		@Override
+		public void onResult(DJIError djiError) {
+			if (djiError == null) {
+				System.out.println(LOG_TAG+"-"+lockStr+"-success");
+				drvUnsetLock();
+			}
+			else {System.out.println(LOG_TAG+"-"+lockStr+"-fail");
+				drvUnsetLock();}
+			}
+		};
 
-	
+	private static class FlightTimerTask extends TimerTask {
+		String pos;
+		FlightControlData fcd;
+                Timer ctrl;
+                int frequency = 3;
+                int count = 0;
+                CoapExchange ce;
+                boolean send;
+		private String LOG_TAG="FlightTimeTask.MissionDriver ";
+		FlightTimerTask(FlightControlData input) {
+			super();
+			fcd = input;
+		}
+	        FlightTimerTask(FlightControlData input, Timer t, int freq, CoapExchange ex, boolean sendMessage) {
+			super();
+			fcd = input;
+			ctrl=t;
+			frequency = freq;
+			ce = ex;
+			send = sendMessage;
+		}
+		@Override
+		public void run() {
+			Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
+			FlightController fc = aircraft.getFlightController();
+			fc.setVirtualStickModeEnabled(true, new CommonCallbacks.CompletionCallback() {
+				@Override
+				public void onResult(DJIError djiError) {
+					if (djiError == null) {
+						System.out.println("Stick Enabled");
+					}
+					else {
+						System.out.println("Stick Not Enabled");}
+				        }
+                        });
+			fc.sendVirtualStickFlightControlData(fcd,new CommonCallbacks.CompletionCallback() {
+				@Override
+				public void onResult(DJIError djiError) {
+					if (djiError == null) {
+						System.out.println(LOG_TAG+"Flight Control Success");
+					}
+					else {
+						System.out.println(LOG_TAG+djiError.getDescription());
+					}
+				}
+			});
+                     	//System.out.println("Virtual Stick Mode: "+fc.isVirtualStickControlModeAvailable());
+                        if (count < frequency) {
+                        	count++;
+                        	System.out.println("Inc Count to: "+count);
+                        } else {
+                            	System.out.println("Cancel Task, count = "+count);
+                            	if(send)
+                                	ce.respond ("FlyDroneDriver: Timertask Complete");
+				ctrl.cancel();
+                        }
+		}	
+	}
+	public Semaphore lockSema = new Semaphore(1);
+        public String lockStr = "continue";
+	public void drvSetLock(String v){
+      		lockSema.acquireUninterruptibly();
+               	lockStr = v;
+        }
+        public void drvUnsetLock() {
+               	lockSema.release();
+	}
+        public void drvSpin() {
+                lockSema.acquireUninterruptibly();
+              	lockSema.release();
+        }		
+}	
