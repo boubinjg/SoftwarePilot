@@ -96,11 +96,13 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		//public static WaypointMission.Builder builder;
 		private WaypointMissionOperator instance;
 		private WaypointMissionOperatorListener listener;
-		public long TIMEOUT = 10000;	
-        	static byte[] pic;
+		public long TIMEOUT = 10000;
+**/	
+        	
+		public String seperator = ",";
+		static byte[] pic;
         	public String succ = "";
         	public String IP = "";
-**/
         	/**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -116,7 +118,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 */
 		
             		//String args[] = params.split("-"); //Arguments from the coap input string
-            		config();
+
 
             		//takes off the UAV
             		//auavLock("Takeoff");
@@ -149,7 +151,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			   		String[] waypointObject = data.split(seperator);
 			   		double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
 			   		double lon = Double.parseDouble(waypointObject[1]);
-			   		Waypoint w = new Waypoint(lat, lon, altitude);
+			   		//Waypoint w = new Waypoint(lat, lon, altitude);
 			   		//Assume one action for each waypoint
 			   		//if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
                    				//System.out.println("Failed to add action to waypoint! Check the action count or setup");
@@ -164,36 +166,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    		//Create a waypoint mission with the first waypoint
 	    		//currentW = "0";
             		//WaypointMission wMission = null;
-
-            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver", "dc=initWaypoint", auavResp.ch);
-
-
-
-            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver", "dc=uploadMission", auavResp.ch);
+            		config();
 		}
-	    //builder = new WaypointMission.Builder();
-	    //builder.autoFlightSpeed(1f);
-	    //builder.maxFlightSpeed(15f);
-	    //builder.setExitMissionOnRCSignalLostEnabled(false);
-	    //builder.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
-	    //builder.gotoFirstWaypointMode(WaypointMissionGotoWaypointMode.SAFELY);
-	    //builder.headingMode(WaypointMissionHeadingMode.AUTO);
-	    //get the first waypoint
-	    //builder.addWaypoint(wList.get(0));
 	    
-	    //builder.finishedAction(WaypointMissionFinishedAction.NO_ACTION);
-	    //builder.repeatTimes(0);
-
-            //System.out.println("finish before mission built");
-
-
-	    //builder.waypointList(wList).waypointCount(wList.size());
-
-            //wMission = builder.build();
-       	    //DJIError checkError = wMission.checkParameters();
-            //if (checkError != null) {
-            //    System.out.println("here:"+checkError.getDescription());
-	    //}
 	    //Instantiate a mission operator
 	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
 	    /**if (instance == null){
@@ -268,12 +243,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 	    }
 
 
-        }**/
-	//TODO:Missing stop mission section
-	//
-	//
+        }**/	
         //captures image using the UAVs camera, downloads the image to the VM
-         void takeImg(boolean full){
+        void takeImg(boolean full){
                 System.out.println("taking the image entry to function..");
                 System.out.println("SSM");
                 auavLock("ssm");
@@ -319,7 +291,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
             return new byte[0];
         }
         //Capable of sending image data to other functions
-         public void sendToPort(byte[] b, String IP, int port) throws IOException{
+        public void sendToPort(byte[] b, String IP, int port) throws IOException{
             try {
                 Thread.sleep(3000);
             } catch(Exception e){
@@ -337,35 +309,27 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         //configures the camera and flight system
         void config(){
             setSimOff();
-
-			//auavLock("ssm");
-			//succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
-			//auavSpin();
-=======
-
             		String args[] = params.split("-"); //Arguments from the coap input string
-            		config();
-                    String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
-
-
+            		//config();
+                    	String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
             		//initialize starting waypoint
             		auavLock("Initialize");
             		succ = invokeDriver(missionDriver, "dc=initWaypoint", auavResp.ch);
             		auavSpin();
 
-                    //upload the mission
+                    	//upload the mission
             		auavLock("Upload");
             		succ = invokeDriver(missionDriver, "dc=uploadMission", auavResp.ch);
             		auavSpin();
 
-                    //start the mission
+                    	//start the mission
             		auavLock("Start");
             		succ = invokeDriver(missionDriver, "dc=startMission", auavResp.ch);
             		auavSpin();
 
-                    //take picture and pause mission
+                    	//take picture and pause mission
             		takeImg();
-                    auavLock("Pause");
+                    	auavLock("Pause");
             		succ = invokeDriver(missionDriver, "dc=pauseMission", auavResp.ch);
             		auavSpin();
 
@@ -375,189 +339,182 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
             		auavSpin();
 
         	}
-		//captures image using the UAVs camera, downloads the image to the VM
-		void takeImg(){
-			System.out.println("taking the image entry to function..");
-			System.out.println("SSM");
-			auavLock("ssm");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=ssm", auavResp.ch);
-			auavSpin();
+	//captures image using the UAVs camera, downloads the image to the VM
+	void takeImg(){
+		System.out.println("taking the image entry to function..");
+		System.out.println("SSM");
+		auavLock("ssm");
+		succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=ssm", auavResp.ch);
+		auavSpin();
 
-			System.out.println("Get");
-			auavLock("Get Image");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=get", auavResp.ch);
-			auavSpin();
+		System.out.println("Get");
+		auavLock("Get Image");
+		succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=get", auavResp.ch);
+		auavSpin();
 
-			System.out.println("DLD Full");
-			auavLock("dld");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=dldFull", auavResp.ch);
-			auavSpin();
-			System.out.println("Taking the image exit of the function..");
-		}
-		//reads a full 4k image from the VM to local memory
-		byte[] read4k(){
-		    	try {
-				File file = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/fullPic.JPG");
-				//File file = new File("../tmp/pictmp.jpg");
-				FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
-				MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
-				pic = new byte[buffer.capacity()];
-				while(buffer.hasRemaining()){
-			    		int remaining = pic.length;
-			    		if(buffer.remaining() < remaining){
-						remaining = buffer.remaining();
-			    		}
-			    		buffer.get(pic, 0, remaining);
-				}
-				return pic;
-		    	} catch(Exception e){
-				e.printStackTrace();
-		    	}
-		    	return new byte[0];
-		}
-		//Capable of sending image data to other functions
-		public void sendToPort(byte[] b, String meta) throws IOException{
-		    	try {
-				Thread.sleep(3000);
-		    	} catch(Exception e){}
-		    	System.out.println("Client: Trying To Connect");
-		    	Socket socket = new Socket(IP, 12013);
-		    	System.out.println("Client: Connected");
-
-	    		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-	    		System.out.println("Writing "+b.length+" Bytes");
-	    		dos.writeBytes(meta);
-	    		dos.writeBytes("over\n");
-	    		socket.close();
-
-	    		socket = new Socket(IP, 12013);
-	    		dos = new DataOutputStream(socket.getOutputStream());
-	    		dos.writeInt(b.length);
-	    		dos.write(b);
-
-	    		socket.close();
-		}
-		//configures the camera and flight system
-		void config(){
-		    	setSimOff();
-
-			auavLock("ssm");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
-			auavSpin();
->>>>>>> db37a380e37c6014a409ebb3f5dd4eda0170bc79
-
-			auavLock("ConfigFlight");
-			succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
-			auavSpin();
-        	}
-        	//reads the last captured preview image from the UAV
-       		byte[] readPreview(int picNum) {
-			byte[] pic = new byte[0];
-			//byte buffer for reading images
-			//byte[] buff = new byte[1024];
-
-			if (getSim().equals("AUAVsim")) {
-				//Select images from picTrace database
-				String query = "SELECT * FROM data WHERE rownum() = "+ picNum;
-				//socket for reading image
-				Socket client = null;
-
-				//call picTrace with query string to get next image
-				auavLock("PicTrace");
-				System.out.println("Envoking Pictrace driver in sim");
-				String succ = invokeDriver("org.reroutlab.code.auav.drivers.PicTraceDriver",							       "dc=qrb-dp="+query+"", auavResp.ch);
-				auavSpin();
-			} else {
-				System.out.println("Detect: GET");
-				auavLock("get");
-				String succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=get", auavResp.ch);
-				auavSpin();
-
-				//There's some sort of synchrhonization error between "get" and "dld"
-				//in CaptureImageV2. This sleep eliminates that issue.
-				try{Thread.sleep(1000);}catch(Exception e){}
-
-				System.out.println("Detect: DLD");
-				auavLock("dld");
-				succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=dld", auavResp.ch);
-				auavSpin();
-
+		System.out.println("DLD Full");
+		auavLock("dld");
+		succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver","dc=dldFull", auavResp.ch);
+		auavSpin();
+		System.out.println("Taking the image exit of the function..");
+	}
+	//reads a full 4k image from the VM to local memory
+	/**byte[] read4k(){
+	    	try {
+			File file = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/fullPic.JPG");
+			//File file = new File("../tmp/pictmp.jpg");
+			FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
+			MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+			pic = new byte[buffer.capacity()];
+			while(buffer.hasRemaining()){
+		    		int remaining = pic.length;
+		    		if(buffer.remaining() < remaining){
+					remaining = buffer.remaining();
+		    		}
+		    		buffer.get(pic, 0, remaining);
 			}
-			String imageEnc = "";
+			return pic;
+	    	} catch(Exception e){
+			e.printStackTrace();
+	    	}
+	    	return new byte[0];
+	}**/
+	//Capable of sending image data to other functions
+	public void sendToPort(byte[] b, String meta) throws IOException{
+	    	try {
+			Thread.sleep(3000);
+	    	} catch(Exception e){}
+	    	System.out.println("Client: Trying To Connect");
+	    	Socket socket = new Socket(IP, 12013);
+	    	System.out.println("Client: Connected");
 
-			try{
-				File file = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/pictmp.dat");
-				FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
-				MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
-				System.out.println(buffer.isLoaded());
-				System.out.println(buffer.capacity());
+		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
+    		System.out.println("Writing "+b.length+" Bytes");
+    		dos.writeBytes(meta);
+    		dos.writeBytes("over\n");
+    		socket.close();
 
-				pic = new byte[buffer.capacity()];
-				while(buffer.hasRemaining()){
-					int remaining = pic.length;
-					if(buffer.remaining() < remaining)
-						remaining = buffer.remaining();
-						buffer.get(pic, 0, remaining);
-						System.out.println("Buffer Remaining: " + remaining);
-					}
-					file.delete();
-					System.out.println("Detect: done reading from file");
-				} catch(Exception e){
-					e.printStackTrace();
-				}
-				//convert file to string
-				imageEnc = new String(pic);
-				//convert string to byte array (allows for delimited files)
-				pic = base64ToByte(imageEnc);
+    		socket = new Socket(IP, 12013);
+    		dos = new DataOutputStream(socket.getOutputStream());
+    		dos.writeInt(b.length);
+    		dos.write(b);
 
-				return pic;
+    		socket.close();
+	}
+	//configures the camera and flight system
+	//void config(){
+	//   	setSimOff();
+		//auavLock("ssm");
+		//succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
+		//auavSpin();
+
+	//	auavLock("ConfigFlight");
+	//	succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
+	//	auavSpin();
+       	//}
+       	//reads the last captured preview image from the UAV
+	byte[] readPreview(int picNum) {
+		byte[] pic = new byte[0];
+		//byte buffer for reading images
+		//byte[] buff = new byte[1024];
+		if (getSim().equals("AUAVsim")) {
+			//Select images from picTrace database
+			String query = "SELECT * FROM data WHERE rownum() = "+ picNum;
+			//socket for reading image
+			Socket client = null;
+
+			//call picTrace with query string to get next image
+			auavLock("PicTrace");
+			System.out.println("Envoking Pictrace driver in sim");
+			String succ = invokeDriver("org.reroutlab.code.auav.drivers.PicTraceDriver",							       "dc=qrb-dp="+query+"", auavResp.ch);
+			auavSpin();
+		} else {
+			System.out.println("Detect: GET");
+			auavLock("get");
+			String succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=get", auavResp.ch);
+			auavSpin();
+			//There's some sort of synchrhonization error between "get" and "dld"
+				//in CaptureImageV2. This sleep eliminates that issue.
+			try{Thread.sleep(1000);}catch(Exception e){}
+			System.out.println("Detect: DLD");
+			auavLock("dld");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=dld", auavResp.ch);
+			auavSpin();
 		}
-		public byte[] base64ToByte(String str){
-			byte[] ret = new byte[0];
-			try{
-				ret = Base64.decode(str, Base64.DEFAULT);
+		String imageEnc = "";
+
+		try{
+			File file = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/pictmp.dat");
+			FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
+			MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
+			System.out.println(buffer.isLoaded());
+			System.out.println(buffer.capacity());
+			pic = new byte[buffer.capacity()];
+			while(buffer.hasRemaining()){
+				int remaining = pic.length;
+				if(buffer.remaining() < remaining)
+					remaining = buffer.remaining();
+					buffer.get(pic, 0, remaining);
+					System.out.println("Buffer Remaining: " + remaining);
+				}
+				file.delete();
+				System.out.println("Detect: done reading from file");
 			} catch(Exception e){
 				e.printStackTrace();
 			}
-			return ret;
+			//convert file to string
+			imageEnc = new String(pic);
+			//convert string to byte array (allows for delimited files)
+			pic = base64ToByte(imageEnc);
+
+			return pic;
+	}
+	public byte[] base64ToByte(String str){
+		byte[] ret = new byte[0];
+		try{
+			ret = Base64.decode(str, Base64.DEFAULT);
+		} catch(Exception e){
+			e.printStackTrace();
 		}
-		//write image stored in byte array pic in JPEG format to specified file location
-		void writeImage(byte[] pic, String fileLocation){
-			try {
-				OutputStream out = new FileOutputStream(fileLocation);
-				out.write(pic);
-				out.flush();
-				out.close();
-			} catch(Exception e) {
-				System.out.println("Problem writing image");
-				e.printStackTrace();
+		return ret;
+	}
+	//write image stored in byte array pic in JPEG format to specified file location
+	void writeImage(byte[] pic, String fileLocation){
+		try {
+			OutputStream out = new FileOutputStream(fileLocation);
+			out.write(pic);
+			out.flush();
+			out.close();
+		} catch(Exception e) {
+			System.out.println("Problem writing image");
+			e.printStackTrace();
+		}
+	}
+
+	//  The code below is mostly template material
+	//  Most routines will not change the code below
+	//
+	//
+	//
+	//
+	//
+	//  Christopher Stewart
+	//  2017-10-1
+	//
+
+	private Thread t = null;
+
+
+	public WaypointMissionTest() {
+		t = new Thread (this, "Main Thread");
+	}
+	public String startRoutine() {
+			if (t != null) {
+					t.start(); return "WaypointMissionTest: Started";
 			}
-		}
-
-		//  The code below is mostly template material
-		//  Most routines will not change the code below
-		//
-		//
-		//
-		//
-		//
-		//  Christopher Stewart
-		//  2017-10-1
-		//
-
-		private Thread t = null;
-
-
-		public WaypointMissionTest() {
-			t = new Thread (this, "Main Thread");
-		}
-		public String startRoutine() {
-				if (t != null) {
-						t.start(); return "WaypointMissionTest: Started";
-				}
-				return "Detect not Initialized";
-		}
-		public String stopRoutine() {
-				forceStop = true;	return "Detect: Force Stop set";
-		}
+			return "Detect not Initialized";
+	}
+	public String stopRoutine() {
+			forceStop = true;	return "Detect: Force Stop set";
+	}
 }
