@@ -98,7 +98,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		private WaypointMissionOperatorListener listener;
 		public long TIMEOUT = 10000;
 **/	
-        	
+        	static byte[] data;
 		public String seperator = ",";
 		static byte[] pic;
         	public String succ = "";
@@ -116,135 +116,73 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 *it captures them. Pictrace then reads the
 			 *images from said directory.
 			 */
-		
-            		//String args[] = params.split("-"); //Arguments from the coap input string
+            		String args[] = params.split("-"); //Arguments from the coap input string
+			IP = args[0].substring(3);
+			System.out.println("IP address is:"+IP);
+			int PORT = 12013;
 
-
-            		//takes off the UAV
-            		//auavLock("Takeoff");
-            		//succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
-            		//auavSpin();
-
-            		//lands the UAV
-            		//auavLock("land");
-            		//succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
-            		//auavSpin()
-
-	    		//[0] Waypoint# (int)
-	    		//[1] GPS Lat (double)
-	    		//[2] GPS Lon (double)
-	    		//[3] action (String)
-	    		//[4]-[7] NSWE (int)
-	    		//ArrayList<String[]> wObjectList = new ArrayList<String[]>();
-	    		//String currentW;	// index indicating current waypoint #
-	    		//List<Waypoint> wList = new ArrayList<>();
-
-       	    		//read in the file
-	    		try{
-		   		File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
-
-		   		System.out.print(f);
-		   		Scanner s = new Scanner(f);
-		   		while (s.hasNextLine()) {
-               	   	   	//initialize waypoint
-			   		String data = s.nextLine();
-			   		String[] waypointObject = data.split(seperator);
-			   		double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
-			   		double lon = Double.parseDouble(waypointObject[1]);
-			   		//Waypoint w = new Waypoint(lat, lon, altitude);
-			   		//Assume one action for each waypoint
-			   		//if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
-                   				//System.out.println("Failed to add action to waypoint! Check the action count or setup");
-               				//}
-			  		//wList.add(w);
-
-		   		}
-	    		} catch (IOException e) {
-	    	   		e.printStackTrace();
-	    		}
-	    		//System.out.println("Finish add waypointList");
-	    		//Create a waypoint mission with the first waypoint
-	    		//currentW = "0";
-            		//WaypointMission wMission = null;
+			System.out.println("Reading Waypoint");
+	  		String fname= "/AUAVtmp/waypoints.txt";
+			byte[] b = readWaypoint(fname);
+			String meta = "";
+			System.out.println("Sending Waypoint");
+			try{
+				sendToPort(b,IP,PORT);
+			}catch(Exception e){
+				e.printStackTrace();
+			}
+			System.out.println("Sent Waypoints");
+			//auavSpin();
+			String receive = auavResp.getResponse();
+			
             		config();
 		}
-	    
-	    //Instantiate a mission operator
-	    //WaypointMissionOperator wMissionOperator = new WaypointMissionOperator();
-	    /**if (instance == null){
-		    instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    }
-	    int count =1;
-	    while(count==1) {	//TODO: add conditions to loop argument
-		    count=count-1;
-            // check the current states of the mission operator before and after loadMission()
-            if (WaypointMissionState.UNKNOWN.equals(instance.getCurrentState())){
-                System.out.println("Operator state: UNKNOWN");
-            } else if (WaypointMissionState.DISCONNECTED.equals(instance.getCurrentState())){
-                System.out.println("Operator state: DISCONNECTED");
-            } else if (WaypointMissionState.NOT_SUPPORTED.equals(instance.getCurrentState())){
-                System.out.println("Operator state: NOT_SUPPORTED");
-            } else{
-                System.out.println("Operator state: mysterious");
-            }
-		    DJIError errorss = instance.loadMission(wMission);
-            if (WaypointMissionState.UNKNOWN.equals(instance.getCurrentState())){
-                System.out.println("Operator state: UNKNOWN");
-            } else if (WaypointMissionState.DISCONNECTED.equals(instance.getCurrentState())){
-                System.out.println("Operator state: DISCONNECTED");
-            } else if (WaypointMissionState.NOT_SUPPORTED.equals(instance.getCurrentState())){
-                System.out.println("Operator state: NOT_SUPPORTED");
-            } else if (WaypointMissionState.READY_TO_UPLOAD.equals(instance.getCurrentState())){
-                System.out.println("Operator state: READY_TO_UPLOAD");
-            } else{
-                System.out.println("Operator state: mysterious");
-            }
-		    //Upload the mission if check conditions are satisfied
-		    try{
-		    		Thread.sleep(3000);
-			}catch(Exception e){
-				System.out.println(e);
+        byte[] readWaypoint(String fname){
+		
+       	    	//read in the file
+	    	try{
+	   		File f = new File(Environment.getExternalStorageDirectory().getPath()+fname);
+			FileChannel fileChannel = new RandomAccessFile(f,"r").getChannel();
+			MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY,0,fileChannel.size());
+			data = new byte[buffer.capacity()];
+			while(buffer.hasRemaining()){
+				int remaining = data.length;
+				if (buffer.remaining()<remaining){
+					remaining = buffer.remaining();
+				}
+				buffer.get(data,0,remaining);
 			}
-		    if(errorss == null)
-		    {
-			    instance.uploadMission(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError error)
-		    {
-                        if (error == null) {
-                            System.out.println("Mission upload successfully!");
-                        } else {
-                            System.out.println("Mission upload failed, error: " + error.getDescription() );
-                        }
-                    }
-               	 });
+			return data;
+		   }catch (IOException e) {
+	    	  	e.printStackTrace();   
+		   }
+		return new byte[0];
+	}
+	//public String getData(String fname){
+    		//read in the file
+   		//try{
+	   	//	File f = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/waypoints.txt");
+	   		//System.out.print(f);
+	   		//Scanner s = new Scanner(f);
+	   		//while (s.hasNextLine()) {
+           	   	//initialize waypoint
+		   	//	String data = s.nextLine();
+		   	//	String[] waypointObject = data.split(seperator);
+		   	//	double lat = Double.parseDouble(waypointObject[0]); // TODO: Changeback after first round test
+		   	//	double lon = Double.parseDouble(waypointObject[1]);
+		   		//Waypoint w = new Waypoint(lat, lon, altitude);
+		   		//Assume one action for each waypoint
+		   		//if (w.addAction(new WaypointAction(WaypointActionType.STAY,1)) == false) { // TODO: add more actions after first round test
+               				//System.out.println("Failed to add action to waypoint! Check the action count or setup");
+        			//}
+		 		//wList.add(w);
+	   	//	}
+    		//} catch (IOException e) {
+    	   	//	e.printStackTrace();
+    		//}
+	//}
 
-		 }
-		 try{
-			 Thread.sleep(3000);
-		    }catch(Exception e){
-			    System.out.print(e);
-		    }
-		// System.out.println("check errorss:"+errorss+" check currentState:"+instance.getCurrentState());
-		  // System.out.println("Mission uploaded");	  
-**/	       
-      		  //Execute the mission
-		    /**if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
-			    instance.startMission(new CommonCallbacks.CompletionCallback() {
-                    @Override
-                    public void onResult(DJIError error) {
-                        System.out.println("Mission Start: " + (error == null ? "Successfully" : error.getDescription()));
-                    }
-                });
-		    }
-		    if(instance!=null && listener!=null){
-		    	    instance.addListener(listener);
-		    }
-	    }
-
-
-        }**/	
-        //captures image using the UAVs camera, downloads the image to the VM
+	//captures image using the UAVs camera, downloads the image to the VM
         void takeImg(boolean full){
                 System.out.println("taking the image entry to function..");
                 System.out.println("SSM");
@@ -309,36 +247,35 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         //configures the camera and flight system
         void config(){
             setSimOff();
-            		String args[] = params.split("-"); //Arguments from the coap input string
-            		//config();
-                    	String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
-            		//initialize starting waypoint
-            		auavLock("Initialize");
-            		succ = invokeDriver(missionDriver, "dc=initWaypoint", auavResp.ch);
-            		auavSpin();
 
-                    	//upload the mission
-            		auavLock("Upload");
-            		succ = invokeDriver(missionDriver, "dc=uploadMission", auavResp.ch);
-            		auavSpin();
 
-                    	//start the mission
-            		auavLock("Start");
-            		succ = invokeDriver(missionDriver, "dc=startMission", auavResp.ch);
-            		auavSpin();
+            String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
+            //initialize starting waypoint
+            auavLock("Initialize");
+            succ = invokeDriver(missionDriver, "dc=initWaypoint", auavResp.ch);
+            auavSpin();
 
-                    	//take picture and pause mission
-            		takeImg();
-                    	auavLock("Pause");
-            		succ = invokeDriver(missionDriver, "dc=pauseMission", auavResp.ch);
-            		auavSpin();
+            //upload the mission
+            auavLock("Upload");
+            succ = invokeDriver(missionDriver, "dc=uploadMission", auavResp.ch);
+            auavSpin();
 
-            		//stop the mission
-            		auavLock("stop");
-            		succ = invokeDriver(missionDriver, "dc=stopMission", auavResp.ch);
-            		auavSpin();
+            //start the mission
+            auavLock("Start");
+            succ = invokeDriver(missionDriver, "dc=startMission", auavResp.ch);
+            auavSpin();
 
-        	}
+            //take picture and pause mission
+            takeImg();
+            auavLock("Pause");
+            succ = invokeDriver(missionDriver, "dc=pauseMission", auavResp.ch);
+            auavSpin();
+
+            //stop the mission
+            auavLock("stop");
+            succ = invokeDriver(missionDriver, "dc=stopMission", auavResp.ch);
+            auavSpin();
+       	}
 	//captures image using the UAVs camera, downloads the image to the VM
 	void takeImg(){
 		System.out.println("taking the image entry to function..");
@@ -358,49 +295,8 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		auavSpin();
 		System.out.println("Taking the image exit of the function..");
 	}
-	//reads a full 4k image from the VM to local memory
-	/**byte[] read4k(){
-	    	try {
-			File file = new File(Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/fullPic.JPG");
-			//File file = new File("../tmp/pictmp.jpg");
-			FileChannel fileChannel = new RandomAccessFile(file, "r").getChannel();
-			MappedByteBuffer buffer = fileChannel.map(FileChannel.MapMode.READ_ONLY, 0, fileChannel.size());
-			pic = new byte[buffer.capacity()];
-			while(buffer.hasRemaining()){
-		    		int remaining = pic.length;
-		    		if(buffer.remaining() < remaining){
-					remaining = buffer.remaining();
-		    		}
-		    		buffer.get(pic, 0, remaining);
-			}
-			return pic;
-	    	} catch(Exception e){
-			e.printStackTrace();
-	    	}
-	    	return new byte[0];
-	}**/
 	//Capable of sending image data to other functions
-	public void sendToPort(byte[] b, String meta) throws IOException{
-	    	try {
-			Thread.sleep(3000);
-	    	} catch(Exception e){}
-	    	System.out.println("Client: Trying To Connect");
-	    	Socket socket = new Socket(IP, 12013);
-	    	System.out.println("Client: Connected");
 
-		DataOutputStream dos = new DataOutputStream(socket.getOutputStream());
-    		System.out.println("Writing "+b.length+" Bytes");
-    		dos.writeBytes(meta);
-    		dos.writeBytes("over\n");
-    		socket.close();
-
-    		socket = new Socket(IP, 12013);
-    		dos = new DataOutputStream(socket.getOutputStream());
-    		dos.writeInt(b.length);
-    		dos.write(b);
-
-    		socket.close();
-	}
 	//configures the camera and flight system
 	//void config(){
 	//   	setSimOff();
