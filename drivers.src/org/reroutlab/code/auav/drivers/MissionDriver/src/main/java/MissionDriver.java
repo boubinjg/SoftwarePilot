@@ -310,15 +310,39 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	    			if (instance == null){
 					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 	    			}
-				instance.stopMission(new CommonCallbacks.CompletionCallback() {
-				@Override
-				public void onResult(DJIError error) {
-					if (error != null){
-						System.out.println("Mission stopped:"+error.getDescription());
-					}
+
+		    		if((instance.getCurrentState() == WaypointMissionState.EXECUTING)||(instance.getCurrentState() == WaypointMissionState.EXECUTION_PAUSED)){
+					instance.stopMission(new CommonCallbacks.CompletionCallback() {
+                    				@Override
+						public void onResult(DJIError error) {
+							if (error != null){
+							System.out.println("Mission stopped:"+error.getDescription());
+							}
+						}
+					});
 				}
-				});
-			}else {
+			}else if (args[0].equals("dc=pauseMission")){
+				
+	    			if (instance == null){
+					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			}
+
+		    		if(instance.getCurrentState() == WaypointMissionState.EXECUTING) {
+					instance.pauseMission(new CommonCallbacks.CompletionCallback() {
+                    				@Override
+                    				public void onResult(DJIError error) {
+                        				
+							if (error != null){
+								System.out.println("Mission cannot be pasused:"+error.getDescription());
+							}else{
+								System.out.println("Mission Paused: " + (error == null ? "Successfully" : error.getDescription()));
+							}
+						}
+                			});
+		    		}
+			
+			}
+			else {
 				ce.respond("Error: unknown command\n");
 			}
 		}
