@@ -3,6 +3,8 @@ import subprocess
 from os import listdir
 from os.path import isfile, join
 import time
+import traceback
+import shutil
 
 def checkForUpdate(count, lastUpdate):
     sn = os.environ['SERVERNUM']
@@ -11,7 +13,9 @@ def checkForUpdate(count, lastUpdate):
     print([count, lastUpdate])
     while(updateCount == -1):
         time.sleep(10)
+        print('Checking')
         for i in range(lastUpdate+1, count):
+            print([i,count])
             print("In Check "+str(i))
             out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/server_'+
                   sn+'/run_'+str(i)+'/knndata && echo $?').read()
@@ -20,9 +24,9 @@ def checkForUpdate(count, lastUpdate):
                     updateCount = i
                     print("Update Ready: "+str(i))
             except:
-                break;
+                traceback.print_exc()
                 print("Update Not Ready")
-    
+                break;
     if(updateCount > -1):
         try:
             os.remove('knndatasetGI')
@@ -32,6 +36,47 @@ def checkForUpdate(count, lastUpdate):
               sn+'/run_'+str(updateCount)+'/knndata knndatasetGI').read()
 
     return updateCount
+
+def getCount():
+    sn = os.environ['SERVERNUM']
+    updateCount = -1
+    check = 0
+    while(True):
+        print("Looking for update: "+str(check))
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/server_'+
+                  sn+'/run_'+str(check)+'/knndata && echo $?').read()
+        try:
+            if(int(out) == 0):
+                updateCount = check
+                check += 1
+            else:
+                print('No Update Ready: '+str(check))
+                return updateCount
+        except:
+            print('No Update Found: '+str(check))
+            traceback.print_exc()
+            return updateCount
+    return -1
+
+def getCountGlobal():
+    updateCount = -1
+    check = 0
+    while(True):
+        print("Looking for update: "+str(check))
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/global/run_'+str(check)+'/knndata && echo $?').read()
+        try:
+            if(int(out) == 0):
+                updateCount = check
+                check += 1
+            else:
+                print('No Update Ready: '+str(check))
+                return updateCount
+        except:
+            print('No Update Found: '+str(check))
+            traceback.print_exc()
+            return updateCount
+    return -1
+
 
 def checkForGlobalUpdate(count, lastUpdate):
     updateCount = -1
@@ -47,14 +92,16 @@ def checkForGlobalUpdate(count, lastUpdate):
                     updateCount = i
                     print("Update Ready: "+str(i))
             except:
+                print('Update Not Ready')
                 break;
-        print("Update Not Ready")
     
     if(updateCount > -1):
-        os.remove('knndatasetGI')
+        try:
+            os.remove('knndatasetGI')
+        except:
+            pass
         out = os.popen('/opt/hadoop/bin/hadoop fs -copyToLocal hdfs://127.0.0.1:9000/global'+
               '/run_'+str(updateCount)+'/knndata knndatasetGI').read()
-
     return updateCount
 
 cwd = os.getcwd()
@@ -73,26 +120,30 @@ try:
 except Exception as e:
     print(e)
 
-count = 0
+#lastUpdate = getCount()
+#lastUpdate = getCountGlobal()
 lastUpdate = -1
-lastUpdateGlobal = -1
+count = 0
 
-for rangeCounter in range(0,16):
+print([lastUpdate, count])
+
+for rangeCounter in range(1,21):
+    DSVal = rangeCounter*500
     for f in csvs:
+        shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
         if(count != 0):
             print("Checking for Server Update")
             #time.sleep(300)
-            #lastUpdate = checkForUpdate(count, lastUpdate)
-            lastUpdateGlobal = checkForGlobalUpdate(count, lastUpdateGlobal)
- 
-        subprocess.call(['bash','runGI.bash','/home/mydata/'+f, '60', '30', str(count)])
+            lastUpdate = checkForUpdate(count, lastUpdate)
+            #lastUpdate = checkForGlobalUpdate(count, lastUpdate)
+
+        subprocess.call(['bash','runGI.bash','/home/mydata/'+f, '60', str(100*rangeCounter)])
         os.chdir('tmp/')
 
         #subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
 
         nImgs = len(glob.glob("*.JPG"))
     
-
         f = open('/home/mydata/run_'+str(count), 'w+')
         f.truncate(0)
         f.write('len = '+str(nImgs)+'\n')
@@ -111,4 +162,4 @@ for rangeCounter in range(0,16):
         os.chdir(cwd)
     
         count += 1
-
+        '''

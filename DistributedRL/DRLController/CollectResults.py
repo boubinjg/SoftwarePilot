@@ -9,14 +9,18 @@ for dir in dirs:
 	f = open('Results/'+dir+'.results','w+')
 	for result in glob.glob(path+dir+'/*'):
 		run = result.split('/')[-1]
-		if(run.split('_')[0] == 'run'):
-			num = run.split('_')[1]
-			runFile = open(result)
-			resultValue = runFile.readlines()
-			print(resultValue)
-			output = resultValue[1].rstrip()+'\n'
-			writeVal += num+': '+output
-			#print(run)
-			print(writeVal)
+		print(result)
+		try:
+			if(run.split('_')[0] == 'run'):
+				num = run.split('_')[1]
+				runFile = open(result)
+				resultValue = runFile.readlines()
+				print(resultValue)
+				output = resultValue[1].rstrip()+'\n'
+				writeVal += num+': '+output
+				#print(run)
+				#print(writeVal)
+		except:
+			pass
 	f.write(writeVal)
 	f.close()

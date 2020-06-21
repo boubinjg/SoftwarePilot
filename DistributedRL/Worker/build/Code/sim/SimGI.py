@@ -142,8 +142,13 @@ def findNext(image, fieldmap, oldErr):
 
     gainMap = []
     for i in range (0,4):
-        gainMap.append([mapGain[i], int(image[i+4])])
-    gainMap.sort(key=lambda gain: gain[0], reverse=True)
+        if(image[i+4] == '[]'):
+            gainMap.append([sys.maxsize,-1])    
+        else:
+            gainMap.append([mapGain[i], int(image[i+4])])
+        
+    gainMap.sort(key=lambda gain: gain[0], reverse=False)
+    print(gainMap)
     return gainMap
 
 def findNextAstarWrapper(image, giTarg, profile,thresh):
@@ -165,7 +170,7 @@ def findNextAstarWrapper(image, giTarg, profile,thresh):
             gainMap.append([energies[i], image[i+4]])
     #print(gainMap)
     gainMap.sort(key=lambda gain: gain[0], reverse=False)
-    #print(gainMap)
+    print(gainMap)
 
     return gainMap
 
@@ -396,34 +401,15 @@ def findClosest(image):
 def findEnergy(image, visited, profile, gi):
     ret = []
     count = 0
+    gi = float(image[12].split(',')[10].split('=')[1])
     try:
         for i in image[4:8]:
-            if(i in visited or i == '[]'):
-                closestIm = []
-                closestDist = 100000
-                lastIm = image
-                for im in imagedata:
-                    if(im[1] not in visited):
-                        coord1 = im[2][1:-1].split(',')
-                        coord1 = [float(coord1[0]), float(coord1[1])]
-                        coord2 = lastIm[2][1:-1].split(',')
-                        coord2 = [float(coord2[0]), float(coord1[1])]
-                        distG = gpsDist(coord1, coord2)
-                        if(distG < closestDist):
-                            closestDist = distG
-                            closestIm = im
-                            currentIm = closestIm
-                            fin = True
-                if(closestDist < 10):
-                    energy = sum(prof)/len(prof)
-                else:
-                    energy = (sum(prof)/len(prof)) * (closestDist/10.0)
-                
-                ret.append(gi/energy)
-            else:
+            if(i in visited):
                 img = getImage(i)
-                gi = float(img[12].split(',')[10].split('=')[1])
-                ret.append(gi/(profile[count]))
+                nGi = float(img[12].split(',')[10].split('=')[1])
+                ret.append(nGi/gi)
+            else:
+                ret.append(1)
             count += 1
         return ret
     except:
@@ -439,6 +425,11 @@ def writeUtilAst(visited, imdata, profile):
         testVisited = copy.deepcopy(visited)
         testVisited.append(im)
         ret = []
+        
+        features = getFeatures(line)
+
+        ret = features.tolist()
+        
         for neighbor in line[4:8]:
             if(neighbor == '[]'):
                 curImg = findClosest(image)
@@ -446,6 +437,8 @@ def writeUtilAst(visited, imdata, profile):
                 curImg = getImage(neighbor)
             energy = findEnergy(curImg, testVisited, profile, gi)
             ret.append(min(energy))
+        print('Ret')
+        print(ret)
         fname = imageName.split('.')[0]
         with open('tmp/'+fname+'.csv','w') as f:
             writer = csv.writer(f)
@@ -479,12 +472,14 @@ def writeUtil(visited, imdata):
                     writer.writerow(utilList)
 
 def writeEnergy(energy):
+    print('Writing Energy')
     f = open('tmp/energy','w+')
     f.write('Energy: '+str(energy))
     f.close()
 
 def writeIms(visited,imdata):
     #print(visited)
+    print('Writing Ims')
     try:
         rmtree('tmp')
     except Exception as e:
@@ -529,7 +524,8 @@ if __name__ == '__main__':
     #print(blankMap)
 
     runs = float(sys.argv[3])
-    AstThresh = float(sys.argv[4])
+    seed = float(sys.argv[4])
+    random.seed(seed)
 
     wpoints = 0
     missions = 0
@@ -570,14 +566,14 @@ if __name__ == '__main__':
         #currentIm = sampleImages[1]
         wpoints += count
         count = 0
-        giTarg = 1500
+        giTarg = 45
         #print("giTarg "+str(giTarg))
         totalGi = 0
-        gi = -1
+        gi = 100
         giOrig = 1
 
         try:
-            while(count < runs and totalGi < giTarg):
+            while(count < runs and gi > giTarg):
                 gi_old = gi
                 try:
                     gi = float(currentIm[12].split(',')[10].split('=')[1])
@@ -593,7 +589,7 @@ if __name__ == '__main__':
                 
                 print("::::::::::::::::::::::::::::::::::::: GI: "+str(count)+":::::::::::::::::::::::::::::::::::::")
                 
-                #print("::::::::::::::::::::::::::::::::::::: GI: "+str(gi)+":::::::::::::::::::::::::::::::::::::")
+                print("::::::::::::::::::::::::::::::::::::: GI: "+str(gi)+":::::::::::::::::::::::::::::::::::::")
                 #print("::::::::::::::::::::::::::::::::::::: Total GI: "+str(totalGi)+":::::::::::::::::::::::::::::::::::::")
  
                 #print("::::::::::::::::::::::::::::::::::::: GI Target: "+str(giTarg)+":::::::::::::::::::::::::::::::::::::")
@@ -614,7 +610,7 @@ if __name__ == '__main__':
                         print("RANDOM EXPLORE")
                         gainMap = findNextRand(currentIm, fieldMap, cErr)
                     else:
-                        gainMap = findNextAstarWrapper(currentIm, giTarg, prof,AstThresh) #redo this to factor in error-gain
+                        gainMap = findNext(currentIm, fieldMap, cErr) #redo this to factor in error-gain
                         #print(gainMap)
                     fin = False
                     #print([cErr, count`])
@@ -623,9 +619,8 @@ if __name__ == '__main__':
                     while not fin and stack != []:
                         for i in range(0,4):
                             try:
-                                testIm = getImage(gainMap[i][1])
-                                #print(gainMap[i][1])
-
+                                testIm = getImage(str(gainMap[i][1]))
+    
                                 if (len(testIm[12].split(','))) != 13:
                                     raise Exception('NaN Value in Dataset Handled')
                                 if (testIm[1] in visited):

@@ -18,6 +18,10 @@ def readInData():
     global knndata
     knndata = np.genfromtxt(sys.argv[1], delimiter=',')
 
+def readIn(data):
+    global knndata
+    knndata = np.genfromtxt(data, delimiter=',')
+
 def getCount():
     counts = []
 
@@ -35,7 +39,7 @@ def getCount():
             counts.append(count)
 
     print(counts)
-    return min(counts)*16, jobs
+    return min(counts)*20, jobs
 
 def checkForFiles(jobs, count):
     found = 0
@@ -113,16 +117,38 @@ def upload(knndata, count):
     os.popen('/opt/hadoop/bin/hadoop fs -put tmp/knndata hdfs://127.0.0.1:9000/global/run_'+str(count)).read()
     print("Upload Complete")
 
-readInData()
+def initCount():
+    count = 0;
+    while(True):
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/global/run_'+str(count)+'/knndata && echo $?').read()
+        try:
+            if(int(out) == 0):
+                print('Update Available: '+str(count))
+                count += 1
+            else:
+                print('No New Update')
+                return count
+        except:
+            print('No New Update: '+str(count))
+            return count
+    return 0
+
+
+#readInData()
 runs, jobs = getCount()
 print((runs, jobs))
 
-knnSize = getKNNSize(knndata, jobs)
+#knnSize = getKNNSize(knndata, jobs)
 
+knnSize = 0
 
+#count = initCount()
 count = 0
-
 while(count < runs):
+    if(count % 5 == 0):
+        DSN = count*100 + 500
+        readIn('/home/mydata/datasets_Test3/knn'+str(DSN))
+        knnSize = getKNNSize(knndata, jobs)
     checkForFiles(jobs, count)
     #Download all files from each dir into a temp diretcory
     download(jobs, count);

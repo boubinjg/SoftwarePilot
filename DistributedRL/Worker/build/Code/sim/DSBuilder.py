@@ -43,6 +43,19 @@ def findLowestF(open):
         return lowestF
 
 
+def loadDataset():
+    dataset = None
+    try:
+        dataset = np.loadtxt('knndataEnergy', delimiter=',')
+    except:
+        pass
+    #print(dataset.shape)
+    return dataset
+
+def writeDataset(dataset):
+    np.savetxt('knndataEnergy', dataset, delimiter=',')
+
+
 def gpsDist(coord1, coord2):
     R = 6372800  # Earth radius in meters
     lat1, lon1 = coord1
@@ -142,8 +155,13 @@ def findNext(image, fieldmap, oldErr):
 
     gainMap = []
     for i in range (0,4):
-        gainMap.append([mapGain[i], int(image[i+4])])
-    gainMap.sort(key=lambda gain: gain[0], reverse=True)
+        if(image[i+4] == '[]'):
+            gainMap.append([sys.maxsize,-1])    
+        else:
+            gainMap.append([mapGain[i], int(image[i+4])])
+        
+    gainMap.sort(key=lambda gain: gain[0], reverse=False)
+    print(gainMap)
     return gainMap
 
 def findNextAstarWrapper(image, giTarg, profile,thresh):
@@ -165,7 +183,7 @@ def findNextAstarWrapper(image, giTarg, profile,thresh):
             gainMap.append([energies[i], image[i+4]])
     #print(gainMap)
     gainMap.sort(key=lambda gain: gain[0], reverse=False)
-    #print(gainMap)
+    print(gainMap)
 
     return gainMap
 
@@ -182,7 +200,7 @@ def findNextAstar(image, giTarg, profile,thresh):
         q = findLowestF(open)
         open.remove(q)
 
-        nbors = NearestNeighbors(n_neighbors=11)
+        nbors = NearestNeighbors(n_neighbors=5)
         nbors.fit(knndata[:,0:12])
         knn = nbors.kneighbors([q.index[0:12]])
         knn = knn[1][0]
@@ -195,18 +213,22 @@ def findNextAstar(image, giTarg, profile,thresh):
 
         successorGain = [d[1] / (d[0]-.00001) for d in dirs]
 
+        print(successorGain)
+        #exit()
+
         for i in range(4):
-            
             index = random.randint(0,len(knn)-1)
 
             sI = findFeatures(knn[random.randint(0,len(knn)-1)])
-            sG = q.g + profile[i]
+            gi = float(q.index[10])
+            sG = q.g + (gi/successorGain[i])
         
-            gi = float(q.index[10] * successorGain[i])
             sH = ((q.g - gi)/gi) * (sum(profile)/len(profile))
             giAcc = q.gi+gi
             sF = sG + sH
             sP = q.index
+            
+            print(sG)
 
             #print(giAcc)
 
@@ -232,80 +254,6 @@ def findNextAstar(image, giTarg, profile,thresh):
             ret = [i.g, i.gi]
     return ret
 
-def findClosest(image):
-    closestIm = []
-    closestDist = 100000
-    lastIm = image
-    for im in imagedata:
-        if(im[1] not in visited):
-            coord1 = im[2][1:-1].split(',')
-            coord1 = [float(coord1[0]), float(coord1[1])]
-            coord2 = lastIm[2][1:-1].split(',')
-            coord2 = [float(coord2[0]), float(coord1[1])]
-            distG = gpsDist(coord1, coord2)
-            if(distG < closestDist):
-                closestDist = distG
-                closestIm = im
-                currentIm = closestIm
-    return closestIm
-
-
-def findEnergyWrapper(image, visited, profile):
-    testVisited = copy.deepcopy(visited)
-    testVisited.append(image[1])
-    ret = []
-    for i in image[4:8]:
-        if(i == '[]'):
-            curImg = findClosest(image)
-        else:
-            curImg = getImage(i)
-        energy = findEnergy(curImg, testVisited, profile)
-        print(energy)
-        ret.append(min(energy))
-    
-    return ret
-
-def findEnergy(image, visited, profile):
-    ret = []
-    count = 0
-    try:
-        for i in image[4:8]:
-            if(i in visited or i == '[]'):
-                closestIm = []
-                closestDist = 100000
-                lastIm = image
-                for im in imagedata:
-                    if(im[1] not in visited):
-                        coord1 = im[2][1:-1].split(',')
-                        coord1 = [float(coord1[0]), float(coord1[1])]
-                        coord2 = lastIm[2][1:-1].split(',')
-                        coord2 = [float(coord2[0]), float(coord1[1])]
-                        distG = gpsDist(coord1, coord2)
-                        if(distG < closestDist):
-                            closestDist = distG
-                            closestIm = im
-                            currentIm = closestIm
-                            fin = True
-                if(closestDist < 10):
-                    energy = sum(prof)/len(prof)
-                else:
-                    energy = (sum(prof)/len(prof)) * (closestDist/10.0)
-                
-                try:
-                    gi = float(closestIm[12].split(',')[10].split('=')[1])
-                except:
-                    pass
-                ret.append(gi/energy)
-            else:
-                img = getImage(i)
-                gi = float(img[12].split(',')[10].split('=')[1])
-                ret.append(gi/profile[count])
-            count += 1
-        return ret
-    except:
-        traceback.print_exc()
-        
-
 def findNextRand(image, fieldmap, oldErr):
 
     dirs = [[0,0],[0,0],[0,0],[0,0]]
@@ -327,7 +275,7 @@ def findUtil(currentIm):
 
 def getImage(imID):
     for d in imagedata:
-        if d[1] == str(imID):
+        if d[1] == imID:
             return d
     return []
 
@@ -446,6 +394,86 @@ def findLength(visited):
         totalDist += manhattanDist(visited[i], visited[i+1])
     return totalDist
 
+def findClosest(image):
+    closestIm = []
+    closestDist = 100000
+    lastIm = image
+    for im in imagedata:
+        if(im[1] not in visited):
+            coord1 = im[2][1:-1].split(',')
+            coord1 = [float(coord1[0]), float(coord1[1])]
+            coord2 = lastIm[2][1:-1].split(',')
+            coord2 = [float(coord2[0]), float(coord1[1])]
+            distG = gpsDist(coord1, coord2)
+            if(distG < closestDist):
+                closestDist = distG
+                closestIm = im
+                currentIm = closestIm
+    return closestIm
+
+def findEnergyWrapper(image, visited, profile):
+    testVisited = copy.deepcopy(visited)
+    testVisited.append(image[1])
+    ret = []
+    for i in image[4:8]:
+        if(i == '[]'):
+            curImg = findClosest(image)
+        else:
+            curImg = getImage(i)
+        energy = findEnergy(curImg, testVisited, profile)
+        print(energy)
+        ret.append(min(energy))
+
+    return ret
+
+
+def findEnergy(image, visited, profile):
+    ret = []
+    count = 0
+    gi = float(image[12].split(',')[10].split('=')[1])
+    try:
+        for i in image[4:8]:
+            if(i in visited):
+                img = getImage(i)
+                nGi = float(img[12].split(',')[10].split('=')[1])
+                ret.append(nGi/gi)
+            else:
+                ret.append(1)
+            count += 1
+        return ret
+    except:
+        traceback.print_exc()
+ 
+
+def writeUtilAst(visited, imdata, profile):
+    for im in visited:
+        line = getImage(im)
+        imageName = line[3][17:].split('/')[-1]
+        gi = float(line[12].split(',')[10].split('=')[1][:-1])
+
+        testVisited = copy.deepcopy(visited)
+        testVisited.append(im)
+        ret = []
+        
+        features = getFeatures(line)
+
+        ret = features.tolist()
+        
+        for neighbor in line[4:8]:
+            if(neighbor == '[]'):
+                curImg = findClosest(image)
+            else:
+                curImg = getImage(neighbor)
+            energy = findEnergy(curImg, testVisited, profile)
+            ret.append(min(energy))
+        print('Ret')
+        print(ret)
+        fname = imageName.split('.')[0]
+        with open('tmp/'+fname+'.csv','w') as f:
+            writer = csv.writer(f)
+            writer.writerow(ret)
+            
+
 def writeUtil(visited, imdata):
     #print("WRITE UTIL")
     #print(visited)
@@ -473,12 +501,14 @@ def writeUtil(visited, imdata):
                     writer.writerow(utilList)
 
 def writeEnergy(energy):
+    print('Writing Energy')
     f = open('tmp/energy','w+')
     f.write('Energy: '+str(energy))
     f.close()
 
 def writeIms(visited,imdata):
     #print(visited)
+    print('Writing Ims')
     try:
         rmtree('tmp')
     except Exception as e:
@@ -497,18 +527,6 @@ def writeIms(visited,imdata):
                 #print(fileName)
                 copyfile(imagePath,"tmp/"+fileName)
 
-def loadDataset():
-    dataset = None
-    try:
-        dataset = np.loadtxt('knndataEnergy', delimiter=',')
-    except:
-        pass
-    #print(dataset.shape)
-    return dataset
-
-def writeDataset(dataset):
-    np.savetxt('knndataEnergy', dataset, delimiter=',')
-    
 
 #def writeHDFS():
 #    exe = sys.argv[4]
@@ -522,11 +540,12 @@ def writeDataset(dataset):
 
 if __name__ == '__main__':
     readInData()
-    dataset = loadDataset()
     imagedata = imagedata[:]
    
     GIMap = getMap([imagedata[0]])
-	
+
+    dataset = loadDataset()
+
     blankMap = defaultdict(list)
 
     for key in list(GIMap.keys()):
@@ -540,9 +559,7 @@ if __name__ == '__main__':
 
     wpoints = 0
     missions = 0
-    cErr = set
-    
-    #dataset = None
+    cErr = 1
 
     count = 0
     means = []
@@ -553,7 +570,7 @@ if __name__ == '__main__':
     print("Start")
     #for image in sampleImages:
     #pos = random.randint(0, len(imagedata)-1)
-    pos = 40
+    pos = 15
     giGain = 0
     energy = 0
     prof = []
@@ -579,14 +596,14 @@ if __name__ == '__main__':
         #currentIm = sampleImages[1]
         wpoints += count
         count = 0
-        giTarg = 1500
+        giTarg = 45
         #print("giTarg "+str(giTarg))
         totalGi = 0
-        gi = -1
+        gi = 100
         giOrig = 1
 
         try:
-            while(count < runs and totalGi < giTarg):
+            while(count < runs and gi > giTarg):
                 gi_old = gi
                 try:
                     gi = float(currentIm[12].split(',')[10].split('=')[1])
@@ -602,7 +619,7 @@ if __name__ == '__main__':
                 
                 print("::::::::::::::::::::::::::::::::::::: GI: "+str(count)+":::::::::::::::::::::::::::::::::::::")
                 
-                #print("::::::::::::::::::::::::::::::::::::: GI: "+str(gi)+":::::::::::::::::::::::::::::::::::::")
+                print("::::::::::::::::::::::::::::::::::::: GI: "+str(gi)+":::::::::::::::::::::::::::::::::::::")
                 #print("::::::::::::::::::::::::::::::::::::: Total GI: "+str(totalGi)+":::::::::::::::::::::::::::::::::::::")
  
                 #print("::::::::::::::::::::::::::::::::::::: GI Target: "+str(giTarg)+":::::::::::::::::::::::::::::::::::::")
@@ -623,30 +640,29 @@ if __name__ == '__main__':
                         print("RANDOM EXPLORE")
                         gainMap = findNextRand(currentIm, fieldMap, cErr)
                     else:
-                        gainMap = findNextAstarWrapper(currentIm, giTarg, prof,AstThresh) #redo this to factor in error-gain
+                        gainMap = findNext(currentIm, fieldMap, cErr) #redo this to factor in error-gain
                         #print(gainMap)
                     fin = False
-                    #print([cErr, count])
+                    #print([cErr, count`])
 
-                    stack.append(currentIm)
-                    
-                    print('Finding Energy')
+                    stack.append([currentIm, gainMap])
+
                     en = findEnergyWrapper(currentIm, visited, prof)
                     query = getFeatures(currentIm)
                     entry=np.append(query,en)
-                
+                    print('En:')
+                    print(en)
 
                     if(not isinstance(dataset, np.ndarray)):
                         dataset = entry
                     else:
                         dataset = np.vstack((dataset, entry))
-                    
+
                     while not fin and stack != []:
                         for i in range(0,4):
                             try:
-                                testIm = getImage(gainMap[i][1])
-                                #print(gainMap[i][1])
-
+                                testIm = getImage(str(gainMap[i][1]))
+    
                                 if (len(testIm[12].split(','))) != 13:
                                     raise Exception('NaN Value in Dataset Handled')
                                 if (testIm[1] in visited):
@@ -655,21 +671,27 @@ if __name__ == '__main__':
 
                                 fin = True
                                 energy += prof[i]
+                                print(prof[i])
                                 print(energy)
                                 break;
                                 
                             except Exception as e:
-                                #print("Exception: " + str(e))
-                                #traceback.print_exc()
+                                print("Exception: " + str(e))
+                                traceback.print_exc()
                                 pass
  
                         #if not fin and stack != []:
-                        #    currentIm = stack.pop()
+                        #    print('###########################################################')
+                        #    print(len(stack))
+                        #    last = stack.pop()
+                        #    currentIm = stack[0]
+                        #    gainmap = stack[0]
 
                         if not fin:
                             closestIm = []
                             closestDist = 100000
                             print('%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%')
+                            currentIm = lastIm
                             for im in imagedata:
                                 if(im[1] not in visited):
                                     #print("FINDING NEXT: ")
@@ -688,15 +710,12 @@ if __name__ == '__main__':
                             fin = True
                             if(closestDist < 10):
                                 energy += sum(prof)/len(prof)
-                                print('Energy 1: ')
-                                print(sum(prof)/len(prof))
-                                #print(closestDist)
+                                print(sum(prof)/len(prof)*closestDist/10.0)
+                                print(closestDist)
                             else:
                                 energy += (sum(prof)/len(prof)) * (closestDist/10.0)
-                                print('Energy 2: ')
-                                print((sum(prof)/len(prof)) * (closestDist/10.0))
-                                #print(closestDist)
-                                print(energy)
+                                print(sum(prof)/len(prof)*closestDist/10.0)
+                                print(closestDist)
                     if not fin:
                         raise Exception("Invalid Move: No Movements Possible")
                 else:
@@ -704,8 +723,8 @@ if __name__ == '__main__':
                 count = count + 1
 
         except Exception as e:
+            traceback.print_exc()
             print(str(e))
-            
             if(count > 0):
                 print(str(count) + " " + str(missions))
             pass
@@ -715,7 +734,8 @@ if __name__ == '__main__':
         means.append(mean)
 
         writeIms(visited, imagedata)
-        writeUtil(visited, imagedata)
+        #writeUtil(visited, imagedata)
+        writeUtilAst(visited, imagedata, prof)
         #writeHDFS()
         '''
         for v in range(0, len(visited)):
