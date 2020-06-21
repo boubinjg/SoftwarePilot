@@ -232,7 +232,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					}
 					// waypointList = getData(fname);
 				} catch(Exception e) {
-					e.printStackTree();
+					System.out.println(e.getMessage());
 				}
 				float alt=100.0f;
 				double longitude = 39.96;
@@ -284,7 +284,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					System.out.println("load Mission failed:"+ error.getDescription());
 				}
 				
-		    		if(error == null){
+		    		if((error == null)&&(instance.getCurrentState() == WaypointMissionState.READY_TO_UPLOAD)){
 					instance.uploadMission(new CommonCallbacks.CompletionCallback() {
                     				@Override
                     				public void onResult(DJIError error){
