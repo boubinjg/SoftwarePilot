@@ -162,7 +162,6 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
         public String IP = "";
 	
 	//public String line = "";
-	public String fname = "../tmp/waypoints.txt";
 	public String seperator = ",";
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
@@ -224,16 +223,6 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				ce.respond(getUsageInfo());
 			}
 			else if(args[0].equals("dc=initWaypoint")){
-				try {
-					System.out.println("Receiving waypoints");
-					if(!AUAVsim){
-						byte[] wpts = readByte();
-						writeWaypoint(wpts);
-					}
-					// waypointList = getData(fname);
-				} catch(Exception e) {
-					e.printStackTree();
-				}
 				float alt=100.0f;
 				double longitude = 39.96;
 				double latitude = 82.99;
@@ -401,7 +390,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		}
 	}
 
-        void writePic(byte[] b) {
+        void writeByte(byte[] b) {
             try{
                 File f = new File("../tmp/pictmp.jpg");
                 f.delete();
@@ -414,19 +403,6 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                 e.printStackTrace();
             }
         }
-	void writeWaypoint(byte[] b) {
-	    try{
-		File f = new File(fname);
-		f.delete();
-		MappedByteBuffer out = new RandomAccessFile(fname, "rw").getChannel().map(FileChannel.MapMode.READ_WRITE, 0, b.length);
-
-		for(int j = 0; j<b.length; j++){
-			out.put(b[j]);
-		}
-	    } catch(Exception e){
-		e.printStackTrace();
-	    }
-    	}		    
         void writeYaml(String s){
             System.out.println("Write YAML:");
             try{
@@ -439,7 +415,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             //System.out.println(s);
             System.out.println("End YAML");
         }
-        byte[] readByte() throws IOException {
+        byte[] readPic() throws IOException {
             ServerSocket ss = new ServerSocket(12013);
             System.out.println("Server: Waiting for Connection");
             Socket s = ss.accept();
