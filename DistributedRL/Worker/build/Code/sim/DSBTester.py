@@ -16,6 +16,11 @@ os.chdir(cwd)
 sn=os.environ["SERVERNUM"]
 wn=os.environ["WORKERNUM"]
 
+try:
+    os.mkdir('tmp')
+except:
+    pass
+
 count = 0
 energyList = []
 for f in csvs:

@@ -16,8 +16,10 @@ knndata = None
 
 def readInData():
     global knndata
-    knndata = np.genfromtxt(sys.argv[1], delimiter=',')
-
+    try:
+        knndata = np.genfromtxt(sys.argv[1], delimiter=',')
+    except:
+        knndata = []
 def getCount():
     counts = []
 
@@ -27,7 +29,7 @@ def getCount():
         count = len(glob.glob1(i, "*.csv"))
         counts.append(count)
 
-    return [min(counts)*16,jobs]
+    return [min(counts)*20,jobs]
 
 def checkForFiles(jobs, count):
     found = 0
@@ -76,23 +78,24 @@ def rebuild(jobs, knndata):
             print(f)
         for f in glob.glob('*.JPG'):
             fname = f.split('.')[0]
-            cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
-            print(cmd)
-            out = os.popen(cmd).read().rstrip()[1:-1].split(',')
+            #cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
+            #print(cmd)
+            #out = os.popen(cmd).read().rstrip()[1:-1].split(',')
             
-            line = []
-            for feat in out:
-                line.append(float(feat.split('=')[1]))
+            #line = []
+            #for feat in out:
+            #    line.append(float(feat.split('=')[1]))
             
             data = []
             with open(pwd+'/tmp/'+str(i)+'/'+fname+'.csv') as csvf:
                 reader = csv.reader(csvf)
                 data = list(reader)[0]
         
+            line = []
             for d in data:
                 line.append(float(d))
 
-            print(line)
+            #print(line)
 
             npl = np.asarray(line).reshape((1,17))
             
@@ -102,12 +105,34 @@ def rebuild(jobs, knndata):
             #print('PART')
             #print(npl[0][1:13])
 
-            knndata = np.concatenate((knndata, npl))
+            if knndata == []:
+                knndata = npl
+            else:
+                knndata = np.concatenate((knndata, npl))
+            
             print(npl.shape)
             print(knndata.shape)
 
         os.chdir(pwd)
     return knndata
+
+def initCount():
+    count = 0;
+    sn=os.environ['SERVERNUM']
+    while(True):
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/server_'+
+                        str(sn)+'/run_'+str(count)+'/knndata && echo $?').read()
+        try:
+            if(int(out) == 0):
+                print('Update Available: '+str(count))
+                count += 1
+            else:
+                print('No New Update')
+                return count
+        except:
+            print('No New Update: '+str(count))
+            return count
+    return 0
 
 def upload(knndata, count):
     sn = os.environ['SERVERNUM']
@@ -120,11 +145,14 @@ def upload(knndata, count):
 readInData()
 
 runs,jobs = getCount()
+#count = initCount()
 count = 0
 
 print(runs)
 
 while(count < runs):
+    if(count % 5 == 0):
+        knndata = []
     print(count)
     checkForFiles(jobs, count)
     #Download all files from each dir into a temp diretcory
