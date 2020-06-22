@@ -76,7 +76,7 @@ def rebuild(jobs, knndata):
         os.chdir(pwd+'/tmp/'+str(i))
         for f in glob.glob('*'):
             print(f)
-        for f in glob.glob('*.JPG'):
+        for f in glob.glob('*.csv'):
             fname = f.split('.')[0]
             #cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
             #print(cmd)
