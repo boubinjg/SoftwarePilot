@@ -5,6 +5,9 @@ from os.path import isfile, join
 import time
 import traceback
 import shutil
+import numpy as np
+import csv
+
 
 def checkForUpdate(count, lastUpdate):
     sn = os.environ['SERVERNUM']
@@ -36,6 +39,56 @@ def checkForUpdate(count, lastUpdate):
               sn+'/run_'+str(updateCount)+'/knndata knndatasetGI').read()
 
     return updateCount
+
+def updateLocal():
+        pwd = os.getcwd()
+        print(pwd)
+        
+        knndata = np.genfromtxt('knndatasetGI',delimiter=',')
+
+        os.chdir(pwd+'/tmp/')
+        for f in glob.glob('*'):
+            print(f)
+        for f in glob.glob('*.JPG'):
+            fname = f.split('.')[0]
+            #cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
+            #print(cmd)
+            #out = os.popen(cmd).read().rstrip()[1:-1].split(',')
+
+            #line = []
+            #for feat in out:
+            #    line.append(float(feat.split('=')[1]))
+
+            data = []
+            with open(pwd+'/tmp/'+fname+'.csv') as csvf:
+                reader = csv.reader(csvf)
+                data = list(reader)[0]
+
+            line = []
+            for d in data:
+                line.append(float(d))
+
+            #print(line)
+
+            npl = np.asarray(line).reshape((1,17))
+
+            #Replace repeats in dataset with new info?
+            #print('WHOLE ARR')
+            #print(npl)
+            #print('PART')
+            #print(npl[0][1:13])
+
+            if knndata == []:
+                knndata = npl
+            else:
+                knndata = np.concatenate((knndata, npl))
+
+            print(npl.shape)
+            print(knndata.shape)
+
+        os.chdir(pwd)
+
+        np.savetxt("knndatasetGI",knndata,delimiter=',')
 
 def getCount():
     sn = os.environ['SERVERNUM']
@@ -129,13 +182,14 @@ print([lastUpdate, count])
 
 for rangeCounter in range(1,21):
     DSVal = rangeCounter*500
+    shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
     for f in csvs:
-        shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
         if(count != 0):
             print("Checking for Server Update")
             #time.sleep(300)
-            lastUpdate = checkForUpdate(count, lastUpdate)
+            #lastUpdate = checkForUpdate(count, lastUpdate)
             #lastUpdate = checkForGlobalUpdate(count, lastUpdate)
+            updateLocal()
 
         subprocess.call(['bash','runGI.bash','/home/mydata/'+f, '60', str(100*rangeCounter)])
         os.chdir('tmp/')
@@ -162,4 +216,3 @@ for rangeCounter in range(1,21):
         os.chdir(cwd)
     
         count += 1
-        '''
