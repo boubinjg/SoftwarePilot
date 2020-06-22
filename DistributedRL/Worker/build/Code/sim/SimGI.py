@@ -126,7 +126,7 @@ def errChange(gi, inmap, oldErr):
 def findNext(image, fieldmap, oldErr):
     query = getFeatures(image)
 
-    nbors = NearestNeighbors(9)
+    nbors = NearestNeighbors(int(sys.argv[5]))
     nbors.fit(knndata[:,0:12])
 
     knn = nbors.kneighbors([query[0:12]])
@@ -417,6 +417,13 @@ def findEnergy(image, visited, profile, gi):
  
 
 def writeUtilAst(visited, imdata, profile):
+    try:
+        rmtree('tmp')
+    except Exception as e:
+        print(e)
+    
+    os.mkdir("tmp")
+
     for im in visited:
         line = getImage(im)
         imageName = line[3][17:].split('/')[-1]
@@ -690,7 +697,7 @@ if __name__ == '__main__':
         mean = statistics.mean(fieldMap)
         means.append(mean)
 
-        writeIms(visited, imagedata)
+        #writeIms(visited, imagedata)
         #writeUtil(visited, imagedata)
         writeUtilAst(visited, imagedata, prof)
         #writeHDFS()
