@@ -20,6 +20,11 @@ def readInData():
         knndata = np.genfromtxt(sys.argv[1], delimiter=',')
     except:
         knndata = []
+
+def readIn(data):
+    global knndata
+    knndata = np.genfromtxt(data, delimiter=',')
+
 def getCount():
     counts = []
 
@@ -142,7 +147,7 @@ def upload(knndata, count):
     os.popen('/opt/hadoop/bin/hadoop fs -mkdir hdfs://127.0.0.1:9000/server_'+sn+'/run_'+str(count)).read()
     os.popen('/opt/hadoop/bin/hadoop fs -put tmp/knndata hdfs://127.0.0.1:9000/server_'+sn+'/run_'+str(count)).read()
 
-readInData()
+#readInData()
 
 runs,jobs = getCount()
 #count = initCount()
@@ -150,9 +155,12 @@ count = 0
 
 print(runs)
 
+sn = os.environ['SERVERNUM']
+
 while(count < runs):
     if(count % 5 == 0):
-        knndata = []
+        DSN = count*100 + 500
+        readIn('/home/mydata/Worker'+sn+'_0/knn'+str(DSN))       
     print(count)
     checkForFiles(jobs, count)
     #Download all files from each dir into a temp diretcory
