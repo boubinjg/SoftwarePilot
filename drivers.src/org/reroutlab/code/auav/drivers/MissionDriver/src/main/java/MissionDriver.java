@@ -351,7 +351,11 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 						}
                 			});
 		    		}
-			
+				System.our.println("Reading Pic");
+				if(!AUAVsim){
+					pic = readByte();
+					writePic(pic);
+				}
 			}
 			else {
 				ce.respond("Error: unknown command\n");
