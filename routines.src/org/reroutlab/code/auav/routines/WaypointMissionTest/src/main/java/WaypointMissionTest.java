@@ -248,6 +248,13 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         void config(){
             setSimOff();
 
+			auavLock("ConfigFlight");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=cfg", auavResp.ch);
+			auavSpin();
+
+			auavLock("ssm");
+			succ = invokeDriver("org.reroutlab.code.auav.drivers.CaptureImageV2Driver", "dc=ssm", auavResp.ch);
+			auavSpin();
 
             String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
             //initialize starting waypoint
