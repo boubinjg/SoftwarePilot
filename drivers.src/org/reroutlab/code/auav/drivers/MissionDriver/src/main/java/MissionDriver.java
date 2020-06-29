@@ -181,7 +181,6 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
 	private CoapServer cs;
-	private static Logger logger = Logger.getLogger(TemplateDriver.class.getName());
 	/**
 	 *		usageInfo += "help -- Add Usage Strings.<br>";
 	 *		usageInfo += "AUAVsim -- Simulate.<br>";
@@ -195,8 +194,8 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		return usageInfo;
 	}
 	//extends CoapResource class
-	private class Resource extends CoapResource {
-		public Resource(){
+	private class mdResource extends CoapResource {
+		public mdResource(){
 			super("cr");
 			getAttributes().setTitle("cr");
 		}
@@ -351,10 +350,14 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 						}
                 			});
 		    		}
-				System.our.println("Reading Pic");
-				if(!AUAVsim){
-					pic = readByte();
-					writePic(pic);
+				ce.respond("Reading Pic\n");
+				try{	
+					if(!AUAVsim){
+						pic = readByte();
+						writePic(pic);
+					}
+				}catch(Exception e){
+					System.out.println(e.getMessage());
 				}
 			}
 			else {
@@ -363,7 +366,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		}
 	}
 	public void setLogLevel(Level l){
-		logger.setLevel(l);
+		mdLogger.setLevel(l);
 	}
 
 	//-----------------------------------------------------------
@@ -384,7 +387,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		return (cs);
 	}
 	public MissionDriver() throws Exception {
-		logger.log(Level.FINEST, "In Constructor");
+		mdLogger.log(Level.FINEST, "In Constructor");
 		cs = new CoapServer(); //initilize the server
 		InetSocketAddress bindToAddress =
 				new InetSocketAddress("localhost", LISTEN_PORT);//get the address
@@ -392,9 +395,11 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		cs.addEndpoint(tmp);//add endpoint to server
 		tmp.start();//Start this endpoint and all its components.
 		driverPort = tmp.getAddress().getPort();
-		cs.add(new Resource());
+		cs.add(new mdResource());
 		}
 
+	private static Logger mdLogger = Logger.getLogger(MissionDriver.class.getName());
+	
 	public int getLocalPort() {
 		return driverPort;
 	}
@@ -465,6 +470,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             return ret;
         }
        
+/**
 	CommonCallbacks.CompletionCallback fddHandler = new CommonCallbacks.CompletionCallback() {
 		@Override
 		public void onResult(DJIError djiError) {
@@ -547,5 +553,5 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
         public void drvSpin() {
                 lockSema.acquireUninterruptibly();
               	lockSema.release();
-        }		
+        }**/		
 }	
