@@ -573,7 +573,7 @@ if __name__ == '__main__':
         #currentIm = sampleImages[1]
         wpoints += count
         count = 0
-        giTarg = 45
+        giTarg = 50
         #print("giTarg "+str(giTarg))
         totalGi = 0
         gi = 100

@@ -180,16 +180,17 @@ count = 0
 
 print([lastUpdate, count])
 
-for rangeCounter in range(1,21):
-    DSVal = rangeCounter*500
-    #DSVal = 5000
-    shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
+DSVal = 1000   
+shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
+
+for rangeCounter in range(1,17):
+    #DSVal = rangeCounter*500
     for f in csvs:
         if(count != 0):
             print("Checking for Server Update")
             #time.sleep(300)
-            lastUpdate = checkForUpdate(count, lastUpdate)
-            #lastUpdate = checkForGlobalUpdate(count, lastUpdate)
+            #lastUpdate = checkForUpdate(count, lastUpdate)
+            lastUpdate = checkForGlobalUpdate(count, lastUpdate)
             #updateLocal()
 
         subprocess.call(['bash','runGI.bash','/home/mydata/'+f, '80', str(100),'5'])

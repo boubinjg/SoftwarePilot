@@ -144,11 +144,10 @@ knnSize = 0
 
 #count = initCount()
 count = 0
+readIn('/home/mydata/datasets_Test3/knn1000')
+knnSize = getKNNSize(knndata, jobs)
+
 while(count < runs):
-    if(count % 5 == 0):
-        DSN = count*100 + 500
-        readIn('/home/mydata/datasets_Test3/knn'+str(DSN))
-        knnSize = getKNNSize(knndata, jobs)
     checkForFiles(jobs, count)
     #Download all files from each dir into a temp diretcory
     download(jobs, count);
