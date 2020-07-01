@@ -157,10 +157,9 @@ print(runs)
 
 sn = os.environ['SERVERNUM']
 
-while(count < runs):
-    if(count % 5 == 0):
-        DSN = count*100 + 500
-        readIn('/home/mydata/Worker'+sn+'_0/knn'+str(DSN))       
+readIn('/home/mydata/Worker'+sn+'_0/knn1000') 
+
+while(count < runs):  
     print(count)
     checkForFiles(jobs, count)
     #Download all files from each dir into a temp diretcory
