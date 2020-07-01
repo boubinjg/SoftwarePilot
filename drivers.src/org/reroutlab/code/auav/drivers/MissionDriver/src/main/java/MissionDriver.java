@@ -470,7 +470,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             return ret;
         }
        
-/**
+
 	CommonCallbacks.CompletionCallback fddHandler = new CommonCallbacks.CompletionCallback() {
 		@Override
 		public void onResult(DJIError djiError) {
@@ -553,5 +553,5 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
         public void drvSpin() {
                 lockSema.acquireUninterruptibly();
               	lockSema.release();
-        }**/		
+        }		
 }	
