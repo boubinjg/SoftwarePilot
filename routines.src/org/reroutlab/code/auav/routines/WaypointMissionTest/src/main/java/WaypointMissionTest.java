@@ -103,6 +103,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		static byte[] pic;
         	public String succ = "";
         	public String IP = "";
+		public String fname = "/AUAVtmp/waypoints.txt";
         	/**
 		 *	 Routines are Java Threads.  The run() function is the
 		 *	 starting point for execution.
@@ -117,14 +118,16 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 *images from said directory.
 			 */
             		String args[] = params.split("-"); //Arguments from the coap input string
-			IP = args[0].substring(3);
-			System.out.println("IP address is:"+IP);
+			//IP = args[3].substring(3);
+			//System.out.println("IP address is:"+IP);
+			IP="";
 			int PORT = 12013;
-
+			
+			
 			System.out.println("Reading Waypoint");
-	  		String fname= "/AUAVtmp/waypoints.txt";
+	  		//String fname= "/AUAVtmp/waypoints.txt";
 			byte[] b = readWaypoint(fname);
-			String meta = "";
+			//String meta = "";
 			System.out.println("Sending Waypoint");
 			try{
 				sendToPort(b,IP,PORT);
@@ -133,9 +136,10 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			}
 			System.out.println("Sent Waypoints");
 			//auavSpin();
+			config();
 			String receive = auavResp.getResponse();
 			
-            		config();
+            		
 		}
         byte[] readWaypoint(String fname){
 		
@@ -235,6 +239,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
             } catch(Exception e){
 
             }
+	    IP="192.168.1.137";
             System.out.println("Client: Trying To Connect");
             Socket socket = new Socket(IP, port);
             System.out.println("Client: Connected");
@@ -246,35 +251,32 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
         }
         //configures the camera and flight system
         void config(){
-            setSimOff();
 
-
-            String missionDriver = "org.reroutlab.code.auav.drivers.MissionDriver";
             //initialize starting waypoint
             auavLock("Initialize");
-            succ = invokeDriver(missionDriver, "dc=initWaypoint", auavResp.ch);
-            auavSpin();
+            succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=initWaypoint", "192.168.1.137", auavResp.ch,true);
+           
 
             //upload the mission
             auavLock("Upload");
-            succ = invokeDriver(missionDriver, "dc=uploadMission", auavResp.ch);
-            auavSpin();
+            succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=uploadMission","192.168.1.137", auavResp.ch,true);
+           
 
             //start the mission
             auavLock("Start");
-            succ = invokeDriver(missionDriver, "dc=startMission", auavResp.ch);
-            auavSpin();
+            succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=startMission", "192.168.1.137", auavResp.ch,true);
+           
 
             //take picture and pause mission
-            takeImg();
+            //takeImg();
             auavLock("Pause");
-            succ = invokeDriver(missionDriver, "dc=pauseMission", auavResp.ch);
-            auavSpin();
+            succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=pauseMission","192.168.1.137", auavResp.ch,true);
+            
 
             //stop the mission
             auavLock("stop");
-            succ = invokeDriver(missionDriver, "dc=stopMission", auavResp.ch);
-            auavSpin();
+            succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=stopMission","192.168.1.137", auavResp.ch,true);
+            
        	}
 	//captures image using the UAVs camera, downloads the image to the VM
 	void takeImg(){
