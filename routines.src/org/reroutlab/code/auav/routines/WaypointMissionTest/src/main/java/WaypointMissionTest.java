@@ -131,7 +131,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			//String meta = "";
 			
             		auavLock("Initialize");
-            		succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=initWaypoint", IP, auavResp.ch,true);
+            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver","dc=initWaypoint", auavResp.ch);
 			System.out.println("Sending Waypoint");
 			
 			try{
