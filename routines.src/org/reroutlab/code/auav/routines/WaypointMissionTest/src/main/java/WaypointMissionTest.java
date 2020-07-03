@@ -102,7 +102,7 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 		public String seperator = ",";
 		static byte[] pic;
         	public String succ = "";
-        	public String IP = "192.168.1.137";
+        	public String IP = "";
 		public String fname = "/AUAVtmp/waypoints.txt";
         	/**
 		 *	 Routines are Java Threads.  The run() function is the
@@ -118,8 +118,8 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			 *images from said directory.
 			 */
             		String args[] = params.split("-"); //Arguments from the coap input string
-			//IP = args[0].substring(3);
-			//System.out.println("IP address is:"+IP);
+			IP = args[0];
+			System.out.println("IP address is:"+IP);
 			int PORT = 12013;
 			
 			config();
@@ -131,7 +131,9 @@ public class WaypointMissionTest extends org.reroutlab.code.auav.routines.AuavRo
 			//String meta = "";
 			
             		auavLock("Initialize");
-            		succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver","dc=initWaypoint", auavResp.ch);
+
+            		//succ = invokeDriver("org.reroutlab.code.auav.drivers.MissionDriver","dc=initWaypoint", auavResp.ch);
+			succ = invokeHostDriver("org.reroutlab.code.auav.drivers.MissionDriver-dc=initWaypoint",IP, auavResp.ch,true);
 			System.out.println("Sending Waypoint");
 			
 			try{
