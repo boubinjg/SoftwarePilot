@@ -227,17 +227,23 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	public CoapServer getCoapServer() {
 		return (cs);
 	}
-	public MissionDriver() throws Exception {
-		mdLogger.log(Level.FINEST, "In Constructor");
-		cs = new CoapServer(); //initilize the server
-		InetSocketAddress bindToAddress =
+	public MissionDriver() {
+		try{
+			
+			mdLogger.log(Level.FINEST, "In Constructor");
+			cs = new CoapServer(); //initilize the server
+			InetSocketAddress bindToAddress =
 				new InetSocketAddress(LISTEN_PORT);//get the address
-		CoapEndpoint tmp = new CoapEndpoint(bindToAddress); //create endpoint
-		cs.addEndpoint(tmp);//add endpoint to server
-		tmp.start();//Start this endpoint and all its components.
-		driverPort = tmp.getAddress().getPort();
-		cs.add(new mdResource());
+			CoapEndpoint tmp = new CoapEndpoint(bindToAddress); //create endpoint
+			cs.addEndpoint(tmp);//add endpoint to server
+			tmp.start();//Start this endpoint and all its components.
+			driverPort = tmp.getAddress().getPort();
+			cs.add(new mdResource());
+		}catch(Exception e){
 		}
+
+
+	}
 
 
 	
