@@ -181,6 +181,8 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
 	private CoapServer cs;
+	
+	private static Logger mdLogger = Logger.getLogger(MissionDriver.class.getName());
 	/**
 	 *		usageInfo += "help -- Add Usage Strings.<br>";
 	 *		usageInfo += "AUAVsim -- Simulate.<br>";
@@ -193,6 +195,54 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		usageInfo += "AUAVsim -- Simulate.\n";
 		return usageInfo;
 	}
+
+	public void setLogLevel(Level l){
+		mdLogger.setLevel(l);
+	}
+
+	public int getLocalPort() {
+		return driverPort;
+	}
+	private HashMap driver2port;  // key=drivername value={port,usageInfo}
+	
+	public void setDriverMap(HashMap<String, String> m) {
+		if (m != null) {
+			driver2port = new HashMap<String, String>(m);
+		}
+	}
+	//-----------------------------------------------------------
+	// The code below is largely templated material that won't
+	// change much between drivers.  However, I have not added
+	// to the interface class in case there is a need for
+	// customization as the projects advance.
+	//
+	// Obviously, this makes updating all drivers challenging,
+	// but c'est la vie
+	//
+	// - Christopher Stewart
+	// September 18
+	//-----------------------------------------------------------
+		
+	
+	public CoapServer getCoapServer() {
+		return (cs);
+	}
+	public MissionDriver() throws Exception {
+		mdLogger.log(Level.FINEST, "In Constructor");
+		cs = new CoapServer(); //initilize the server
+		InetSocketAddress bindToAddress =
+				new InetSocketAddress(LISTEN_PORT);//get the address
+		CoapEndpoint tmp = new CoapEndpoint(bindToAddress); //create endpoint
+		cs.addEndpoint(tmp);//add endpoint to server
+		tmp.start();//Start this endpoint and all its components.
+		driverPort = tmp.getAddress().getPort();
+		cs.add(new mdResource());
+		}
+
+
+	
+
+
 	//extends CoapResource class
 	private class mdResource extends CoapResource {
 		public mdResource(){
@@ -365,50 +415,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			}
 		}
 	}
-	public void setLogLevel(Level l){
-		mdLogger.setLevel(l);
-	}
 
-	//-----------------------------------------------------------
-	// The code below is largely templated material that won't
-	// change much between drivers.  However, I have not added
-	// to the interface class in case there is a need for
-	// customization as the projects advance.
-	//
-	// Obviously, this makes updating all drivers challenging,
-	// but c'est la vie
-	//
-	// - Christopher Stewart
-	// September 18
-	//-----------------------------------------------------------
-		
-	
-	public CoapServer getCoapServer() {
-		return (cs);
-	}
-	public MissionDriver() throws Exception {
-		mdLogger.log(Level.FINEST, "In Constructor");
-		cs = new CoapServer(); //initilize the server
-		InetSocketAddress bindToAddress =
-				new InetSocketAddress("localhost", LISTEN_PORT);//get the address
-		CoapEndpoint tmp = new CoapEndpoint(bindToAddress); //create endpoint
-		cs.addEndpoint(tmp);//add endpoint to server
-		tmp.start();//Start this endpoint and all its components.
-		driverPort = tmp.getAddress().getPort();
-		cs.add(new mdResource());
-		}
-
-	private static Logger mdLogger = Logger.getLogger(MissionDriver.class.getName());
-	
-	public int getLocalPort() {
-		return driverPort;
-	}
-	private HashMap driver2port;  // key=drivername value={port,usageInfo}
-	public void setDriverMap(HashMap<String, String> m) {
-		if (m != null) {
-			driver2port = new HashMap<String, String>(m);
-		}
-	}
 
         void writePic(byte[] b) {
             try{
@@ -491,7 +498,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                 int count = 0;
                 CoapExchange ce;
                 boolean send;
-		private String LOG_TAG="FlightTimeTask.MissionDriver ";
+		private String LOG_TAG="FlightTimeTask.FlyDroneDriver ";
 		FlightTimerTask(FlightControlData input) {
 			super();
 			fcd = input;
