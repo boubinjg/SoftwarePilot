@@ -290,12 +290,12 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					System.out.println(e.getMessage());
 				}
 				float alt=100.0f;
-				double longitude = 39.96;
-				double latitude = 82.99;
+				double longitude = 27.2038;
+				double latitude = 77.5011;
 				Waypoint p = new Waypoint(longitude,latitude,alt);
 
-				double longitude2 = 39.97;
-				double latitude2 = 83.00;
+				double longitude2 = 27.2039;
+				double latitude2 = 77.5011;
 				Waypoint p2 = new Waypoint(longitude2,latitude2,alt);
 				
 				if (builder != null){
@@ -308,7 +308,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					waypointList.add(p2);
 					builder.waypointList(waypointList).waypointCount(waypointList.size());
 				}
-
+				ce.respond("Done");
 			}else if(args[0].equals("dc=uploadMission")){
 							
        	    			//WaypointMission wMission = null;
@@ -332,6 +332,10 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					}
 				}
 
+	    			if (instance == null){
+		    			instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			}
+
 				DJIError error = instance.loadMission(builder.build());
 				if (error == null){
 					System.out.println("uploaded Mission Successfully");
@@ -352,6 +356,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                	 			});
 		 		}
 
+				ce.respond("Done");
 			}else if(args[0].equals("dc=startMission")){					
 				
 	    			if (instance == null){
@@ -372,6 +377,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                 			});
 		    		}
 
+				ce.respond("Done");
 			}else if(args[0].equals("dc=stopMission")){					
 	    			if (instance == null){
 					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
@@ -387,6 +393,8 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 						}
 					});
 				}
+				
+				ce.respond("Done");
 			}else if (args[0].equals("dc=pauseMission")){
 				
 	    			if (instance == null){
@@ -415,6 +423,8 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				}catch(Exception e){
 					System.out.println(e.getMessage());
 				}
+
+				ce.respond("Done");
 			}
 			else {
 				ce.respond("Error: unknown command\n");
