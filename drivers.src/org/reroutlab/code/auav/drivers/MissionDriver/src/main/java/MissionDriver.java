@@ -292,26 +292,17 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				float alt=100.0f;
 				double longitude = 27.2038;
 				double latitude = 77.5011;
-				Waypoint p = new Waypoint(longitude,latitude,alt);
+				Waypoint p = new Waypoint(latitude,longitude,alt);
 
 				double longitude2 = 27.2039;
 				double latitude2 = 77.5011;
-				Waypoint p2 = new Waypoint(longitude2,latitude2,alt);
+				Waypoint p2 = new Waypoint(latitude2,longitude2,alt);
 				
-				if (builder != null){
-					waypointList.add(p);
-					waypointList.add(p2);
-					builder.waypointList(waypointList).waypointCount(waypointList.size());
-				}else{
-					builder = new WaypointMission.Builder();
-					waypointList.add(p);
-					waypointList.add(p2);
-					builder.waypointList(waypointList).waypointCount(waypointList.size());
-				}
-				ce.respond("Done");
-			}else if(args[0].equals("dc=uploadMission")){
-							
-       	    			//WaypointMission wMission = null;
+				
+				double longitude3 = 27.2038;
+				double latitude3 = 77.5010;
+				Waypoint p3 = new Waypoint(latitude3,longitude3,alt);
+
 				if (builder == null){
 					builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
 									       .headingMode(tHeadingMode)
@@ -326,12 +317,31 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 						.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
 				}
 
+				//if (builder.getWaypointList().size() > 0){
+				//	for(int i=0; i < builder.getWaypointList().size();i++){
+				//		builder.getWaypointList().get(i).altitude = altitude;
+				//	}
+				//}
+				//if (builder != null){
+				waypointList.add(p);
+				waypointList.add(p2);
+				waypointList.add(p3);
+				builder.waypointList(waypointList).waypointCount(waypointList.size());
+				
 				if (builder.getWaypointList().size() > 0){
 					for(int i=0; i < builder.getWaypointList().size();i++){
 						builder.getWaypointList().get(i).altitude = altitude;
 					}
 				}
-
+				//}else{
+				//	builder = new WaypointMission.Builder();
+				//	waypointList.add(p);
+				//	waypointList.add(p2);
+				//	waypointList.add(p3);
+				//	builder.waypointList(waypointList).waypointCount(waypointList.size());
+				//}
+				ce.respond("Done");
+			}else if(args[0].equals("dc=uploadMission")){
 	    			if (instance == null){
 		    			instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 	    			}
@@ -359,9 +369,9 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				ce.respond("Done");
 			}else if(args[0].equals("dc=startMission")){					
 				
-	    			if (instance == null){
-					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    			}
+	    			//if (instance == null){
+				//	instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			//}
 
 		    		if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
 					instance.startMission(new CommonCallbacks.CompletionCallback() {
