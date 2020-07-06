@@ -14,4 +14,4 @@ org.reroutlab.code.auav.drivers.CaptureImageV2Driver.jar
 org.reroutlab.code.auav.drivers.PicTraceDriver.jar
 #org.reroutlab.code.auav.drivers.CatchImageDriver.jar
 org.reroutlab.code.auav.drivers.CaptureImageDriver.jar
-
+org.reroutlab.code.auav.drivers.MissionDriver.jar

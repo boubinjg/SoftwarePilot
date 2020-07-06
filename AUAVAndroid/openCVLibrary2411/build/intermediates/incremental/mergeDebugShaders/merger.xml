@@ -1,2 +1,2 @@
 <?xml version="1.0" encoding="utf-8"?>
-<merger version="3"><dataSet config="main"><source path="/home/SoftwarePilot/AUAVAndroid/openCVLibrary2411/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/home/SoftwarePilot/AUAVAndroid/openCVLibrary2411/src/debug/shaders"/></dataSet></merger>
+<merger version="3"><dataSet config="main"><source path="/home/jayson/Github/SoftwarePilot/AUAVAndroid/openCVLibrary2411/src/main/shaders"/></dataSet><dataSet config="debug"><source path="/home/jayson/Github/SoftwarePilot/AUAVAndroid/openCVLibrary2411/src/debug/shaders"/></dataSet></merger>
