@@ -167,7 +167,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	public static WaypointMission.Builder builder;
 	private WaypointMission mission;
 	//public static WaypointMission.Builder builder;
-	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
+	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.GO_HOME;
 	private WaypointMissionHeadingMode tHeadingMode=WaypointMissionHeadingMode.AUTO;
 	private float tSpeed = 10.0f;
 	private float tMaxSpeed = 10.0f;
