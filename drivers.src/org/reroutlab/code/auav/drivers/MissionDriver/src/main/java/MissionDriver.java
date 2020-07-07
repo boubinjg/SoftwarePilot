@@ -117,6 +117,8 @@ import dji.sdk.battery.Battery;
 import dji.sdk.remotecontroller.RemoteController;
 import dji.sdk.sdkmanager.DJISDKManager;
 import dji.common.battery.*;
+import dji.common.model.LocationCoordinate2D;
+import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.ConnectionFailSafeBehavior;
 import dji.common.flightcontroller.FlightControllerState;
 import dji.common.flightcontroller.virtualstick.FlightControlData;
@@ -139,6 +141,7 @@ import java.io.File;
 import java.nio.channels.FileChannel;
 import java.io.PrintWriter;
 import java.util.List;
+import dji.sdk.products.Aircraft;
 /**
  * This is a Driver Template
  * It exists to facilitate the construction of new Drivers
@@ -162,21 +165,25 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
         public String IP = "";
 	
 	//public String line = "";
-	public String fname = "../tmp/waypoints.txt";
+	public String fname = "../AUAVtmp/waypoints.txt";
 	public String seperator = ",";
-	public static WaypointMission.Builder builder;
+	public WaypointMission.Builder builder;
+
+	private FlightController fc;	
 	private WaypointMission mission;
 	//public static WaypointMission.Builder builder;
 	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.GO_HOME;
 	private WaypointMissionHeadingMode tHeadingMode=WaypointMissionHeadingMode.AUTO;
 	private float tSpeed = 10.0f;
 	private float tMaxSpeed = 10.0f;
+	private double homeLatitude = 27.2038;
+	private double homeLongitude = 77.5011;
 
 	private List<Waypoint> waypointList = new ArrayList<>();
 
 	private WaypointMissionOperator instance;
 	private WaypointMissionOperatorListener listener;
-	
+	//public abstract void setHomeLocation (DJILocationCoordinate2D homePoint, DJICommonCallbacks.DJICompletionCallback callback)	
 	
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
@@ -290,17 +297,16 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					System.out.println(e.getMessage());
 				}
 				float alt=100.0f;
-				double longitude = 27.2038;
-				double latitude = 77.5011;
+				double longitude = 77.5011;
+				double latitude = 27.2038;
 				Waypoint p = new Waypoint(latitude,longitude,alt);
 
-				double longitude2 = 27.2039;
-				double latitude2 = 77.5011;
+				double longitude2 = 77.5011; 
+				double latitude2 = 27.2039;
 				Waypoint p2 = new Waypoint(latitude2,longitude2,alt);
 				
-				
-				double longitude3 = 27.2038;
-				double latitude3 = 77.5010;
+				double longitude3 = 77.5010;
+				double latitude3 = 27.2038;
 				Waypoint p3 = new Waypoint(latitude3,longitude3,alt);
 
 				if (builder == null){
@@ -328,6 +334,8 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				waypointList.add(p3);
 				builder.waypointList(waypointList).waypointCount(waypointList.size());
 				
+				System.out.println("InitWaypoint: The number of waypoints in builder:"+builder.getWaypointList().size());
+
 				if (builder.getWaypointList().size() > 0){
 					for(int i=0; i < builder.getWaypointList().size();i++){
 						builder.getWaypointList().get(i).altitude = altitude;
@@ -342,10 +350,65 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				//}
 				ce.respond("Done");
 			}else if(args[0].equals("dc=uploadMission")){
+
+				
+
+
+				//mFlightController.setStateCallback(new FlightControllerState.Callback() {
+            			//@Override
+            			//public void onUpdate(FlightControllerState djiFlightControllerCurrentState) {
+                    		//	 djiFlightControllerCurrentState.setHomeLocation(new LocationCoordinate2D(homeLatitude, homeLongitude));
+            			//	}
+        			//});
+				if (builder == null){
+					builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
+									       .headingMode(tHeadingMode)
+									       .autoFlightSpeed(tSpeed)
+									       .maxFlightSpeed(tMaxSpeed)
+									       .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+				}else{
+					builder.finishedAction(tFinishedAction)
+						.headingMode(tHeadingMode)
+						.autoFlightSpeed(tSpeed)
+						.maxFlightSpeed(tMaxSpeed)
+						.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
+				}
+
+				System.out.println("UploadMission: The number of waypoints in builder:"+builder.getWaypointList().size());
+
+				//if (fc == null){
+				System.out.println("UploadedMission: set up flight controller");
+				Aircraft mAircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
+				FlightController fc = mAircraft.getFlightController();
+				//}
+        			//if (mFlightController != null) {		
+                    		//fc.setHomeLocation(new LocationCoordinate2D(homeLatitude, homeLongitude),
+
+                    		fc.setHomeLocationUsingAircraftCurrentLocation(new CommonCallbacks.CompletionCallback() {
+            				@Override
+            				public void onResult(DJIError mError) {
+              					if (mError != null){
+							System.out.println("setHomeLocation Failed:"+ mError.getDescription());
+              					}
+            				}
+    				});
+					//mFlightController.setHomeLocation(new LocationCoordinate2D(homeLatitude, homeLongitude),
+                			//	    new FlightControllerState.Callback() {
+	       				//mFlightController.setStateCallback(
+                			//	    new FlightControllerState.Callback() {
+                			//@Override
+                			//public void onUpdate(FlightControllerState djiFlightControllerCurrentState) {
+                			//    droneLocationLat = djiFlightControllerCurrentState.getAircraftLocation().getLatitude();
+                			//    droneLocationLng = djiFlightControllerCurrentState.getAircraftLocation().getLongitude();
+                			//    updateDroneLocation();
+
+                			//}
+            				//});
+        			//}	
+
 	    			if (instance == null){
 		    			instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    			}
-
+				}
 				DJIError error = instance.loadMission(builder.build());
 				if (error == null){
 					System.out.println("uploaded Mission Successfully");
@@ -369,9 +432,9 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				ce.respond("Done");
 			}else if(args[0].equals("dc=startMission")){					
 				
-	    			//if (instance == null){
-				//	instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    			//}
+	    			if (instance == null){
+					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			}
 
 		    		if(instance.getCurrentState() == WaypointMissionState.READY_TO_EXECUTE) {
 					instance.startMission(new CommonCallbacks.CompletionCallback() {
@@ -389,9 +452,9 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 
 				ce.respond("Done");
 			}else if(args[0].equals("dc=stopMission")){					
-	    			if (instance == null){
-					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    			}
+	    			//if (instance == null){
+				//	instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+	    			//}
 
 		    		if((instance.getCurrentState() == WaypointMissionState.EXECUTING)||(instance.getCurrentState() == WaypointMissionState.EXECUTION_PAUSED)){
 					instance.stopMission(new CommonCallbacks.CompletionCallback() {
@@ -425,14 +488,14 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                 			});
 		    		}
 				ce.respond("Reading Pic\n");
-				try{	
-					if(!AUAVsim){
-						pic = readByte();
-						writePic(pic);
-					}
-				}catch(Exception e){
-					System.out.println(e.getMessage());
-				}
+				//try{	
+					//if(!AUAVsim){
+					//	pic = readByte();
+					//	writePic(pic);
+					//}
+				//}catch(Exception e){
+				//	System.out.println(e.getMessage());
+				//}
 
 				ce.respond("Done");
 			}
