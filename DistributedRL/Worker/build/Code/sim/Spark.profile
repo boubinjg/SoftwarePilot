@@ -8,5 +8,5 @@ Forward=      127.224, 5
 Backward=     130.302, 5
 TakeoffLand=  52.765,  14
 GimbalMove=   106.704, 1
-ImageCapture= 84.54,   5
+ImageCapture= 84.54,   1
 Hover=        57.28,   1

@@ -2,6 +2,13 @@ import sys
 
 f = open(sys.argv[1],'r')
 lines = f.readlines()
-for line in lines:
-	num = line.split(' ')[2].strip()
-	print(num)
+for i in range(0,3):
+	if(i == 0):
+		print('UAV Energy')
+	elif(i == 1):
+		print('Edge Energy')
+	elif(i == 2):
+		print('Time')
+	for line in lines:
+		num = line[2:].rstrip().split(',')
+		print(num[i])

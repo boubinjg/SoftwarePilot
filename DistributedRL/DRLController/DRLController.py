@@ -98,8 +98,8 @@ if __name__ == "__main__":
 	#Currently Assuming HDFS instance runs independently of DRL Controller
 	#startHDFS()
 	
-	#consoleLog("Starting Global")
-	#startGlobal()
+	consoleLog("Starting Global")
+	startGlobal()
 	consoleLog("Starting Servers")
 	serverList = startServers(args.servers[0])
 	consoleLog("Starting Workers")

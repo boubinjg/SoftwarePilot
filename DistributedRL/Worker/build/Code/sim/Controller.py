@@ -7,7 +7,7 @@ import traceback
 import shutil
 import numpy as np
 import csv
-
+import time
 
 def checkForUpdate(count, lastUpdate):
     sn = os.environ['SERVERNUM']
@@ -157,6 +157,16 @@ def checkForGlobalUpdate(count, lastUpdate):
               '/run_'+str(updateCount)+'/knndata knndatasetGI').read()
     return updateCount
 
+def get_size(start_path):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+    return total_size
+
 cwd = os.getcwd()
 csvs = []
 os.chdir("/home/mydata/")
@@ -180,11 +190,14 @@ count = 0
 
 print([lastUpdate, count])
 
-DSVal = 1000   
+start = time.time()
+
+DSVal = 1500  
 shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
 
-for rangeCounter in range(1,17):
+for rangeCounter in range(1,2):
     #DSVal = rangeCounter*500
+    shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
     for f in csvs:
         if(count != 0):
             print("Checking for Server Update")
@@ -193,7 +206,7 @@ for rangeCounter in range(1,17):
             lastUpdate = checkForGlobalUpdate(count, lastUpdate)
             #updateLocal()
 
-        subprocess.call(['bash','runGI.bash','/home/mydata/'+f, '80', str(100),'5'])
+        subprocess.call(['bash','runNet.bash','/home/mydata/'+f, '80', str(100),'5'])
         os.chdir('tmp/')
 
         #subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
@@ -204,7 +217,22 @@ for rangeCounter in range(1,17):
         f.truncate(0)
         f.write('len = '+str(nImgs)+'\n')
         energy = open('/home/sim/tmp/energy','r+')
-        f.write(energy.read()+'\n')
+        
+        contents = energy.read()
+
+        '''
+        tput = float(contents.split()[7]) * (1024*1024)
+
+        transferSize = get_size('/home/sim/tmp')
+        transferTime = transferSize/tput
+        print(transferTime)
+        time.sleep(transferTime)
+        contents += 'Transfer Time: '+str(transferTime)+'\n'
+        '''
+        f.write(contents+'\n')       
+        
+        #print('Transfer Size: '+str(transferSize))
+
         energy.close()
         f.close()
 
@@ -213,8 +241,20 @@ for rangeCounter in range(1,17):
         #for x in glob.glob("*.*"):
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/'])
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mv','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/tmp','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
-   
+
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-touchz','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/done"])
         os.chdir(cwd)
     
+        
+        end = time.time()
+        print("Time so far: "+str(end-start))
         count += 1
+
+end = time.time()
+print(end-start)
+
+f = open('/home/sim/tmp/runtime','w+')
+f.write('Total Time: '+str(end-start)+'\n')
+f.close()
+
+subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/runtime','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/'])
