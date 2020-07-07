@@ -83,9 +83,9 @@ def rebuild(jobs, knndata):
             print(f)
         for f in glob.glob('*.csv'):
             fname = f.split('.')[0]
-            #cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
+            cmd = 'bash '+pwd+'/Parser/runParser.sh '+pwd+'/tmp/'+str(i)+'/'+f
             #print(cmd)
-            #out = os.popen(cmd).read().rstrip()[1:-1].split(',')
+            out = os.popen(cmd).read().rstrip()[1:-1].split(',')
             
             #line = []
             #for feat in out:
@@ -157,7 +157,7 @@ print(runs)
 
 sn = os.environ['SERVERNUM']
 
-readIn('/home/mydata/Worker'+sn+'_0/knn1000') 
+readIn('/home/mydata/Worker'+sn+'_0/knn8000') 
 
 while(count < runs):  
     print(count)

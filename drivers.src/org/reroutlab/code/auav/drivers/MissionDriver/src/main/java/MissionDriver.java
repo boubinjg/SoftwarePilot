@@ -168,8 +168,11 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	public String fname = "../AUAVtmp/waypoints.txt";
 	public String seperator = ",";
 	public WaypointMission.Builder builder;
+<<<<<<< HEAD
 
 	private FlightController fc;	
+=======
+>>>>>>> 8bc08ce5c45bf0b6a4a3fbae604f50bedce6800c
 	private WaypointMission mission;
 	//public static WaypointMission.Builder builder;
 	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.GO_HOME;
