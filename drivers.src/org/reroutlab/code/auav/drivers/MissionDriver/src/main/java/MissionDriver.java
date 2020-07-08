@@ -466,7 +466,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             Socket s = ss.accept();
             System.out.println("Server: Connection Reached");
 
-            s = ss.accept();
+            //s = ss.accept();
             DataInputStream dIn = new DataInputStream(s.getInputStream());
             byte[] ret = new byte[0];
             //dIn.readInt();
