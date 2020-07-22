@@ -202,8 +202,8 @@ for rangeCounter in range(1,2):
         if(count != 0):
             print("Checking for Server Update")
             #time.sleep(300)
-            #lastUpdate = checkForUpdate(count, lastUpdate)
-            lastUpdate = checkForGlobalUpdate(count, lastUpdate)
+            lastUpdate = checkForUpdate(count, lastUpdate)
+            #lastUpdate = checkForGlobalUpdate(count, lastUpdate)
             #updateLocal()
 
         subprocess.call(['bash','runNet.bash','/home/mydata/'+f, '80', str(100),'5'])
@@ -220,18 +220,17 @@ for rangeCounter in range(1,2):
         
         contents = energy.read()
 
-        '''
         tput = float(contents.split()[7]) * (1024*1024)
 
         transferSize = get_size('/home/sim/tmp')
         transferTime = transferSize/tput
         print(transferTime)
-        time.sleep(transferTime)
+        #time.sleep(transferTime)
         contents += 'Transfer Time: '+str(transferTime)+'\n'
-        '''
+
         f.write(contents+'\n')       
         
-        #print('Transfer Size: '+str(transferSize))
+        print('Transfer Size: '+str(transferSize))
 
         energy.close()
         f.close()

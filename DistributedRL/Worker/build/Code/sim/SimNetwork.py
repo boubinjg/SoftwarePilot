@@ -21,7 +21,7 @@ edgeProfile = []
 netProfile = []
 profileName = 'Spark.profile'
 edgeProfileName = 'Profiles/4ci7.profile'
-netProfileName = 'Profiles/5g.profile'
+netProfileName = 'Profiles/lpwan.profile'
 
 class Node:
         f = 0
@@ -531,9 +531,18 @@ def writeIms(visited,imdata):
 #    for f in glob.glob("/home/sim/tmp/*"):
 #        subprocess.call(["hadoop","fs","-put",f,"hdfs://127.0.0.1:9000/"+direc])
 
+def get_size(start_path):
+    total_size = 0
+    for dirpath, dirnames, filenames in os.walk(start_path):
+        for f in filenames:
+            fp = os.path.join(dirpath, f)
+            # skip if it is symbolic link
+            if not os.path.islink(fp):
+                total_size += os.path.getsize(fp)
+    return total_size
 
 def actionSleep(sleepTime):
-    time.sleep(sleepTime)
+    #time.sleep(sleepTime)
     return 0
 
 if __name__ == '__main__':
@@ -797,8 +806,13 @@ if __name__ == '__main__':
         mean = statistics.mean(fieldMap)
         means.append(mean)
 
+
         writeIms(visited, imagedata)
         #writeUtil(visited, imagedata)
+        
+        
+        
+        
         writeUtilAst(visited, imagedata, prof)
         #writeHDFS()
         '''
@@ -810,9 +824,16 @@ if __name__ == '__main__':
             except:
                 pass #row,col is not in range of sample space
         '''
+    
+    tput = float(netProf[0]) * (1024*1024)
+    transferSize = get_size('/home/sim/tmp')
+    transferTime = transferSize/tput
+    print(transferTime)
+    actionSleep(transferTime)
+    edgeEnergy += edgeProf[3]*transferTime
+
     print("Mean GI:" + str(mean))
     writeEnergy(energy, edgeEnergy, flightTime, netProf[0])
     print('UAV Energy: '+str(energy))
     print('Edge Energy: '+str(edgeEnergy))
     print('Flight Time: '+str(flightTime))
-

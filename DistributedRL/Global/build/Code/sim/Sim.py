@@ -144,7 +144,7 @@ knnSize = 0
 
 #count = initCount()
 count = 0
-readIn('/home/mydata/datasets_Test3/knn8000')
+readIn('/home/mydata/datasets_Test3/knn1500')
 knnSize = getKNNSize(knndata, jobs)
 
 while(count < runs):
