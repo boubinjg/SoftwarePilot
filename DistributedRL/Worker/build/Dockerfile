@@ -75,6 +75,9 @@ VOLUME /var/lib/cassandra
 RUN pip3 install setuptools
 RUN pip3 install cassandra-driver
 
+RUN pip3 install sklearn
+RUN pip3 install hyperopt
+
 RUN mkdir /home/tools
 COPY /Code/tools /home/tools
 COPY /Code/sim /home/sim
@@ -83,5 +86,3 @@ COPY /Code/run.sh run.sh
 #Expose ports
 EXPOSE 12013
 EXPOSE 5117
-
-run pip3 install sklearn

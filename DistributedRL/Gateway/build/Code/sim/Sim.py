@@ -157,7 +157,7 @@ print(runs)
 
 sn = os.environ['SERVERNUM']
 
-readIn('/home/mydata/Worker'+sn+'_0/knn8000') 
+readIn('/home/mydata/Worker'+sn+'_0/knn1500') 
 
 while(count < runs):  
     print(count)

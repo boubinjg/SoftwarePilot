@@ -40,7 +40,7 @@ for dir in dirs:
 	print('writeVal')
 	f.write(writeVal)
 	f.close()
-'''
+
 try:
 	subprocess.call(['hadoop', 'fs', '-get', 'hdfs://127.0.0.1:9000/worker0_0/runtime', 'Results/runtime00'])
 except:
@@ -57,4 +57,4 @@ try:
 	subprocess.call(['hadoop', 'fs', '-get', 'hdfs://127.0.0.1:9000/worker1_1/runtime', 'Results/runtime11'])
 except:
 	pass
-'''
+

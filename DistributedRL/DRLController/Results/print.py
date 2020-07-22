@@ -11,4 +11,4 @@ for i in range(0,3):
 		print('Time')
 	for line in lines:
 		num = line[2:].rstrip().split(',')
-		print(num[i])
+		print(num[i].replace(':','').strip())
