@@ -11,6 +11,7 @@ import time
 
 def checkForUpdate(count, lastUpdate):
     sn = os.environ['SERVERNUM']
+    hdfs = os.environ['HDFS']
     updateCount = -1
     print("UPDATE CHECK: SERVER")
     print([count, lastUpdate])
@@ -20,7 +21,7 @@ def checkForUpdate(count, lastUpdate):
         for i in range(lastUpdate+1, count):
             print([i,count])
             print("In Check "+str(i))
-            out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/server_'+
+            out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://'+hdfs+':9000/server_'+
                   sn+'/run_'+str(i)+'/knndata && echo $?').read()
             try:
                 if(int(out) == 0):
@@ -35,7 +36,7 @@ def checkForUpdate(count, lastUpdate):
             os.remove('knndatasetGI')
         except:
             pass
-        out = os.popen('/opt/hadoop/bin/hadoop fs -copyToLocal hdfs://127.0.0.1:9000/server_'+
+        out = os.popen('/opt/hadoop/bin/hadoop fs -copyToLocal hdfs://'+hdfs+':9000/server_'+
               sn+'/run_'+str(updateCount)+'/knndata knndatasetGI').read()
 
     return updateCount
@@ -92,11 +93,12 @@ def updateLocal():
 
 def getCount():
     sn = os.environ['SERVERNUM']
+    hdfs = os.environ['HDFS']
     updateCount = -1
     check = 0
     while(True):
         print("Looking for update: "+str(check))
-        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/server_'+
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://'+hdfs+':9000/server_'+
                   sn+'/run_'+str(check)+'/knndata && echo $?').read()
         try:
             if(int(out) == 0):
@@ -114,9 +116,11 @@ def getCount():
 def getCountGlobal():
     updateCount = -1
     check = 0
+    hdfs = os.environ['HDFS']
+
     while(True):
         print("Looking for update: "+str(check))
-        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/global/run_'+str(check)+'/knndata && echo $?').read()
+        out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://'+hdfs+':9000/global/run_'+str(check)+'/knndata && echo $?').read()
         try:
             if(int(out) == 0):
                 updateCount = check
@@ -135,11 +139,12 @@ def checkForGlobalUpdate(count, lastUpdate):
     updateCount = -1
     print([count, lastUpdate])
     print("UPDATE CHECK: GLOBAL")
+    hdfs = os.environ['HDFS']
     while(updateCount == -1):
         time.sleep(10)
         for i in range(lastUpdate+1, count):
             print("In Check GLOBAL"+str(i))
-            out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://127.0.0.1:9000/global/run_'+str(i)+'/knndata && echo $?').read()
+            out = os.popen('/opt/hadoop/bin/hadoop fs -test -e hdfs://'+hdfs+':9000/global/run_'+str(i)+'/knndata && echo $?').read()
             try:
                 if(int(out) == 0):
                     updateCount = i
@@ -153,7 +158,7 @@ def checkForGlobalUpdate(count, lastUpdate):
             os.remove('knndatasetGI')
         except:
             pass
-        out = os.popen('/opt/hadoop/bin/hadoop fs -copyToLocal hdfs://127.0.0.1:9000/global'+
+        out = os.popen('/opt/hadoop/bin/hadoop fs -copyToLocal hdfs://'+hdfs+':9000/global'+
               '/run_'+str(updateCount)+'/knndata knndatasetGI').read()
     return updateCount
 
@@ -177,9 +182,10 @@ os.chdir(cwd)
 
 sn=os.environ["SERVERNUM"]
 wn=os.environ["WORKERNUM"]
-    
+hdfs = os.environ['HDFS']
+
 try:
-    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir', 'hdfs://127.0.0.1:9000/worker'+sn+'_'+wn])
+    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir', 'hdfs://'+hdfs+':9000/worker'+sn+'_'+wn])
 except Exception as e:
     print(e)
 
@@ -196,6 +202,7 @@ DSVal = 1500
 shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
 
 for rangeCounter in range(1,2):
+    hdfs = os.environ['HDFS']
     #DSVal = rangeCounter*500
     shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
     for f in csvs:
@@ -238,10 +245,10 @@ for rangeCounter in range(1,2):
         os.remove('/home/sim/tmp/energy')
 
         #for x in glob.glob("*.*"):
-        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/'])
-        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mv','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/tmp','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
+        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/','hdfs://'+hdfs+':9000/worker'+sn+'_'+wn+'/'])
+        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mv','hdfs://'+hdfs+':9000/worker'+sn+'_'+wn+'/tmp','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
 
-        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-touchz','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/done"])
+        subprocess.call(['/opt/hadoop/bin/hadoop','fs','-touchz','hdfs://'+hdfs+':9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/done"])
         os.chdir(cwd)
     
         
@@ -256,4 +263,4 @@ f = open('/home/sim/tmp/runtime','w+')
 f.write('Total Time: '+str(end-start)+'\n')
 f.close()
 
-subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/runtime','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/'])
+subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/tmp/runtime','hdfs://'+hdfs+':9000/worker'+sn+'_'+wn+'/'])

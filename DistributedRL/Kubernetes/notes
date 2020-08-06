@@ -1,0 +1,5 @@
+Mounting:
+    To mount, use minikube as such:
+        minikube mount /Dir/To/Mount:/Loc/In/MiniKube
+    Whichever shell runs this cmd must stay open while you want to use
+    this mount point

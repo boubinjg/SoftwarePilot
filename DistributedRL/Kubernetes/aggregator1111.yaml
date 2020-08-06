@@ -1,0 +1,22 @@
+apiVersion: v1
+kind: Pod
+metadata:
+    name: aggregator1111
+spec:
+    containers:
+    - image: jaysonboubin/aggregator:latest
+      name: aggregator1111
+      command: ["bash"]
+      args: ["run.sh"]
+      volumeMounts:
+      - mountPath: /home/mydata
+        name: mydata
+      env:
+      - name: Models
+        value: "1111"
+      - name: HDFS
+        value: "10.0.0.6"
+    volumes:
+    - name: mydata
+      hostPath:
+        path: /host/Data/
