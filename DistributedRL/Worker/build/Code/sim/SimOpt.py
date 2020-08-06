@@ -17,10 +17,7 @@ import time
 from operator import itemgetter
 
 imagedata = []
-knndataInit = None
-knndataLoc = None
-knndataGlob = None
-knndataGate = None
+knndataSet = [] 
 profile = []
 edgeProfile = []
 netProfile = []
@@ -68,31 +65,16 @@ def gpsDist(coord1, coord2):
     return 2*R*math.atan2(math.sqrt(a), math.sqrt(1 - a))
 
 def readInData():
-    global imagedata, knndataInit, knndataLoc, knndataGate, knndataGlob
+    global imagedata, knndataSet
     with open(sys.argv[1], 'rt', encoding="utf-8") as data:
         reader = csv.reader(data)
         imagedata.append(list(reader))
 
     imagedata = imagedata[0]
-    try:
-        knndataInit = np.genfromtxt(sys.argv[2], delimiter=',')
-    except:
-        knndataInit = []
-
-    try:
-        knndataLoc = np.genfromtxt(sys.argv[3], delimiter=',')
-    except:
-        knndataLoc = []
-
-    try:
-        knndataGate = np.genfromtxt(sys.argv[4], delimiter=',')
-    except:
-        knndataGate = []
-
-    try:
-        knndataGlob = np.genfromtxt(sys.argv[5], delimiter=',')
-    except:
-        knndataGlob = []
+    for i in range(16):
+        f = "{0:04b}".format(i)
+        ds = np.genfromtxt(sys.argv[2]+'/'+f,delimiter=',')
+        knndataSet.append(ds)
 
     with open(profileName, 'rt', encoding='utf-8') as prof:
         reader = csv.reader(prof)
@@ -159,7 +141,7 @@ def errChange(gi, inmap, oldErr):
 def findNext(image, fieldmap, oldErr, knndata):
     query = getFeatures(image)
 
-    nbors = NearestNeighbors(int(sys.argv[8]))
+    nbors = NearestNeighbors(int(sys.argv[5]))
     nbors.fit(knndata[:,0:12])
 
     print('^^^^^^^^^^^^^^^^^^^^^^^^^^^^^')
@@ -454,12 +436,12 @@ def findEnergy(image, visited, profile, gi):
  
 
 def writeUtilAst(visited, imdata, profile):
-    #try:
-    #    rmtree('tmp')
-    #except Exception as e:
-    #    print(e)
+    try:
+        rmtree('tmp')
+    except Exception as e:
+        print(e)
     
-    #os.mkdir("tmp")
+    os.mkdir("tmp")
 
     for im in visited:
         line = getImage(im)
@@ -566,7 +548,7 @@ def get_size(start_path):
     return total_size
 
 def actionSleep(sleepTime):
-    time.sleep(sleepTime)
+    #time.sleep(sleepTime)
     return 0
 
 if __name__ == '__main__':
@@ -585,11 +567,11 @@ if __name__ == '__main__':
 
     print(sys.argv)
 
-    runs = float(sys.argv[6])
-    seed = float(sys.argv[7])
+    runs = float(sys.argv[3])
+    seed = float(sys.argv[4])
     random.seed(seed)
 
-    weights = [float(i) for i in sys.argv[9:13]]
+    weights = [float(i) for i in sys.argv[6].split(',')]
     print(weights)
 
     wpoints = 0
@@ -707,21 +689,23 @@ if __name__ == '__main__':
 
                 if(count < runs):
                     lastIm = currentIm
-                    if(knndataInit == []):
+                    if(knndataSet == []):
                         print("RANDOM EXPLORE")
                         gainMap = findNextRand(currentIm, fieldMap, cErr)
                     else:
                         print('Exploring')
-                        gainMapInit = findNext(currentIm, fieldMap, cErr, knndataInit)
-                        gainMapLoc = findNext(currentIm, fieldMap, cErr, knndataLoc) #redo this to factor in error-gain
-                        gainMapGate = findNext(currentIm, fieldMap, cErr, knndataGate)
-                        gainMapGlob = findNext(currentIm, fieldMap, cErr, knndataGlob)
+                        maps = []
+                        for i in range(16):
+                            gm = findNext(currentIm, fieldMap, cErr, knndataSet[i])
+                            maps.append(gm)
+                        #gainMapInit = findNext(currentIm, fieldMap, cErr, knndataInit)
+                        #gainMapLoc = findNext(currentIm, fieldMap, cErr, knndataLoc) #redo this to factor in error-gain
+                        #gainMapGate = findNext(currentIm, fieldMap, cErr, knndataGate)
+                        #gainMapGlob = findNext(currentIm, fieldMap, cErr, knndataGlob)
                         
-                        maps = [gainMapInit, gainMapLoc, gainMapGate, gainMapGlob]
-
                         gainMap = []
 
-                        for i in gainMapInit:
+                        for i in maps[0]:
                             gainMap.append([0,i[1]])
                         
                         for i in range(len(maps)):
@@ -733,7 +717,7 @@ if __name__ == '__main__':
                                             print(slot, gainMap[k][1])
                                             print('$$$$$$$$$$$$$$$$$$$$')
 
-                            
+
                         print('###########################################################')
                         print(gainMap)
                         print(weights)
@@ -866,7 +850,7 @@ if __name__ == '__main__':
         means.append(mean)
 
 
-        writeIms(visited, imagedata)
+        #writeIms(visited, imagedata)
         #writeUtil(visited, imagedata)
         
         

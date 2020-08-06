@@ -35,6 +35,16 @@ def startServers(numServs):
 	os.chdir(pwd)
 	return serverList
 
+def startAggregators(numAgs):
+    aggList = []
+    pwd = os.getcwd()
+    os.chdir('../Aggregator')
+    for i in range(numAgs):
+        models = '{:04b}'.format(i)
+        subprocess.call(['bash', 'runAggregator_Sim.sh', models, 'Aggregator'+str(models)])
+        consoleLog("Aggregator "+str(models)+" Started")
+    os.chdir(pwd)
+    return aggList
 #Start workers and servers
 def startWorkers(numServs, numWorkers):
 	workerList = []
@@ -44,7 +54,7 @@ def startWorkers(numServs, numWorkers):
 		for j in range(0,numWorkers):
 			#subprocess.call(['docker', 'run', '--net=host',
 			#		 '-e SERVERNUM='+str(i),'-e WORKERNUM='+str(j),
-			#		 '--name','worker'+str(i)+'_'+str(j), 
+			#		 '--name','worker'+str(i)+'_'+str(j),
 			#		 '-v',CUBE_LOC+"Worker"+str(i)+'_'+str(j) + ':/home/mydata:Z',
 			#		 '-v',DATA_LOC + ':/home/imageData:Z',
 			#		 'spen', '/bin/bash', '-c \"bash run.sh\"'])
@@ -87,9 +97,9 @@ def killHDFS():
 
 if __name__ == "__main__":
 	parser = argparse.ArgumentParser(description='Distributed RL Controller')
-	parser.add_argument('servers', metavar='S', type=int, nargs='+', help='Number of Server Nodes to Start')
-	parser.add_argument('workers', metavar='W', type=int, nargs='+', help='Number of Worker Nodes to Start per Server')
-	args = parser.parse_args()
+	#parser.add_argument('servers', metavar='S', type=int, nargs='+', help='Number of Server Nodes to Start')
+	#parser.add_argument('workers', metavar='W', type=int, nargs='+', help='Number of Worker Nodes to Start per Server')
+	#args = parser.parse_args()
 
 	consoleLog("DRL Controller Starting")
 	#Start HDFS Docker cluster
@@ -97,13 +107,13 @@ if __name__ == "__main__":
 
 	#Currently Assuming HDFS instance runs independently of DRL Controller
 	#startHDFS()
-	
+
 	consoleLog("Starting Global")
 	startGlobal()
-	consoleLog("Starting Servers")
-	serverList = startServers(args.servers[0])
+	consoleLog("Starting Aggregators")
+	serverList = startAggregators(16)
 	consoleLog("Starting Workers")
-	workerList = startWorkers(args.servers[0], args.workers[0])
+	workerList = startWorkers(2, 2)
 
 	#Run Simulation
 	#time.sleep(3600)

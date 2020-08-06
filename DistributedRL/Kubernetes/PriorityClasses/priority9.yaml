@@ -1,0 +1,7 @@
+apiVersion: scheduling.k8s.io/v1beta1
+kind: PriorityClass
+metadata:
+  name: drl9
+value: 190000000
+globalDefault: false
+description: "Use this class for DRL priority 9 pods."

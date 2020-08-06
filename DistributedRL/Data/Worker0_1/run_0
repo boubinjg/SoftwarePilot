@@ -1,2 +1,7 @@
-len = 0
-Energy: 49127.44500000005
+len = 80
+Energy: 89600.55836988203
+EdgeEnergy: 15885.402877516537
+FlightTime: 1017.7527722665515
+Throughput: 1200.0
+Transfer Time: 1.72575314839681e-05
+
