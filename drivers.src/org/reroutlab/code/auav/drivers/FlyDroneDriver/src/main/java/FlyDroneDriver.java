@@ -280,19 +280,19 @@ public class FlyDroneDriver extends org.reroutlab.code.auav.drivers.AuavDrivers 
                             }
                             ce.respond("FlyDroneDriver: cfg complete");
                         }
-						else if (args[0].equals("dc=lft")) {
-								System.out.println(LOG_TAG+ " Taking Off");
-								if (AUAVsim == false) {
-										drvSetLock("NoAUAVSIM-Takeoff");
-										Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-										aircraft.getFlightController().startTakeoff(fddHandler);
-										drvSpin();
-								}
-								try {Thread.sleep(7500);}
-								catch (Exception e) {e.printStackTrace();}
+			else if (args[0].equals("dc=lft")) {
+				System.out.println(LOG_TAG+ " Taking Off");
+				if (AUAVsim == false) {
+					drvSetLock("NoAUAVSIM-Takeoff");
+					Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
+					aircraft.getFlightController().startTakeoff(fddHandler);
+					drvSpin();
+				}
+				//try {Thread.sleep(7500);}
+				//catch (Exception e) {e.printStackTrace();}
 
-								ce.respond ("FlyDroneDriver: startTakeoff Complete");
-						}
+				ce.respond ("FlyDroneDriver: startTakeoff Complete");
+			}
                         else if (args[0].equals("dc=rca")){
                             Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
 							fc=aircraft.getFlightController();
@@ -417,277 +417,119 @@ public class FlyDroneDriver extends org.reroutlab.code.auav.drivers.AuavDrivers 
 							ce.respond ("FlyDroneDriver: rcc complete");
 						}
                         else if (args[0].equals("dc=rgh")){
-                            /*Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-							fc=aircraft.getFlightController();
-
-                            float origPitch = (float)fc.getState().getAttitude().pitch;
-							float originalYaw = (float)fc.getState().getAttitude().yaw;
-                            float origRoll = (float)fc.getState().getAttitude().roll;
-
-                            float pitchAdd = 10*(float)Math.cos(Math.toRadians(originalYaw));
-                            float rollAdd = -10*(float)Math.sin(Math.toRadians(originalYaw));
-
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            System.out.println("Yaw: "+ originalYaw + " pitchAdd: "+pitchAdd+ " rollAdd: "+rollAdd);
-
-                            FlightControlData fcd = new FlightControlData(origPitch+pitchAdd,origRoll+rollAdd,originalYaw,0.1f);
-							mTimer = new Timer();
-							FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,3, ce, false);
-							mTimer.schedule(ftt, 0, 100);
-
-                            try{
-                                Thread.sleep(400);
-                            } catch(Exception e){}
-
-                            FlightControlData fcd2 = new FlightControlData(origPitch,origRoll, originalYaw, 0);
-                            mTimer = new Timer();
-                            FlightTimerTask ftt2 = new FlightTimerTask(fcd2, mTimer, 3, ce, true);
-                            mTimer.schedule(ftt2, 0, 100);
-                            */
-                            mPitch = 0.5f;
-                            mYaw = 0;
-                            mRoll = 0;
-                            mThrottle = 0;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            mPitch = 0;
-
-                            ce.respond("right");
-							return;
-
+                            System.out.println("Moved Right");
+			    if(AUAVsim == false) {
+			    	mPitch = 0.5f;
+                            	mYaw = 0;
+                            	mRoll = 0;
+                            	mThrottle = 0;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
+                            	mPitch = 0;
+                            }
+			    ce.respond("Moved Right");
+			    return;
                         }
                         else if (args[0].equals("dc=lef")){
-                            /*Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-							fc=aircraft.getFlightController();
+                            System.out.println("Moved Left");	
+			    if (AUAVsim == false) {
+                            	mPitch = -0.5f;
+                            	mYaw = 0;
+                            	mRoll = 0;
+                            	mThrottle = 0;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
 
-	                        float origPitch = (float)fc.getState().getAttitude().pitch;
-							float originalYaw = (float)fc.getState().getAttitude().yaw;
-                            float origRoll = (float)fc.getState().getAttitude().roll;
-
-                            float pitchAdd = 5*(float)Math.cos(Math.toRadians(originalYaw));
-                            float rollAdd = -5*(float)Math.sin(Math.toRadians(originalYaw));
-
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            System.out.println("Yaw: "+ originalYaw + " pitchAdd: "+pitchAdd+ " rollAdd: "+rollAdd);
-
-                            FlightControlData fcd = new FlightControlData(origPitch-pitchAdd, origRoll-rollAdd, originalYaw,0.1f);
-							mTimer = new Timer();
-							FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,3, ce, false);
-							mTimer.schedule(ftt, 0, 100);
-
-                            try{
-                                Thread.sleep(400);
-                            } catch(Exception e){}
-
-                            FlightControlData fcd2 = new FlightControlData(origPitch,origRoll, originalYaw, 0);
-                            mTimer = new Timer();
-                            FlightTimerTask ftt2 = new FlightTimerTask(fcd2, mTimer, 3, ce, true);
-                            mTimer.schedule(ftt2, 0, 100);
-
-							return;
-                            */
-                            mPitch = -0.5f;
-                            mYaw = 0;
-                            mRoll = 0;
-                            mThrottle = 0;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            mPitch = 0;
-
-                            ce.respond("forward");
-							return;
+                            	mPitch = 0;
+                            }
+			    ce.respond("Moved Left");
+						
+    			    return;
 
                         }
                         else if (args[0].equals("dc=fwd")){
-                            /*
-                            Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-							fc=aircraft.getFlightController();
+                            if(AUAVsim == false) {
+			    	mPitch = 0;
+                            	mYaw = 0;
+                            	mRoll = 0.5f;
+                            	mThrottle = 0;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
 
-							float origPitch = (float)fc.getState().getAttitude().pitch;
-							float originalYaw = (float)fc.getState().getAttitude().yaw;
-                            float origRoll = (float)fc.getState().getAttitude().roll;
+                            	mRoll = 0;
 
-                            float pitchBack = (float)(1*Math.cos(Math.toRadians(originalYaw)));
-                            float rollBack = (float)(-1*Math.sin(Math.toRadians(originalYaw)));
-
-                            float pitchAdd = 5*(float)Math.cos(Math.toRadians(originalYaw+90));
-                            float rollAdd = -5*(float)Math.sin(Math.toRadians(originalYaw+90));
-
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            System.out.println("Yaw: "+ originalYaw + " pitchAdd: "+pitchAdd+ " rollAdd: "+rollAdd);
-
-                            FlightControlData fcd = new FlightControlData(origPitch+pitchAdd+pitchBack,origRoll+rollAdd+rollBack,originalYaw,0.000f);
-							mTimer = new Timer();
-							FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,1, ce, true);
-							mTimer.schedule(ftt, 0, 100);
-
-                            /*try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            FlightControlData fcd2 = new FlightControlData(origPitch,origRoll, originalYaw, 0);
-                            mTimer = new Timer();
-                            FlightTimerTask ftt2 = new FlightTimerTask(fcd2, mTimer, 1, ce, true);
-                            mTimer.schedule(ftt2, 0, 100);
-                            */
-                            mPitch = 0;
-                            mYaw = 0;
-                            mRoll = 0.5f;
-                            mThrottle = 0;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            mRoll = 0;
-
-                            ce.respond("forward");
-							return;
+                            }
+			    System.out.println("Moved Forward");
+			    ce.respond("forward");
+			    return;
                         }
                         else if (args[0].equals("dc=bck")){
-                            /*Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-							fc=aircraft.getFlightController();
+                            if (AUAVsim == false) {
+                            	mPitch = 0;
+                            	mYaw = 0;
+                            	mRoll = -0.5f;
+                            	mThrottle = 0;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
 
-							float origPitch = (float)fc.getState().getAttitude().pitch;
-							float originalYaw = (float)fc.getState().getAttitude().yaw;
-                            float origRoll = (float)fc.getState().getAttitude().roll;
+                            	mRoll = 0;
 
-                            float pitchBack = (float)(1*Math.cos(Math.toRadians(originalYaw)));
-                            float rollBack = (float)(-1*Math.sin(Math.toRadians(originalYaw)));
-
-                            float pitchAdd = 5*(float)Math.cos(Math.toRadians(originalYaw+90));
-                            float rollAdd = -5*(float)Math.sin(Math.toRadians(originalYaw+90));
-
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            System.out.println("Yaw: "+ originalYaw + " pitchAdd: "+pitchAdd+ " rollAdd: "+rollAdd);
-
-                            FlightControlData fcd = new FlightControlData(origPitch-pitchAdd+pitchBack,origRoll-rollAdd+rollBack,originalYaw,0.000f);
-							mTimer = new Timer();
-							FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,1, ce, true);
-							mTimer.schedule(ftt, 0, 100);
-
-                            /*try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            FlightControlData fcd2 = new FlightControlData(origPitch,origRoll, originalYaw, 0);
-                            mTimer = new Timer();
-                            FlightTimerTask ftt2 = new FlightTimerTask(fcd2, mTimer, 1, ce, true);
-                            mTimer.schedule(ftt2, 0, 100);
-                            */
-                            mPitch = 0;
-                            mYaw = 0;
-                            mRoll = -0.5f;
-                            mThrottle = 0;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            mRoll = 0;
-
-                            ce.respond("backward");
-							return;
+                            }
+			    ce.respond("backward");
+			    System.out.println("Moved Backward");
+			    return;
                         }
-						else if (args[0].equals("dc=ups")) {
-								/*System.out.println(LOG_TAG+ " Going up 2ft");
+			else if (args[0].equals("dc=ups")) {
+			    if (AUAVsim == false) {
+		    	    	mPitch = 0;
+                            	mYaw = 0;
+                            	mRoll = 0;
+                            	mThrottle = 0.2f;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
 
-								Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-                                fc=aircraft.getFlightController();
+                            	mThrottle = 0;
 
-								float origPitch = (float)fc.getState().getAttitude().pitch;
-							    float originalYaw = (float)fc.getState().getAttitude().yaw;
-                                float origRoll = (float)fc.getState().getAttitude().roll;
+                            }
+			    ce.respond("Up");
+			    System.out.println("Moved Upward");
+			    return;
 
-					            try{
-                                    Thread.sleep(1000);
-                                } catch(Exception e){}
+			}
+			else if (args[0].equals("dc=dwn")) {
+		    	    if (AUAVsim == false) {
+			    	mPitch = 0;
+                            	mYaw = 0;
+                            	mRoll = 0;
+                            	mThrottle = -0.2f;
+                            	try{
+                                	Thread.sleep(1000);
+                            	} catch(Exception e){}
+                            	mThrottle = 0;
+                            }
+			    ce.respond("Down");
+			    System.out.println("Moved Downward");
+			    return;
+			}
+			else if (args[0].equals("dc=lnd")) {
+				System.out.println(LOG_TAG+ " Landing");
+				if (AUAVsim == false) {
+						drvSetLock("NoAUAVSIM-Landing");
+						Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
+						aircraft.getFlightController().startLanding(fddHandler);
+						drvSpin();
+				}
+				//try {Thread.sleep(4000);}
+				//catch (Exception e) {e.printStackTrace();}
 
-
-								FlightControlData fcd = new FlightControlData(origPitch,origRoll,originalYaw,0.2f);
-								mTimer = new Timer();
-								FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,3,ce,true);
-								mTimer.schedule(ftt, 0, 100);
-
-								try {Thread.sleep(300);}
-								catch (Exception e) {e.printStackTrace();}
-		                        return;*/
-                            mPitch = 0;
-                            mYaw = 0;
-                            mRoll = 0;
-                            mThrottle = 0.2f;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-
-                            mThrottle = 0;
-
-                            ce.respond("Up");
-							return;
-
-						}
-						else if (args[0].equals("dc=dwn")) {
-								/*System.out.println(LOG_TAG+ " Down up 2ft");
-
-								Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-							    fc=aircraft.getFlightController();
-
-                                float origPitch = (float)fc.getState().getAttitude().pitch;
-							    float originalYaw = (float)fc.getState().getAttitude().yaw;
-                                float origRoll = (float)fc.getState().getAttitude().roll;
-
-                                try{
-                                    Thread.sleep(1000);
-                                } catch(Exception e){}
-
-								FlightControlData fcd = new FlightControlData(origPitch,origRoll,originalYaw,-0.2f);
-								mTimer = new Timer();
-								FlightTimerTask ftt= new FlightTimerTask(fcd,mTimer,3,ce,true);
-								mTimer.schedule(ftt, 0, 100);
-
-								try {Thread.sleep(300);}
-								catch (Exception e) {e.printStackTrace();}
-								return;*/
-                            mPitch = 0;
-                            mYaw = 0;
-                            mRoll = 0;
-                            mThrottle = -0.2f;
-                            try{
-                                Thread.sleep(1000);
-                            } catch(Exception e){}
-                            mThrottle = 0;
-
-                            ce.respond("Down");
-							return;
-						}
-						else if (args[0].equals("dc=lnd")) {
-								System.out.println(LOG_TAG+ " Landing");
-								if (AUAVsim == false) {
-										drvSetLock("NoAUAVSIM-Landing");
-										Aircraft aircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-										aircraft.getFlightController().startLanding(fddHandler);
-										drvSpin();
-								}
-								//try {Thread.sleep(4000);}
-								//catch (Exception e) {e.printStackTrace();}
-
-								ce.respond ("startLanding Complete");
-						}
-						//virtual stick test
+				ce.respond ("startLanding Complete");
+			}
+			//virtual stick test
                         else if(args[0].equals("dc=vst")){
                             float pitch = 0, roll = 0, yaw = 0, vel = 0;
                             try{
