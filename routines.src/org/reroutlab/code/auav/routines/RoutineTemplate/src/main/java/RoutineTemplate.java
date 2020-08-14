@@ -106,27 +106,26 @@ public class RoutineTemplate extends org.reroutlab.code.auav.routines.AuavRoutin
 		 * @version 1.0.1
 		 * @since   2018-5-13
 		 */
-		public void run() {
-			/*reads in a parameter: picDirectory
-			 *picDirectory refers to the directory where
-			 *the camera will dump the images when
-			 *it captures them. Pictrace then reads the
-			 *images from said directory.
-			 */
+	public void run() {
+		/*reads in a parameter: picDirectory
+		 *picDirectory refers to the directory where
+		 *the camera will dump the images when
+		 *it captures them. Pictrace then reads the
+		 *images from said directory.
+		 */
 
-            String args[] = params.split("-"); //Arguments from the coap input string
-            config();
+        	String args[] = params.split("-"); //Arguments from the coap input string
+        	config();
 
-            //takes off the UAV
-            auavLock("Takeoff");
-            succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
-            auavSpin();
+            	//takes off the UAV
+            	auavLock("Takeoff");
+            	succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
+            	auavSpin();
 
-            //lands the UAV
-            auavLock("land");
-            succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
-            auavSpin();
-
+            	//lands the UAV
+            	auavLock("land");
+            	succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
+            	auavSpin();
         }
         //captures image using the UAVs camera, downloads the image to the VM
          void takeImg(boolean full){
