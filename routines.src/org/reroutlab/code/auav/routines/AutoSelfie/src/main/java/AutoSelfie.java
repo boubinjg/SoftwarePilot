@@ -90,15 +90,11 @@ public class AutoSelfie extends org.reroutlab.code.auav.routines.AuavRoutines {
 		/**
 		 *	 Check forceStop often and safely end routine if set
 		 */
-		public boolean forceStop = false;
-		public long TIMEOUT = 10000;
-		public int MAX_TRIES = 10;
-		private Properties configFile;
-		//public final double CAMERA_FOV_HORIZ;
-		//public final double CAMERA_FOV_VERT;
-		//public final String [] MODELS;
-		//public final String [] MODEL_NAMES;
-        static byte[] pic;
+	public boolean forceStop = false;
+	public long TIMEOUT = 10000;
+	public int MAX_TRIES = 10;
+	private Properties configFile;
+	static byte[] pic;
         static int[] Lmoves = {1,1,1}; //Set of three moves i.e Left, Up and Forward
         static int[] Rmoves = {1,1,1}; //Complementary set of three moves i.e Right, Down and Backward
         public static int x=1,y=1,z=1,gimbal=0;
@@ -120,111 +116,111 @@ public class AutoSelfie extends org.reroutlab.code.auav.routines.AuavRoutines {
 
         public static Set<String> gimbal_visited = new HashSet<>();
 
-		public int picNum = 0, selfieNum = 1;
+	public int picNum = 0, selfieNum = 1;
         public String succ = "";
         public float heading = 0;
 
         public Double thresh_val = 0.6;
-		public String IP = "";
+	public String IP = "";
         /**
-		 *	 Routines are Java Threads.  The run() function is the
-		 *	 starting point for execution.
-		 * @version 1.0.1
-		 * @since   2018-5-13
+	 *	 Routines are Java Threads.  The run() function is the
+	 *	 starting point for execution.
+	 * @version 1.0.1
+	 * @since   2018-5-13
+	 */
+	public void run() {
+		/*reads in a parameter: picDirectory
+		 *picDirectory refers to the directory where
+		 *the camera will dump the images when
+		 *it captures them. Pictrace then reads the
+		 *images from said directory.
 		 */
-		public void run() {
-			/*reads in a parameter: picDirectory
-			 *picDirectory refers to the directory where
-			 *the camera will dump the images when
-			 *it captures them. Pictrace then reads the
-			 *images from said directory.
-			 */
-            //A flag to state whether to land
-            boolean isLand = false;
+        	//A flag to state whether to land
+		boolean isLand = false;
 
-            String args[] = params.split("-");
-            IP = args[0].substring(3);
-            System.out.println("IP Address: "+IP);
+		String args[] = params.split("-");
+		IP = args[0].substring(3);
+		System.out.println("IP Address: "+IP);
 
-            config();
-            System.out.println("Config complete...");
+		config();
+		System.out.println("Config complete...");
 
-            auavLock("Takeoff");
-            succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
-            auavSpin();
-            //Termination conditions:
-                //5 images
-                //No direction increases gain
-            //take off
-            System.out.println("STARTING BATTERY:");
-            getBatt();
-            double time = System.currentTimeMillis();
-            // Initially assign max_utility to min.
-            Double max_utility = Double.MIN_VALUE;
-            String eventSequence = "takeoffLand\n";
+		auavLock("Takeoff");
+		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lft", auavResp.ch);
+		auavSpin();
+		//Termination conditions:
+			//5 images
+			//No direction increases gain
+		//take off
+		System.out.println("STARTING BATTERY:");
+		getBatt();
+		double time = System.currentTimeMillis();
+		// Initially assign max_utility to min.
+		Double max_utility = Double.MIN_VALUE;
+		String eventSequence = "takeoffLand\n";
 
-            for(int i = 0; i<10; i++){
-                if(isLand)
-                    break;
-                String gains = getDirs(x,y,z,gimbal);
-                System.out.println("Gains is as follows....");
+		for(int i = 0; i<10; i++){
+			if(isLand)
+			    	break;
+			String gains = getDirs(x,y,z,gimbal);
+			System.out.println("Gains is as follows....");
 
-                eventSequence += "ImageCapture\nSendImage\nFullParser\nKNN\n";
-                HashMap<String, Double> gainMap = new HashMap<String, Double>();
-                for(String s : gains.split(" ")) {
-                    if(s.split("=")[0].equals("Utility"))
-                        utility = Double.parseDouble(s.split("=")[1]);
-                    else
-                        gainMap.put(s.split("=")[0], Double.parseDouble(s.split("=")[1]));
-                }
-                System.out.println("Features = "+gains);
-                System.out.println("Utility = "+utility);
+			eventSequence += "ImageCapture\nSendImage\nFullParser\nKNN\n";
+			HashMap<String, Double> gainMap = new HashMap<String, Double>();
+			for(String s : gains.split(" ")) {
+			    	if(s.split("=")[0].equals("Utility"))
+					utility = Double.parseDouble(s.split("=")[1]);
+			    	else
+					gainMap.put(s.split("=")[0], Double.parseDouble(s.split("=")[1]));
+			}
+			System.out.println("Features = "+gains);
+			System.out.println("Utility = "+utility);
 
-                //Just save the image if current utility is the best image.
-                // Check if current image is best image. If so save the image.
-                if(utility > max_utility) {
-                    max_utility = utility; // Update the max_utility value.
-                    System.out.println("Maximum utility =" + max_utility);
+			//save the image if current utility is the best image.
+			// Check if current image is best image. If so save the image.
+			if(utility > max_utility) {
+			    	max_utility = utility; // Update the max_utility value.
+			    	System.out.println("Maximum utility =" + max_utility);
 
-                    String path = Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/BestPic.JPG";
-                    System.out.println("Path="+path);
-                    writeImage(pic, path); // Save the image as BestPic.JPG
-                }
+			    	String path = Environment.getExternalStorageDirectory().getPath()+"/AUAVtmp/BestPic.JPG";
+			    	System.out.println("Path="+path);
+			    	writeImage(pic, path); // Save the image as BestPic.JPG
+			}
 
-                //Check if the utility is greater than some threshold value. If so just land the drone. Our goal is achieved.
-                if(utility > thresh_val)
-                {
-                    System.out.println("The mission's expected threshold utility was reached.... Safely landing down");
-                    auavLock("land");
-                    succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
-                    auavSpin();
-                }
+			//Check if the utility is greater than some threshold value. If so just land the drone. Our goal is achieved.
+			if(utility > thresh_val)
+			{
+			    	System.out.println("The mission's expected threshold utility was reached.... Safely landing down");
+			    	auavLock("land");
+			    	succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
+			    	auavSpin();
+			}
 
-                //sort those directions by greatest to least
-                //choose the best one within our current boundary
-                String dir = choose_best_action(gainMap); // Call this function to calculate the best action to take.
-                System.out.println("Best Direction: "+dir);
-                eventSequence += dir+"\n";
-                // Call the method to perform Gimbal movement according to the direction specified.
-                driver_movt(dir);
-            }
-
-            System.out.println("for loop complete...Issuing land command");
-            auavLock("land");
-            succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
-            auavSpin();
-
-            System.out.println("ENDING BATTERY:");
-            getBatt();
-            System.out.println("------------------");
-            System.out.println(eventSequence);
-            System.out.println("------------------");
-
-            System.out.println("Execution Time:");
-            System.out.println(System.currentTimeMillis()-time);
-
-            System.out.println("CubeTrace: Exiting");
+			//sort those directions by greatest to least
+			//choose the best one within our current boundary
+			String dir = choose_best_action(gainMap); // Call this function to calculate the best action to take.
+			System.out.println("Best Direction: "+dir);
+			eventSequence += dir+"\n";
+			// Call the method to perform Gimbal movement according to the direction specified.
+			driver_movt(dir);
 		}
+
+		System.out.println("for loop complete...Issuing land command");
+		auavLock("land");
+		succ = invokeDriver("org.reroutlab.code.auav.drivers.FlyDroneDriver", "dc=lnd", auavResp.ch);
+		auavSpin();
+
+		System.out.println("ENDING BATTERY:");
+		getBatt();
+		System.out.println("------------------");
+		System.out.println(eventSequence);
+		System.out.println("------------------");
+
+            	System.out.println("Execution Time:");
+            	System.out.println(System.currentTimeMillis()-time);
+
+            	System.out.println("CubeTrace: Exiting");
+	}
         void getBatt() {
             auavLock("Batt");
             succ = invokeDriver("org.reroutlab.code.auav.drivers.BatteryDriver","dc=dji",auavResp.ch);
