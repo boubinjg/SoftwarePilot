@@ -93,7 +93,7 @@ public class RoutineTemplate extends org.reroutlab.code.auav.routines.AuavRoutin
 		 */
 
         	String args[] = params.split("-"); //Arguments from the coap input string
-        	config()
+        	config();
 
             	//takes off the UAV
             	auavLock("Takeoff");
