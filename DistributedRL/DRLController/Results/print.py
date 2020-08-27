@@ -2,7 +2,7 @@ import sys
 
 f = open(sys.argv[1],'r')
 lines = f.readlines()
-for i in range(0,3):
+for i in range(0,1):
 	if(i == 0):
 		print('UAV Energy')
 	elif(i == 1):

@@ -8,15 +8,8 @@ spec:
       name: aggregator0110
       command: ["bash"]
       args: ["run.sh"]
-      volumeMounts:
-      - mountPath: /home/mydata
-        name: mydata
       env:
       - name: Models
         value: "0110"
       - name: HDFS
-        value: "10.0.0.6"
-    volumes:
-    - name: mydata
-      hostPath:
-        path: /host/Data/
+        value: "184.57.4.230"

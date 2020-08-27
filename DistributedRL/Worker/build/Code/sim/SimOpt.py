@@ -5,7 +5,7 @@ import numpy as np
 import statistics
 from collections import defaultdict
 import copy
-import os 
+import os
 from shutil import copyfile
 from shutil import rmtree
 import glob
@@ -17,7 +17,7 @@ import time
 from operator import itemgetter
 
 imagedata = []
-knndataSet = [] 
+knndataSet = []
 profile = []
 edgeProfile = []
 netProfile = []
@@ -83,7 +83,7 @@ def readInData():
     with open(edgeProfileName, 'rt', encoding='utf-8') as edgeProf:
         reader = csv.reader(edgeProf)
         edgeProfile.append(list(reader))
-    
+
     with open(netProfileName, 'rt', encoding='utf-8') as netProf:
         reader = csv.reader(netProf)
         netProfile.append(list(reader))
@@ -162,10 +162,10 @@ def findNext(image, fieldmap, oldErr, knndata):
     gainMap = []
     for i in range (0,4):
         if(image[i+4] == '[]'):
-            gainMap.append([sys.maxsize,-1])    
+            gainMap.append([sys.maxsize,-1])
         else:
             gainMap.append([mapGain[i], int(image[i+4])])
-        
+
     gainMap.sort(key=lambda gain: gain[0], reverse=False)
     print(gainMap)
     return gainMap
@@ -228,19 +228,19 @@ def findNextAstar(image, giTarg, profile,thresh):
             sI = findFeatures(knn[random.randint(0,len(knn)-1)])
             gi = float(q.index[10])
             sG = q.g + (gi/successorGain[i])
-        
+
             sH = ((q.g - gi)/gi) * (sum(profile)/len(profile))
             giAcc = q.gi+gi
             sF = sG + sH
             sP = q.index
-            
+
             print(sG)
 
             #print(giAcc)
 
             if(giAcc > giTarg):
                 return [sG, giAcc] #lowest E for direction, don't return
-            
+
             else:
                 skip = False
                 for c in closed:
@@ -433,14 +433,14 @@ def findEnergy(image, visited, profile, gi):
         return ret
     except:
         traceback.print_exc()
- 
+
 
 def writeUtilAst(visited, imdata, profile):
     try:
         rmtree('tmp')
     except Exception as e:
         print(e)
-    
+
     os.mkdir("tmp")
 
     for im in visited:
@@ -451,11 +451,11 @@ def writeUtilAst(visited, imdata, profile):
         testVisited = copy.deepcopy(visited)
         testVisited.append(im)
         ret = []
-        
+
         features = getFeatures(line)
 
         ret = features.tolist()
-        
+
         for neighbor in line[4:8]:
             if(neighbor == '[]'):
                 curImg = findClosest(image)
@@ -469,7 +469,7 @@ def writeUtilAst(visited, imdata, profile):
         with open('tmp/'+fname+'.csv','w') as f:
             writer = csv.writer(f)
             writer.writerow(ret)
-            
+
 
 def writeUtil(visited, imdata):
     #print("WRITE UTIL")
@@ -513,7 +513,7 @@ def writeIms(visited,imdata):
         rmtree('tmp')
     except Exception as e:
         print(e)
-    
+
     os.mkdir("tmp")
 
     for im in visited:
@@ -548,15 +548,15 @@ def get_size(start_path):
     return total_size
 
 def actionSleep(sleepTime):
-    #time.sleep(sleepTime)
+    time.sleep(sleepTime)
     return 0
 
 if __name__ == '__main__':
     readInData()
     imagedata = imagedata[:]
-   
+
     GIMap = getMap([imagedata[0]])
-	
+
     blankMap = defaultdict(list)
 
     for key in list(GIMap.keys()):
@@ -605,7 +605,7 @@ if __name__ == '__main__':
         j = float(entry[0].split('=')[1])
         t = float(entry[1])
         prof[i] = j * t
- 
+
     print('Network')
 
     netProf = netProfile[0]
@@ -662,21 +662,21 @@ if __name__ == '__main__':
                     gi = float(currentIm[12].split(',')[10].split('=')[1])
                 except:
                     gi = 0
-                    
+
                 if(gi_old != -1):
                     giGain += (gi-gi_old)
                 else:
                     giOrig = gi
 
                 totalGi += gi
-                
+
                 print("::::::::::::::::::::::::::::::::::::: GI: "+str(count)+":::::::::::::::::::::::::::::::::::::")
-                
+
                 print("::::::::::::::::::::::::::::::::::::: GI: "+str(gi)+":::::::::::::::::::::::::::::::::::::")
                 #print("::::::::::::::::::::::::::::::::::::: Total GI: "+str(totalGi)+":::::::::::::::::::::::::::::::::::::")
- 
+
                 #print("::::::::::::::::::::::::::::::::::::: GI Target: "+str(giTarg)+":::::::::::::::::::::::::::::::::::::")
- 
+
                 #print("::::::::::::::::::::::::::::::::::::: Total Relative GI: "+str(totalGi/giOrig)+":::::::::::::::::::::::::::::::::::::")
 
 
@@ -702,12 +702,12 @@ if __name__ == '__main__':
                         #gainMapLoc = findNext(currentIm, fieldMap, cErr, knndataLoc) #redo this to factor in error-gain
                         #gainMapGate = findNext(currentIm, fieldMap, cErr, knndataGate)
                         #gainMapGlob = findNext(currentIm, fieldMap, cErr, knndataGlob)
-                        
+
                         gainMap = []
 
                         for i in maps[0]:
                             gainMap.append([0,i[1]])
-                        
+
                         for i in range(len(maps)):
                             for j in range(len(gainMap)):
                                 slot = maps[i][j][1]
@@ -724,7 +724,7 @@ if __name__ == '__main__':
                         gainMap.sort(key=lambda gain: gain[0], reverse=False)
                         print(gainMap)
                         print('###########################################################')
-                        
+
                         #print(gainMap)
                     fin = False
                     #print([cErr, count`])
@@ -734,7 +734,7 @@ if __name__ == '__main__':
                         for i in range(0,4):
                             try:
                                 testIm = getImage(str(gainMap[i][1]))
-    
+
                                 if (len(testIm[12].split(','))) != 13:
                                     raise Exception('NaN Value in Dataset Handled')
                                 if (testIm[1] in visited):
@@ -769,12 +769,12 @@ if __name__ == '__main__':
                                 print(prof[i])
 
                                 break;
-                                
+
                             except Exception as e:
                                 print("Exception: " + str(e))
                                 traceback.print_exc()
                                 pass
- 
+
                         #if not fin and stack != []:
                         #    print('###########################################################')
                         #    print(len(stack))
@@ -819,7 +819,7 @@ if __name__ == '__main__':
                                 print(closestDist)
 
                                 actionSleep(5*(closestDist/10.0))
-                            
+
                             #Energy from image capture
                             energy += prof[4]
                             flightTime += 2
@@ -852,10 +852,10 @@ if __name__ == '__main__':
 
         #writeIms(visited, imagedata)
         #writeUtil(visited, imagedata)
-        
-        
-        
-        
+
+
+
+
         writeUtilAst(visited, imagedata, prof)
         #writeHDFS()
         '''
@@ -867,7 +867,7 @@ if __name__ == '__main__':
             except:
                 pass #row,col is not in range of sample space
         '''
-    
+
     tput = float(netProf[0]) * (1024*1024)
     transferSize = get_size('/home/sim/tmp')
     transferTime = transferSize/tput

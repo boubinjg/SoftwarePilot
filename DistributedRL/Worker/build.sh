@@ -1,1 +1,1 @@
-docker build -t worker -f build/Dockerfile build/. --rm
+sudo docker build -t worker -f build/Dockerfile build/. --rm

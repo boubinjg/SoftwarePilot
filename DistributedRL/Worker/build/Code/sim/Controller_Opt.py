@@ -30,16 +30,17 @@ def get_size(start_path):
 cwd = os.getcwd()
 csvs = []
 csvPos = 0
-os.chdir("/home/mydata/")
+sn=os.environ["SERVERNUM"]
+wn=os.environ["WORKERNUM"]
+
+os.chdir('/home/mydata/')
 for f in glob.glob("*.csv"):
     csvs.append(f)
 
 os.chdir(cwd)
 
-sn=os.environ["SERVERNUM"]
-wn=os.environ["WORKERNUM"]
 hdfs=os.environ['HDFS']
-    
+
 try:
     subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir', 'hdfs://'+hdfs+':9000/worker'+sn+'_'+wn])
 except Exception as e:
@@ -52,7 +53,7 @@ scores = []
 
 start = time.time()
 
-DSVal = 1500  
+DSVal = 1500
 shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
 
 epsilon  = 0.00001
@@ -83,8 +84,8 @@ for i in range(16):
     shutil.copyfile('/home/sim/knndatasetGI','/home/sim/Models/'+bin)
 
 if(sn == '0' and wn == '0'):
-    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/Models','hdfs://'+hdfs+':9000/']) 
-    
+    subprocess.call(['/opt/hadoop/bin/hadoop','fs','-put','/home/sim/Models','hdfs://'+hdfs+':9000/'])
+
 def objective_function(params):
     global count, lastUpdateServ, lastUpdateGlob, csvPos, csvs, scores
     hdfs = os.environ['HDFS']
@@ -115,7 +116,7 @@ def objective_function(params):
         f.truncate(0)
         f.write('len = '+str(nImgs)+'\n')
         energy = open('/home/sim/tmp/energy','r+')
-        
+
         contents = energy.read()
 
         tput = float(contents.split()[7]) * (1024*1024)
@@ -126,8 +127,8 @@ def objective_function(params):
         #time.sleep(transferTime)
         contents += 'Transfer Time: '+str(transferTime)+'\n'
 
-        f.write(contents+'\n')       
-            
+        f.write(contents+'\n')
+
         print('Transfer Size: '+str(transferSize))
 
         energy.close()
@@ -146,7 +147,7 @@ def objective_function(params):
         subprocess.call(['/opt/hadoop/bin/hadoop','fs','-touchz','hdfs://'+hdfs+':9000/worker'+sn+'_'+wn+'/run_'+str(count)+"/done"])
         os.chdir(cwd)
 
-    
+
         end = time.time()
         print("Time so far: "+str(end-start))
         count += 1
