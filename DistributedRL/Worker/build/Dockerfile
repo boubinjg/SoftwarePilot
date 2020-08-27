@@ -81,6 +81,7 @@ RUN pip3 install hyperopt
 RUN mkdir /home/tools
 COPY /Code/tools /home/tools
 COPY /Code/sim /home/sim
+COPY /Code/mydata /home/mydata
 COPY /Code/run.sh run.sh
 
 #Expose ports

@@ -8,17 +8,10 @@ spec:
       name: worker00
       command: ["bash"]
       args: ["run.sh"]
-      volumeMounts:
-      - mountPath: /home/mydata
-        name: mydata
       env:
       - name: SERVERNUM
         value: "0"
       - name: WORKERNUM
         value: "0"
       - name: HDFS
-        value: "10.0.0.6"
-    volumes:
-    - name: mydata
-      hostPath:
-        path: /host/Data/Worker0_0
+        value: "184.57.4.230"

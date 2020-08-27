@@ -65,13 +65,17 @@ def startAggregators(numAgs, priorities):
     return aggList
 #Start workers and servers
 def startWorkers(numServs, numWorkers):
-	workerList = []
-	for i in range(0, numServs):
-		for j in range(0,numWorkers):
-			subprocess.call(['kubectl','apply','-f',"worker"+str(i)+''+str(j)+'.yaml'])
-			consoleLog("Worker" + str(i)+'_'+str(j)+" Started")
-			workerList.append("worker"+str(i)+'_'+str(j))
-	return workerList
+    workerList = []
+    pwd = os.getcwd()
+    os.chdir('../Worker')
+    for i in range(0, numServs):
+        for j in range(0,numWorkers):
+            subprocess.call(['bash','runWorker_Sim.sh',str(i), str(j), "worker"+str(i)+'_'+str(j), '184.57.4.230'])
+            #subprocess.call(['kubectl','apply','-f',"worker"+str(i)+''+str(j)+'.yaml'])
+            consoleLog("Worker" + str(i)+'_'+str(j)+" Started")
+            workerList.append("worker"+str(i)+'_'+str(j))
+    os.chdir(pwd)
+    return workerList
 
 def startGlobal():
 	pwd = os.getcwd()
@@ -152,8 +156,8 @@ if __name__ == "__main__":
     workerList = startWorkers(2, 2)
 
     for i in range(0,19):
-        checkForWeights('10.0.0.6', i*5)
-        downloadWeights('10.0.0.6', i*5)
+        checkForWeights('184.57.4.230', i*5)
+        downloadWeights('184.57.4.230', i*5)
         priorities = getPriorities()
         aggPriorities = priorities[1:]
         stopAggregators(15)

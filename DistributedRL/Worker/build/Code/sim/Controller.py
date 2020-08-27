@@ -174,7 +174,7 @@ def get_size(start_path):
 
 cwd = os.getcwd()
 csvs = []
-os.chdir("/home/mydata/")
+os.chdir('/home/mydata/Worker'+sn+'_'+wn+'/')
 for f in glob.glob("*.csv"):
     csvs.append(f)
 
@@ -199,12 +199,12 @@ print([lastUpdate, count])
 start = time.time()
 
 DSVal = 1500  
-shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
+shutil.copyfile('/home/mydata/Worker'+sn+'_'+wn+'/knn'+str(DSVal),'/home/sim/knndatasetGI')
 
 for rangeCounter in range(1,2):
     hdfs = os.environ['HDFS']
     #DSVal = rangeCounter*500
-    shutil.copyfile('/home/mydata/knn'+str(DSVal),'/home/sim/knndatasetGI')
+    shutil.copyfile('/home/mydata/Worker'+sn+'_'+wn+'/knn'+str(DSVal),'/home/sim/knndatasetGI')
     for f in csvs:
         if(count != 0):
             print("Checking for Server Update")
@@ -213,14 +213,14 @@ for rangeCounter in range(1,2):
             #lastUpdate = checkForGlobalUpdate(count, lastUpdate)
             #updateLocal()
 
-        subprocess.call(['bash','runNet.bash','/home/mydata/'+f, '80', str(100),'5'])
+        subprocess.call(['bash','runNet.bash','/home/mydata/Worker'+sn+'_'+wn+'/'+f, '80', str(100),'5'])
         os.chdir('tmp/')
 
         #subprocess.call(['/opt/hadoop/bin/hadoop','fs','-mkdir','hdfs://127.0.0.1:9000/worker'+sn+'_'+wn+'/run_'+str(count)])
 
         nImgs = len(glob.glob("*.JPG"))
     
-        f = open('/home/mydata/run_'+str(count), 'w+')
+        f = open('/home/mydata/Worker'+sn+'_'+wn+'/run_'+str(count), 'w+')
         f.truncate(0)
         f.write('len = '+str(nImgs)+'\n')
         energy = open('/home/sim/tmp/energy','r+')
