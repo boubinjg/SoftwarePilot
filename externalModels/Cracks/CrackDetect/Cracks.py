@@ -113,6 +113,7 @@ def main(args):
                 imported_meta = tf.train.import_meta_graph(args.meta_file)
 
             if os.path.isdir(args.chk_point_dir):
+               
                 imported_meta.restore(sess, tf.train.latest_checkpoint(args.chk_point_dir))
             else:
                 sys.exit("Check Point Directory does not exist")
@@ -127,6 +128,7 @@ def main(args):
                 output_image = np.zeros((h_no*128,w_no*128,3),dtype = np.uint8)
 
                 feed_dict = {x: broken_image}
+                
                 batch_predictions = sess.run(predictions, feed_dict = feed_dict)
 
                 matrix_pred = batch_predictions.reshape((h_no,w_no))
