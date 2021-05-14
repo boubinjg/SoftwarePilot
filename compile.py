@@ -77,6 +77,7 @@ if(args.andr or args.all):
 
 if(args.ins):
     print("\n===================Transfering APK===================")
+    os.system("chmod 400 /home/SoftwarePilot/tools/AUAV")
     os.system("ssh -p 22223 -i "+auavhome+"/tools/AUAV root\@"+args.ins+" \"rm -f /sdcard/AUAVAndroid.apk\"")
     os.system("scp -P 22223 -i "+auavhome+"/tools/AUAV "+auavhome+"/kernels/AUAVAndroid.apk root\@"+args.ins+":/sdcard/AUAVAndroid.apk")
     os.system("ssh -p 22223 -i "+auavhome+"/tools/AUAV root\@"+args.ins+" \"su -c \\\"pm install -r /sdcard/AUAVAndroid.apk\\\"\"")
