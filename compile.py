@@ -31,7 +31,7 @@ if(args.cln):
     subprocess.call(["gradle","clean"])
     os.chdir(auavhome+"/AUAVLinux")
     subprocess.call(["gradle","clean"])
-    os.chdir(auavhome+"/AUAVAndroid")
+    os.chdir(auavhome+"/SPAndroid")
     subprocess.call(["./gradlew","clean"])
 
 if(args.drv or args.all or args.code):
@@ -70,17 +70,17 @@ if(args.doc or args.all or args.code):
 
 if(args.andr or args.all):
     print("\n===================Compiling Android APK===================")
-    os.system("date > "+auavhome+"/AUAVAndroid/app/src/main/assets/AUAVassets/CompileDate")
-    os.chdir(auavhome+"/AUAVAndroid")
+    os.system("date > "+auavhome+"/SPAndroid/app/src/main/assets/AUAVassets/CompileDate")
+    os.chdir(auavhome+"/SPAndroid")
     subprocess.call(["./gradlew","assembleDebug"])
-    subprocess.call(["cp",auavhome+"/AUAVAndroid/app/build/outputs/apk/debug/app-debug.apk",auavhome+"/kernels/AUAVAndroid.apk"]);
+    subprocess.call(["cp",auavhome+"/SPAndroid/app/build/outputs/apk/debug/app-debug.apk",auavhome+"/kernels/AUAVAndroid.apk"]);
 
 if(args.ins):
     print("\n===================Transfering APK===================")
     os.system("chmod 400 /home/SoftwarePilot/tools/AUAV")
-    os.system("ssh -p 22223 -i "+auavhome+"/tools/AUAV root\@"+args.ins+" \"rm -f /sdcard/AUAVAndroid.apk\"")
-    os.system("scp -P 22223 -i "+auavhome+"/tools/AUAV "+auavhome+"/kernels/AUAVAndroid.apk root\@"+args.ins+":/sdcard/AUAVAndroid.apk")
-    os.system("ssh -p 22223 -i "+auavhome+"/tools/AUAV root\@"+args.ins+" \"su -c \\\"pm install -r /sdcard/AUAVAndroid.apk\\\"\"")
-    os.system("ssh -p 22223 -i "+auavhome+"/tools/AUAV root\@"+args.ins+" \"su -c \\\"am start -n org.reroutlab.code.auav.kernels.auavandroid/.MainActivity\\\"\" ")
+    os.system("ssh -oHostKeyAlgorithms=+ssh-dss -p 22222 -i "+auavhome+"/tools/AUAV ssh\@"+args.ins+" \"rm -f /sdcard/AUAVAndroid.apk\"")
+    os.system("scp -oHostKeyAlgorithms=+ssh-dss -P 22222 -i "+auavhome+"/tools/AUAV "+auavhome+"/kernels/AUAVAndroid.apk ssh\@"+args.ins+":/sdcard/AUAVAndroid.apk")
+    os.system("ssh -oHostKeyAlgorithms=+ssh-dss -p 22222 -i "+auavhome+"/tools/AUAV ssh\@"+args.ins+" \"su -c \\\"pm install -r /sdcard/AUAVAndroid.apk\\\"\"")
+    os.system("ssh -oHostKeyAlgorithms=+ssh-dss -p 22222 -i "+auavhome+"/tools/AUAV ssh\@"+args.ins+" \"su -c \\\"am start -n com.dji.sdk.sample.internal.controller/.MainActivity\\\"\" ")
 
 

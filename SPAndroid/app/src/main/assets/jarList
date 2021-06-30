@@ -1,0 +1,27 @@
+#This asset file contains a list of all drivers that will
+#be compiled into the APK.  Every driver will bootstrap its
+#CoAP server on startup.
+#
+#
+#
+#  Christopher Stewart, Sep 2017
+#org.reroutlab.code.auav.drivers.ExternalCommandsDriver.jar
+#org.reroutlab.code.auav.drivers.BatteryDriver.jar
+#org.reroutlab.code.auav.drivers.DroneGimbalDriver.jar
+#org.reroutlab.code.auav.drivers.FlyDroneDriver.jar
+#org.reroutlab.code.auav.drivers.LocationDriver.jar
+#org.reroutlab.code.auav.drivers.CaptureImageV2Driver.jar
+#org.reroutlab.code.auav.drivers.PicTraceDriver.jar
+#org.reroutlab.code.auav.drivers.CatchImageDriver.jar
+#org.reroutlab.code.auav.drivers.CaptureImageDriver.jar
+#org.reroutlab.code.auav.drivers.MissionDriver.jar
+#
+com.dji.sdk.sample.internal.controller.ExternalCommandsDriver.jar
+com.dji.sdk.sample.internal.controller.BatteryDriver.jar
+com.dji.sdk.sample.internal.controller.DroneGimbalDriver.jar
+com.dji.sdk.sample.internal.controller.FlyDroneDriver.jar
+com.dji.sdk.sample.internal.controller.LocationDriver.jar
+#com.dji.sdk.sample.internal.controller.CaptureImageV2Driver.jar
+com.dji.sdk.sample.internal.controller.PicTraceDriver.jar
+#com.dji.sdk.sample.internal.controller.CaptureImageDriver.jar
+com.dji.sdk.sample.internal.controller.MissionDriver.jar

@@ -1,6 +1,6 @@
-package org.reroutlab.code.auav.kernels;
+package com.dji.sdk.sample.internal.controller.kernels;
 
-import org.reroutlab.code.auav.drivers.AuavDrivers;
+import com.dji.sdk.sample.internal.controller.AuavDrivers;
 import java.io.IOException;
 import java.io.File;
 import java.util.*;
@@ -75,7 +75,7 @@ public class LinuxKernel {
 
 				for (int x = 0; x < countDrivers; x++) {
 						System.out.println("Jar: "+jarNames[x]);
-						ad[x] = instantiate(jarNames[x],org.reroutlab.code.auav.drivers.AuavDrivers.class);
+						ad[x] = instantiate(jarNames[x],com.dji.sdk.sample.internal.controller.AuavDrivers.class);
 						String canon = ad[x].getClass().getCanonicalName();
 						n2p.put(canon,
 										new String(""+ad[x].getLocalPort()+"\n" ) );

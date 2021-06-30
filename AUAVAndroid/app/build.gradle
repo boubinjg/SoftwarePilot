@@ -6,7 +6,7 @@ def AUAVHOME = "$System.env.AUAVHOME/"
 
 android {
     compileSdkVersion 26 //26
-    buildToolsVersion '27.0.3' //26
+    buildToolsVersion '27.0.2' //26
     defaultConfig {
         applicationId "org.reroutlab.code.auav.kernels.auavandroid"
         minSdkVersion 23
@@ -34,6 +34,8 @@ android {
         doNotStrip "*/*/libGroudStation.so"
         doNotStrip "*/*/libFRCorkscrew.so"
         doNotStrip "*/*/libUpgradeVerify.so"
+        doNotStrip "*/*/libDJICSDKCommon.so"
+        doNotStrip "*/*/libDJISDKLOGJNI.so"
         exclude 'META-INF/DEPENDENCIES'
         exclude 'META-INF/NOTICE'
         exclude 'META-INF/LICENSE'
@@ -45,8 +47,8 @@ android {
         exclude 'META-INF/rxjava.properties'
     }
     compileOptions {
-        sourceCompatibility = 1.7
-        targetCompatibility = 1.7
+        sourceCompatibility = JavaVersion.VERSION_1_8
+        targetCompatibility = JavaVersion.VERSION_1_8
     }//
 
 }
@@ -73,6 +75,9 @@ dependencies {
     compile fileTree(dir: "$AUAVHOME//external/", exclude: ['djiClasses.jar','android.jar', 'sqlcipher.jar'])
     compile 'net.zetetic:android-database-sqlcipher:3.5.7@aar'
     
+    implementation('com.dji:dji-sdk:4.15')
+    compileOnly 'com.dji:dji-sdk-provided:4.15'
+
     compile project(':dji_android_sdk')
     //compile ('com.dji:dji-sdk:4.2.1')
     //provided ('com.dji:dji-sdk-provided:4.3.1')
@@ -93,5 +98,4 @@ dependencies {
     compile 'com.android.support:design:26.+'
     //compile 'com.android.support:design:26.+'
     //testCompile 'junit:junit:4.12'
-
 }

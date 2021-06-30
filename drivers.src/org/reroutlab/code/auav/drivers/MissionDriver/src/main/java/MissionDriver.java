@@ -164,9 +164,9 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	public String fname = "../AUAVtmp/waypoints.txt";
 	public String seperator = ",";
 	public WaypointMission.Builder builder;
-	private FlightController fc;	
+	private FlightController fc;
 	private WaypointMission mission;
-	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.GO_HOME;
+	private WaypointMissionFinishedAction tFinishedAction = WaypointMissionFinishedAction.NO_ACTION;
 	private WaypointMissionHeadingMode tHeadingMode=WaypointMissionHeadingMode.AUTO;
 	private float tSpeed = 10.0f;
 	private float tMaxSpeed = 10.0f;
@@ -179,7 +179,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
 	private CoapServer cs;
-	
+
 	private static Logger mdLogger = Logger.getLogger(MissionDriver.class.getName());
 	/**
 	 *		usageInfo += "help -- Add Usage Strings.<br>";
@@ -202,7 +202,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		return driverPort;
 	}
 	private HashMap driver2port;  // key=drivername value={port,usageInfo}
-	
+
 	public void setDriverMap(HashMap<String, String> m) {
 		if (m != null) {
 			driver2port = new HashMap<String, String>(m);
@@ -220,13 +220,13 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 	// - Christopher Stewart
 	// September 18
 	//-----------------------------------------------------------
-		
-	
+
+
 	public CoapServer getCoapServer() {
 		return (cs);
 	}
 	public MissionDriver() {
-		try{	
+		try{
 			mdLogger.log(Level.FINEST, "In Constructor");
 			cs = new CoapServer(); //initilize the server
 			InetSocketAddress bindToAddress =
@@ -251,7 +251,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 			byte[] payload = ce.getRequestPayload();
 			String inputLine = "";
 			try{
-			
+
 				inputLine = new String(payload,"UTF-8");
 			} catch(Exception uee){
 				System.out.println(uee.getMessage());
@@ -267,30 +267,22 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				ce.respond(getUsageInfo());
 			}
 			else if(args[0].equals("dc=initWaypoint")){
-				try {
+				float alt = 0;
+                float lat = 0;
+                float lon = 0;
+                try {
 					System.out.println("Receiving waypoints");
-					if(!AUAVsim){
-						byte[] wpts = readByte();
-						//writeWaypoint(wpts);
-					}
-			
+				    lat = float(args[1].split('=')[1])
+			        lon = float(args[2].split('=')[1])
+                    alt = float(args[2].split('=')[1])
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
 				}
-				float alt=100.0f;
-				double longitude = 77.5011;
-				double latitude = 27.2038;
-				Waypoint p = new Waypoint(latitude,longitude,alt);
 
-				double longitude2 = 77.5011; 
-				double latitude2 = 27.2039;
-				Waypoint p2 = new Waypoint(latitude2,longitude2,alt);
-				
-				double longitude3 = 77.5010;
-				double latitude3 = 27.2038;
-				Waypoint p3 = new Waypoint(latitude3,longitude3,alt);
+                WaypointP1 = new Waypoint(40.154466f, -83.193903f, 5.0f);
+                WaypointP2 = new Waypoint(40.154443f, -83.193988f, 5.0f);
 
-				if (builder == null){
+                if (builder == null){
 					builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
 									       .headingMode(tHeadingMode)
 									       .autoFlightSpeed(tSpeed)
@@ -303,16 +295,23 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 						.maxFlightSpeed(tMaxSpeed)
 						.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
 				}
-				waypointList.add(p);
-				waypointList.add(p2);
-				waypointList.add(p3);
-				builder.waypointList(waypointList).waypointCount(waypointList.size());
+				//waypointList.add(WaypointP1);
+                //waypointList.add(WaypointP2)
+
+                builder.add(WaypointP1);
+                builder.add(WaypointP2);
+
+                //builder.waypointList(waypointList).waypointCount(waypointList.size());
+
 				System.out.println("InitWaypoint: The number of waypoints in builder:"+builder.getWaypointList().size());
 				if (builder.getWaypointList().size() > 0){
 					for(int i=0; i < builder.getWaypointList().size();i++){
-						builder.getWaypointList().get(i).altitude = altitude;
+                        double lat = builder.getWaypointList().get(i).coordinate.getLatitude();
+                        double lon = builder.getWaypointList().get(i).coordinate.getLongitude();
+						System.out.println(lat + " " + lon);
 					}
 				}
+
 				ce.respond("Done");
 			}else if(args[0].equals("dc=uploadMission")){
 				if (builder == null){
@@ -330,7 +329,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 				}
 				System.out.println("UploadMission: The number of waypoints in builder:"+builder.getWaypointList().size());
 
-				
+
 				System.out.println("UploadedMission: set up flight controller");
 				Aircraft mAircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
 				FlightController fc = mAircraft.getFlightController();
@@ -368,7 +367,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                	 			});
 		 		}
 				ce.respond("Done");
-			}else if(args[0].equals("dc=startMission")){					
+			}else if(args[0].equals("dc=startMission")){
 	    			if (instance == null){
 					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 	    			}
@@ -376,7 +375,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 					instance.startMission(new CommonCallbacks.CompletionCallback() {
                     				@Override
                     				public void onResult(DJIError error) {
-                        				
+
 							if (error != null){
 								System.out.println("Mission stopped:"+error.getDescription());
 							}else{
@@ -387,7 +386,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		    		}
 
 				ce.respond("Done");
-			}else if(args[0].equals("dc=stopMission")){					
+			}else if(args[0].equals("dc=stopMission")){
 	    			//if (instance == null){
 				//	instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 	    			//}
@@ -409,7 +408,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
 		    		if(instance.getCurrentState() == WaypointMissionState.EXECUTING) {
 					instance.pauseMission(new CommonCallbacks.CompletionCallback() {
                     				@Override
-                    				public void onResult(DJIError error) {			
+                    				public void onResult(DJIError error) {
 							if (error != null){
 								System.out.println("Mission cannot be pasused:"+error.getDescription());
 							}else{
@@ -481,7 +480,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
             ss.close();
             return ret;
         }
-       
+
 	CommonCallbacks.CompletionCallback fddHandler = new CommonCallbacks.CompletionCallback() {
 		@Override
 		public void onResult(DJIError djiError) {
@@ -550,7 +549,7 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
                                 	ce.respond ("FlyDroneDriver: Timertask Complete");
 				ctrl.cancel();
                         }
-		}	
+		}
 	}
 	public Semaphore lockSema = new Semaphore(1);
         public String lockStr = "continue";
@@ -564,5 +563,5 @@ public class MissionDriver extends org.reroutlab.code.auav.drivers.AuavDrivers {
         public void drvSpin() {
                 lockSema.acquireUninterruptibly();
               	lockSema.release();
-        }		
-}	
+        }
+}

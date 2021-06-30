@@ -1,4 +1,5 @@
-package org.reroutlab.code.auav.routines;
+//package org.reroutlab.code.auav.routines;
+package com.dji.sdk.sample.internal.controller;
 
 
 import java.util.HashMap;

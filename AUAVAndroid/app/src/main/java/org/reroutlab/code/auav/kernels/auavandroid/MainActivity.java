@@ -247,6 +247,9 @@ public class MainActivity extends AppCompatActivity {
                                 }*/
                             } else {
                                 showToast("Register sdk fails, please check the bundle id and network connection!");
+                                System.out.println("##########################################");
+                                System.out.println(djiError.getDescription());
+                                System.out.println("##########################################");
                             }
                             Log.v(TAG, djiError.getDescription());
                         }
@@ -369,7 +372,7 @@ public class MainActivity extends AppCompatActivity {
 
 
                             }
-                            /*else {
+                            else {
                                 try {
                                     Thread.sleep(10000);
                                 }
@@ -379,7 +382,7 @@ public class MainActivity extends AppCompatActivity {
                                 if (hasRegistered == false) {
                                     Log.w("onProduct note", "Connect returns" + DJISDKManager.getInstance().startConnectionToProduct());
                                 }
-                            }*/
+                            }
                         }
                         /*
                         @Override

@@ -1,4 +1,5 @@
-package org.reroutlab.code.auav.drivers;
+//package org.reroutlab.code.auav.drivers;
+package com.dji.sdk.sample.internal.controller;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 import org.eclipse.californium.core.CoapServer;
@@ -18,7 +19,7 @@ abstract public class AuavDrivers {
 		private long startTime=0;
 		public long getStartTime() {
 				return startTime;
-		}		
+		}
 		public void setStartTime(long millis) {
 				startTime = millis;
 		}
@@ -35,8 +36,8 @@ abstract public class AuavDrivers {
 		public void drvSpin() {
 				lockSema.acquireUninterruptibly();
 				lockSema.release();
-		}				
-		
+		}
+
 		abstract public int getLocalPort();
 		abstract public String getUsageInfo();
 		abstract public void setDriverMap(HashMap<String,String> m);

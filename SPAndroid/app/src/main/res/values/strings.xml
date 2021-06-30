@@ -1,0 +1,329 @@
+<resources>
+    <string name="sample_app_name">DJI SDK Sample</string>
+    <string name="action_settings">Settings</string>
+
+    <string name="sdk_version">DJI SDK Version: %1$s</string>
+    <!-- Main activity UI string -->
+    <string name="connection_loose">Status: No Product Connected</string>
+    <string name="connection_only_rc">Status: Only RC Connected</string>
+    <string name="model_not_available">Firmware version:N/A</string>
+    <string name="product_information">Product Information</string>
+    <string name="sdk_registration_message">SDK Registration Failed. Please check the bundle ID and your network
+        connectivity. </string>
+    <string name="sdk_registration_success_message">SDK Registered Successfully.</string>
+    <string name="sdk_registration_doing_message">Registering, pls wait...</string>
+
+    <string name="activity_component_list">Component List</string>
+    <string name="start_payload">Start Payload</string>
+    <string name="start_payload_send_data">Send Data Activity</string>
+    <string name="start_payload_fail">Can not find the payload activity!</string>
+
+    <string name="success">Success</string>
+    <string name="login">Login</string>
+
+    <!-- Component list -->
+    <string name="component_listview_component">Component</string>
+    <string name="component_listview_camera">Camera</string>
+    <string name="component_listview_gimbal">Gimbal</string>
+    <string name="component_listview_flight_controller">Flight Controller</string>
+    <string name="component_listview_battery">Battery</string>
+    <string name="component_listview_airlink">Air Link</string>
+    <string name="component_listview_remote_controller">Remote Controller</string>
+    <string name="component_listview_mobile_remote_controller">Mobile Remote Controller</string>
+    <string name="component_listview_mission_manager">Mission Manager (Deprecated)</string>
+    <string name="component_listview_timeline_mission_control">Timeline Mission Control</string>
+    <string name="component_listview_bluetooth">Bluetooth</string>
+    <string name="component_listview_access_locker">Access Locker</string>
+    <string name="component_listview_accessory_aggregation">Accessory Aggregation</string>
+    <string name="component_listview_audio_file_list_manager">Audio File List Manager</string>
+    <string name="component_listview_live_stream">Live Stream</string>
+    <string name="component_listview_lidar_view">Lidar</string>
+    <string name="component_listview_firmware_upgrade">Firmware Upgrade</string>
+    <string name="component_listview_utmiss">UTMISS</string>
+    <string name="component_listview_multiple_lens_camera">Multiple Lens Camera</string>
+    <string name="component_listview_radar">Radar</string>
+    <string name="component_listview_ldm">LDM</string>
+    <string name="component_listview_sdk_4_0">4.0 New Interfaces</string>
+    <string name="component_listview_waypoint_mission_operator">New Waypoint Mission Operator</string>
+    <string name="component_listview_keyed_interface">Keyed Interface Sample</string>
+
+    <string name="component_listview_sdk_4_1">4.1 New Interfaces</string>
+    <string name="component_listview_app_activation">App Activation and ADSB View</string>
+
+    <string name="component_listview_sdk_4_5">4.5 New Interfaces</string>
+    <string name="component_listview_sdk_4_6">4.6 New Interfaces</string>
+    <string name="component_listview_sdk_4_8">4.8 New Interfaces</string>
+    <string name="component_listview_sdk_4_9">4.9 New Interfaces</string>
+    <string name="component_listview_sdk_4_11">4.11 New Interfaces</string>
+    <string name="component_listview_sdk_4_12">4.12 New Interfaces</string>
+    <string name="component_listview_sdk_4_14">4.14 New Interfaces</string>
+    <string name="component_listview_sdk_4_15">4.15 New Interfaces</string>
+    <string name="component_listview_waypointv2">WaypointV2 Mission Operator</string>
+    <string name="component_listview_flight_hub">Flight Hub</string>
+    <string name="component_listview_payload">Payload</string>
+    <string name="component_listview_redirect_to_djigo">Redirect to DJI Go</string>
+    <string name="component_listview_redirect_go4">DJI Go 4</string>
+    <string name="component_listview_redirect_go4_failure">Cannot redirect to DJI Go 4, Please check if DJI Go 4 has installed</string>
+    <string name="component_listview_redirect_go">DJI Go</string>
+    <string name="component_listview_redirect_go_failure">Cannot redirect to DJI Go, Please check if DJI Go has installed</string>
+
+    <string name="component_listview_key_manager">KeyManager</string>
+
+    <!-- KeyManager list-->
+    <string name="key_manager_listview_key_Interface">Key Manager View</string>
+    <string name="key_manager_component_spinner_title">Component</string>
+    <string name="key_manager_sub_component_spinner_title">Sub Component</string>
+    <string name="key_manager_key_interface_title">Key Interface</string>
+    <string name="key_manager_component_index_title">Component Index</string>
+    <string name="key_manager_get_value_desc">Get Value</string>
+    <string name="key_manager_set_value_desc">Set Value</string>
+    <string name="key_manager_listen_key_desc">Listen Key</string>
+
+
+    <!-- Camera list -->
+    <string name="camera_subtitle_general">General</string>
+    <string name="camera_listview_push_info">Push Info</string>
+    <string name="camera_listview_iso">Set/Get ISO</string>
+    <string name="camera_subtitle_shoot_photo">Shoot Photo</string>
+    <string name="camera_listview_shoot_single_photo">Shoot Single Photo</string>
+    <string name="camera_listview_shoot_interval_photo">Shoot Interval Photo</string>
+    <string name="camera_subtitle_record_video">Record Video</string>
+    <string name="camera_listview_record_video">Record Video</string>
+    <string name="camera_subtitle_playback">Playback</string>
+    <string name="camera_listview_playback_push_info">Playback Push Info</string>
+    <string name="camera_listview_playback_push_info_description">Playback State Information</string>
+    <string name="camera_listview_playback_command">Playback Commands</string>
+    <string name="camera_listview_playback_download">Playback Download</string>
+    <string name="camera_subtitle_media_download">Media Download</string>
+    <string name="camera_listview_download_media">Download Media</string>
+    <string name="camera_listview_media_playback">Media Playback</string>
+    <string name="moveToPosition">Skip Time</string>
+
+    <!-- Gimbal list -->
+    <string name="gimbal_subtitle_rotate_gimbal">Rotate Gimbal</string>
+    <string name="gimbal_listview_push_info">Push Info</string>
+    <string name="gimbal_listview_rotate_gimbal">Rotate With Speed</string>
+    <string name="gimbal_listview_gimbal_capability">Gimbal Capability</string>
+
+    <!-- Battery list -->
+    <string name="battery_subtitle">Battery Information</string>
+    <string name="battery_listview_push_info">Push Info</string>
+    <string name="battery_listview_set_get_discharge_day">Set/Get Discharge Day</string>
+
+    <!-- Remote controller list -->
+    <string name="remote_controller_subtitle">Remote Controller Information</string>
+    <string name="remote_controller_listview_push_info">Push Info</string>
+
+    <!-- Flight controller list -->
+    <string name="flight_controller_subtitle_general">General</string>
+    <string name="flight_controller_listview_compass_calibration">Compass Calibration</string>
+    <string name="flight_controller_listview_flight_limitation">Flight Limitation</string>
+    <string name="flight_controller_subtitle_orientation_mode">Orientation Mode</string>
+    <string name="flight_controller_listview_orientation_mode">Orientation Mode</string>
+    <string name="flight_controller_subtitle_virtual_stick">Virtual Stick</string>
+    <string name="flight_controller_listview_virtual_stick">Virtual Stick</string>
+    <string name="flight_controller_subtitle_intelligent_flight_assistant">Intelligent Flight Assistant</string>
+    <string name="flight_controller_listview_intelligent_flight_assistant">Intelligent Flight Assistant</string>
+    <string name="flight_controller_listview_networkRTK">Network RTK</string>
+
+
+    <!-- Airlink list -->
+    <string name="airlink_subtitle_wifi_airlink">WiFi Airlink</string>
+    <string name="airlink_listview_wifi_set_get_ssid">Set/Get WiFi SSID</string>
+    <string name="airlink_listview_wifi_reboot_wifi">Reboot WiFi</string>
+    <string name="airlink_subtitle_lb_airlink">Light Bridge Airlink</string>
+    <string name="airlink_listview_lb_set_get_channel">Set/Get LBAirlink Channel</string>
+
+    <!--*************** Camera string set ***************-->
+    <!-- Shoot Single Photo View -->
+    <string name="shoot_single_photo">Shoot Single Photo</string>
+    <string name="shoot_single_photo_descritpion">Shoot Single Photo</string>
+
+    <!-- Record Video View -->
+    <string name="record_video_start_record">Start Record</string>
+    <string name="record_video_stop_record">Stop Record</string>
+    <string name="record_video_initial_time">00:00:00</string>
+
+    <!-- Fetch Media View -->
+    <string name="fetch_media_view_description">Fetch Media</string>
+    <string name="fetch_media_view_fetch_thumbnail">Fetch Thumbnail</string>
+    <string name="fetch_media_view_fetch_preview">Fetch Preview</string>
+    <string name="fetch_media_view_fetch_media">FetchMedia</string>
+    <string name="not_support_mediadownload">This product does not support media download function.</string>
+    <string name="support_mediadownload">This product supports media download function.</string>
+
+    <!-- Playback Download View -->
+    <string name="playback_download_description">In this mode, you could download the media file using the playback
+        mode. The pre-condition is that camera is in the multiple edit mode.
+    </string>
+    <string name="playback_download_select_0">1st Photo</string>
+    <string name="playback_download_select_1">2nd Photo</string>
+    <string name="playback_download_download">Download</string>
+    <string name="not_support_playback">This product does not support playback function.</string>
+    <string name="support_playback">This product supports playback function.</string>
+
+    <!--*************** Gimbal string set ***************-->
+    <!-- Move Gimbal In Speed -->
+    <string name="move_gimbal_in_speed_up">Up</string>
+    <string name="move_gimbal_in_speed_stop">Stop</string>
+    <string name="move_gimbal_in_speed_down">Down</string>
+    <string name="move_gimbal_in_speed_description">This view will show how to rotate the gimbal in speed. Please set up
+        a timer for keeping sending the rotateGimbalBySpeed with specific values and send null, null, null using
+        rotateGimbalInSpeed to the aircraft.
+    </string>
+
+    <!--*************** Flight controller string set ***************-->
+    <!-- Compass Calibration View -->
+    <string name="compass_calibration_start_calibration">Start Calibration</string>
+    <string name="compass_calibration_stop_calibration">Stop Calibration</string>
+    <string name="compass_calibration_description">This view is for calibration. The calibration process includes two
+        parts: horizontal calibration and vertical calibration
+    </string>
+
+    <string name="flight_limitation_set_height_limitation">Set Height Limitation</string>
+    <string name="flight_limitation_toggle_enable_radius_limitation">Limitation ON/OFF</string>
+    <string name="flight_limitation_set_radius_limitation">Set Radius Limitation</string>
+    <string name="flight_limitation_description">The height limitation is always on, the range of the flight limitation
+        is [20, 500]. The range of the radius flight limitation is [15, 500].
+    </string>
+
+    <!-- Orientation Mode View -->
+    <string name="orientation_mode_description">Current Orientation Mode is</string>
+    <string name="orientation_mode_home_lock">Home Lock</string>
+    <string name="orientation_mode_course_lock">Course Lock</string>
+    <string name="orientation_mode_aircraft_heading">Aircraft Heading</string>
+
+    <string name="intelligent_flight_assistant_description">This view is for Intelligent Flight Assistant.</string>
+
+    <!--*************** Airlink string set ***************-->
+    <!-- Set Get LB Airlink Channel View -->
+    <string name="set_get_lb_airlink_channel_description">This view will help you understand how to setLBAirlinkChannel.
+        Before send setLBAirlinkChannel, the mode of the LB should be in Manual mode. For the auto mode, it will be more
+        efficient for the remote control to choose the best channel
+    </string>
+
+    <!-- Set Get WiFi Airlink SSID View -->
+    <string name="set_get_wifi_airlink_ssid_description">This view will help you understand how to setWiFiAirlinkSSID.
+        After setting SSID, Password and frequency, please reboot the WiFi so that it would work immediately.
+    </string>
+
+    <!-- Reboot WiFi Airlink View -->
+    <string name="reboot_wifi_airlink_description">This view will help you understand how to use the rebootWiFiAirlink.
+        After setting SSID, Password and frequency, please reboot the WiFi so that it would work immediately.
+    </string>
+    <string name="reboot_wifi_airlink_reboot_wifi">Reboot WiFi</string>
+    <string name="reboot_wifi_airlink_hint">If you reboot the WiFi, the connection between product and mobile phone
+        device might lose.
+    </string>
+
+
+    <!-- media playback -->
+    <string name="video_playback_state_push_info">Video playback state</string>
+    <string name="Message_Waiting">Please wait...</string>
+    <string name="sync_file_title">Sync file</string>
+    <string name="sync_success">Sync file success</string>
+    <string name="playback_disconnected">Disconnected</string>
+
+    <!-- keyed interface-->
+    <string name="component_keyed_interface">key</string>
+    <string name="battery_title">Get battery level</string>
+    <string name="battery_value">%1$s %%</string>
+    <string name="camera_title">Switch Camera Mode</string>
+    <string name="camera_value">Current Mode: %1$s</string>
+    <string name="calibration_title">Start Gimbal Calibration</string>
+    <string name="calibration_value">Progress: %1$s %%</string>
+    <string name="storage_location_title">Switch Storage Location</string>
+    <string name="storage_location_value_internal">Internal Storage</string>
+    <string name="storage_location_value_sd">SD Card</string>
+    <string name="search_for_demo">Search for demo</string>
+
+    <!-- video feeder related interface-->
+    <string name="video_feeder_single_camera_product_title">*Inspire1/M100/P3/P4/Mavic... \n Only one live video is available"</string>
+    <string name="video_feeder_m600_lb2_title">*M600/LB2 products(with two cameras) \n with follow options:</string>
+    <string name="video_feeder_m210_two_camera_title">*M210 Series with two cameras:</string>
+    <string name="video_feeder_m300_camera_title">*M300 RTK</string>
+    <string name="product_with_multiple_gimbals">*Product with multiple gimbals:</string>
+    <string name="video_feeder_enable_single">\tEnable EXT(Single Mode)</string>
+    <string name="video_feeder_disable_single">\tDisable EXT(Dual Mode)</string>
+    <string name="video_feeder_lb_only">LB Only</string>
+    <string name="video_feeder_ext_only">EXT Only</string>
+    <string name="video_feeder_both_lb_ext">LB+EXT</string>
+    <string name="video_feeder_hdmi_only">HDMI Only</string>
+    <string name="video_feeder_av_only">AV Only</string>
+    <string name="video_feeder_both_hdmi_av">HDMI+AV</string>
+    <string name="video_feeder_right_fpv">Right+FPV</string>
+    <string name="video_feeder_left_fpv">Left+FPV</string>
+    <string name="video_feeder_left_right">Left+Right</string>
+    <string name="video_feeder_set_video_source">Set Video Source</string>
+    <string name="video_feeder_set_primary_priority">Set Primary Priority</string>
+    <string name="video_feeder_get_primary_priority">Get Primary Priority</string>
+    <string name="component_listview_video_feeder">Video Feeder View</string>
+    <string name="component_xt2_camera_view">XT2 Camera View</string>
+    <string name="camera_calibration">Camera Calibration</string>
+
+    <string name="popup_picker_finish">Finish</string>
+    <string name="popup_picker_trigger">Trigger</string>
+
+    <!-- FlightHubManager testing Activity -->
+    <string name="fh_get_authorization">Get Authorization</string>
+    <string name="fh_get_team_info">Get Team Info</string>
+    <string name="fh_bind_aircraft">Bind Current Aircraft</string>
+    <string name="fh_unbind_aircraft">Unbind Current Aircraft</string>
+    <string name="fh_set_upload_interval">Set Upload Interval</string>
+    <string name="fh_get_upload_interval">Get Upload Interval</string>
+    <string name="fh_start_upload_flight_data">Start Upload Flight Data</string>
+    <string name="fh_stop_upload_flight_data">Stop Upload Flight Data</string>
+    <string name="fh_get_online_devices">Get Online Devices</string>
+    <string name="fh_get_real_time_data">Get Real Time Flight Data</string>
+    <string name="fh_get_flight_statistics">Get Flight Statistics</string>
+    <string name="fh_get_stream_source">Get Stream Source</string>
+    <string name="fh_get_stream_destination">Get Stream Destination</string>
+    <string name="fh_check_live_stream_stability">Check Live Stream Stability</string>
+    <string name="fh_get_streaming_devices">Get Streaming Devices</string>
+    <string name="fh_get_flight_path">Get Flight Path</string>
+    <string name="fh_team_id">Team ID/Upload Interval</string>
+    <string name="fh_account">Account</string>
+
+
+    <!-- XT2 Camera View -->
+    <string name="mode_visual">Visual Mode</string>
+    <string name="mode_thermal">Thermal Mode</string>
+    <string name="mode_msx">MSX Mode</string>
+    <string name="mode_pip">Pip Mode</string>
+    <string name="mode_msx_level">Set MSX Level</string>
+    <string name="mode_pip_position">Set Pip position</string>
+    <string name="photo_shoot">Shoot Photo</string>
+    <string name="photo_count">Get Remaining Photo Count</string>
+    <string name="sdcard_present">Is SD Card Present</string>
+
+    <!-- Multi Lens Camera View -->
+    <string name="primary_camera">Primary Camera</string>
+    <string name="main_lens">Main Lens</string>
+    <string name="video_stream_source">Video Stream Source</string>
+    <string name="laser_enabled">Laser Enabled</string>
+    <string name="laser_information">Laser Information</string>
+    <string name="flat_camera_mode">Flat Camera Mode</string>
+    <string name="hybrid_zoom_spec">Hybrid Zoom Spec</string>
+    <string name="infrared_thermal_camera_shutter_enabled">Infrared Thermal Camera Shutter Enabled</string>
+
+    <!-- Accessory Aggregation View -->
+    <string name="enable_beacon">Enable Beacon</string>
+    <string name="disable_beacon">Disable Beacon</string>
+    <string name="enable_spotlight">Enable Spotlight</string>
+    <string name="disable_spotlight">Disable Spotlight</string>
+    <string name="play_mode_single">Single Onece</string>
+    <string name="play_mode_repeat">Repeat Single</string>
+    <string name="start_record">Start Record</string>
+    <string name="stop_record">Stop Record</string>
+    <string name="stop_playing">Stop Playing</string>
+    <string name="accessory_aggragation_state">Accessory Aggregation State:</string>
+    <string name="spot_light_state">Spot Light State:</string>
+    <string name="speaker_state">Speaker State:</string>
+    <string name="transmitting_state">Transmitting State:</string>
+    <string name="recording_state">Recording State:</string>
+    <string name="fetch_file_list">Fetch File List</string>
+    <string name="cancel_transmitting">Cancel Transmitting</string>
+    <string name="transmit_local_file">Transmit Local File</string>
+    <string name="component_listview_health_information">Device Health Information</string>
+
+</resources>
