@@ -27,6 +27,7 @@
 
     <!-- SDK requirement permission end -->
     <application
+        android:requestLegacyExternalStorage="true"
         android:name=".internal.controller.DJISampleApplication"
         android:allowBackup="true"
         android:icon="@mipmap/ic_launcher"

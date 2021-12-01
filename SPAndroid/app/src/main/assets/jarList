@@ -21,7 +21,7 @@ com.dji.sdk.sample.internal.controller.BatteryDriver.jar
 com.dji.sdk.sample.internal.controller.DroneGimbalDriver.jar
 com.dji.sdk.sample.internal.controller.FlyDroneDriver.jar
 com.dji.sdk.sample.internal.controller.LocationDriver.jar
-#com.dji.sdk.sample.internal.controller.CaptureImageV2Driver.jar
+com.dji.sdk.sample.internal.controller.CaptureImageV2Driver.jar
 com.dji.sdk.sample.internal.controller.PicTraceDriver.jar
 #com.dji.sdk.sample.internal.controller.CaptureImageDriver.jar
 com.dji.sdk.sample.internal.controller.MissionDriver.jar

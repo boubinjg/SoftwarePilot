@@ -16,6 +16,8 @@ parser.add_argument('-all', action='store_true',help='Compile drivers, routines,
 parser.add_argument('-ins', type=str,help='Install APK on VM (Requires IP address of VM)')
 args = parser.parse_args()
 
+#cwd = os.getcwd()
+#os.environ["AUAVHOME"] = cwd
 auavhome = os.environ['AUAVHOME']
 
 if(len(sys.argv) == 1):

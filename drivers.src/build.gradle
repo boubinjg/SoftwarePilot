@@ -2,11 +2,17 @@ apply plugin: 'java'
 def AUAVHOME = System.getenv('AUAVHOME')
 
 allprojects {
-    sourceCompatibility = 1.7
-    targetCompatibility = 1.7
+    sourceCompatibility = 1.8
+    targetCompatibility = 1.8
+
+    //sourceCompatibility = 1.7
+    //targetCompatibility = 1.7
 }
 
 repositories {
+   mavenCentral()
+   google()
+   jcenter()
    flatDir {
      dirs "${AUAVHOME}/libs"
    }
@@ -22,6 +28,17 @@ dependencies {
    compile fileTree(dir: "${AUAVHOME}/libs/", include: '*.jar')
    compile fileTree(dir: "${AUAVHOME}/external/", include: '*.jar')
    compile fileTree(dir: "${AUAVHOME}/routines/", include: '*.jar')
+   implementation('com.dji:dji-sdk:4.15', {
+        /**
+         * Uncomment the "library-anti-distortion" if your app does not need Anti Distortion for Mavic 2 Pro and Mavic 2 Zoom.
+         * Uncomment the "fly-safe-database" if you need database for release, or we will download it when DJISDKManager.getInstance().registerApp
+         * is called.
+         * Both will greatly reducing the size of the APK.
+         */
+        exclude module: 'library-anti-distortion'
+        //exclude module: 'fly-safe-database'
+   })
+   compileOnly 'com.dji:dji-sdk-provided:4.15'
 }
 
 

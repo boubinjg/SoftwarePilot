@@ -15,7 +15,6 @@ import java.util.logging.Logger;
 import java.util.logging.Level;
 import java.net.InetSocketAddress;
 import java.net.SocketException;
-import com.dji.sdk.sample.internal.controller.AuavRoutines;
 
 import org.eclipse.californium.core.CoapHandler;
 import org.eclipse.californium.core.CoapResource;
@@ -42,15 +41,15 @@ import android.provider.Settings;
 import android.util.Base64;
 
 import dji.sdk.camera.Camera;
-import dji.sdk.camera.FetchMediaTask;
-import dji.sdk.camera.FetchMediaTaskContent;
-import dji.sdk.camera.FetchMediaTaskScheduler;
-import dji.sdk.camera.MediaFile;
-import dji.sdk.camera.MediaManager;
-import dji.sdk.camera.FetchMediaTask;
-import dji.sdk.camera.FetchMediaTaskContent;
-import dji.sdk.camera.FetchMediaTaskScheduler;
-import dji.sdk.camera.DownloadListener;
+import dji.sdk.media.FetchMediaTask;
+import dji.sdk.media.FetchMediaTaskContent;
+import dji.sdk.media.FetchMediaTaskScheduler;
+import dji.sdk.media.MediaFile;
+import dji.sdk.media.MediaManager;
+import dji.sdk.media.FetchMediaTask;
+import dji.sdk.media.FetchMediaTaskContent;
+import dji.sdk.media.FetchMediaTaskScheduler;
+import dji.sdk.media.DownloadListener;
 import dji.sdk.products.Aircraft;
 import dji.sdk.products.HandHeld;
 import dji.sdk.base.BaseProduct;
@@ -158,8 +157,7 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 	private Semaphore checkRef = new Semaphore(1);
 	private String imageEnc; //base64 encoding for images to be sent over coap
 	private boolean complete;
-	protected VideoFeeder.VideoDataCallback mReceivedVideoDataCallBack = null;
-    protected TextureView mVideoSurface = null;
+	protected TextureView mVideoSurface = null;
     private Context context;
     protected DJICodecManager mCodecManager = null;
     /**
@@ -265,22 +263,22 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 					}
 					cmdStartTime = System.currentTimeMillis();
 					try {
-							if (mediaFileList == null) {
+							//if (mediaFileList == null) {
 									//drvSetLock("DLD");
 									//getCameraInstance().setMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD, new djiCC().cb);
 									//drvSpin();
 									//System.out.println("CaptureImageV2: Set DLD: "+timeStamp(cmdStartTime));
 
-									mMediaManager = getCameraInstance().getMediaManager();
-									if (mMediaManager == null) {
+							mMediaManager = getCameraInstance().getMediaManager();
+							if (mMediaManager == null) {
 											System.out.println("CaptureImageV2: Err! mMediaManager is null ");
-									}
+                            } else {
+                            }
+							mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 
-									mediaFileList = mMediaManager.getFileListSnapshot();
+							//deleteFiles(ce);	// Semaphore used inside of the function
 
-									deleteFiles(ce);	// Semaphore used inside of the function
-
-							}
+							//}
 							if (camera != null){
 									drvSetLock("PHOTO");
 									camera.setMode(SettingsDefinitions.CameraMode.SHOOT_PHOTO, new djiCC().cb);
@@ -325,22 +323,22 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 
 					drvSetLock("REF");
 
-					mMediaManager.refreshFileList(new djiCC().cb);
+					mMediaManager.refreshFileListOfStorageLocation(SettingsDefinitions.StorageLocation.SDCARD, new djiCC().cb);
 					drvSpin();
-					mediaFileList = mMediaManager.getFileListSnapshot();
+					mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 					asynchCount++;
 
 					System.out.println("Updated File Count, took this many tries: "+asynchCount);
 					try{Thread.sleep(1000);}catch(Exception e){}
-					mediaFileList = mMediaManager.getFileListSnapshot();
+					mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 					System.out.println("Media File List Size: "+mediaFileList.size());
 					//System.out.println("Cur File Name: "+mediaFileList.get(mediaFileList.size()-1).getFileName());
-					drvSetLock("LocationDriver");
-					String succ = invokeDriver("org.reroutlab.code.auav.drivers.LocationDriver",
-																	 "dc=get", chResp );
-					drvSpin();
-					String[] location = resp.split("=");
-					addReadingH2(location[1].split("-")[0], location[2].split("-")[0], location[3], mediaFileList.get(mediaFileList.size()-1).getFileName());
+					//drvSetLock("LocationDriver");
+					//String succ = invokeDriver("org.reroutlab.code.auav.drivers.LocationDriver",
+					//											    "dc=get", chResp );
+					//drvSpin();
+					//String[] location = resp.split("=");
+					//addReadingH2(location[1].split("-")[0], location[2].split("-")[0], location[3], mediaFileList.get(mediaFileList.size()-1).getFileName());
 
 					System.out.println("Capture Image Driver V2: Photo Delay "+timeStamp(cmdStartTime));
 					ce.respond("CaptureImageV2: Success");
@@ -414,7 +412,6 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 					break;
                 case "dc=vid":
                     System.out.println("In Vid");
-                    initVideoFeed();
                     ce.respond("Vid Returned");
                     break;
                 case "dc=vpc":
@@ -432,18 +429,6 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 					ce.respond("Error: CameraDriver unknown command\n");
 			}
 		}
-
-    void initVideoFeed(){
-        initVideoSurface();
-        System.out.println("Initializing Video Feed");
-        mReceivedVideoDataCallBack = new VideoFeeder.VideoDataCallback() {
-            @Override
-            public void onReceive(byte[] videoBuffer, int size) {
-                mCodecManager.sendDataToDecoder(videoBuffer, size);
-            }
-        };
-        VideoFeeder.getInstance().getPrimaryVideoFeed().setCallback(mReceivedVideoDataCallBack);
-    }
 
 	public bdResource() {
 			super("cr");	getAttributes().setTitle("cr");
@@ -501,7 +486,15 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 	}
 
 	private void initMediaManager(final CoapExchange ce, final String option) {
-			getFileList(ce,option);
+            getCameraInstance().setMode(SettingsDefinitions.CameraMode.MEDIA_DOWNLOAD, error -> {
+                if (error == null) {
+                    System.out.println("Set cameraMode success");
+                } else {
+                    System.out.println("Set cameraMode failed");
+                }
+            });
+
+            getFileList(ce,option);
 
 			/*			mMediaManager = getCameraInstance().getMediaManager();
 			if (null != mMediaManager) {
@@ -544,16 +537,21 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 	}
 
 	private void getFileList(final CoapExchange ce,final String option) {
-			if (mMediaManager == null) {
+			System.out.println("Checking if NULL");
+            if (mMediaManager == null) {
 					return;
 			}
+            System.out.println("NOT NULL");
 
+            System.out.println("Refreshing File list");
 			drvSetLock("REF");
-			mMediaManager.refreshFileList(new djiCC().cb);
-			drvSpin();
-			//System.out.println("CaptureImageV2: Ref "+timeStamp(cmdStartTime));
+			//mMediaManager.refreshFileList(new djiCC().cb);
+			mMediaManager.refreshFileListOfStorageLocation(SettingsDefinitions.StorageLocation.SDCARD, new djiCC().cb);
 
-			mediaFileList = mMediaManager.getFileListSnapshot();
+            drvSpin();
+			System.out.println("CaptureImageV2: Ref "+timeStamp(cmdStartTime));
+            System.out.println("File List Refreshed");
+
 			//System.out.println("CaptureImageV2: GetFileList "+timeStamp(cmdStartTime));
 			switch (option){
 			case "dld":
@@ -564,7 +562,9 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 					int counter = 1;
 					System.out.println("DLD: Num Photos: "+numPhotos+" mediafile list size: "+mediaFileList.size());
 					String ret = ""; //images downloaded, delimited by |
-					for(int i = (mediaFileList.size() - numPhotos) ;i < (mediaFileList.size());i++){
+					ce.respond("CaptureImageV2: Downloading Previews");
+
+                    for(int i = (mediaFileList.size() - numPhotos) ;i < (mediaFileList.size());i++){
 							System.out.println("File Name before download "+mediaFileList.get(i).getFileName());
 							System.out.println("Downloading file with Index "+Integer.toString(i));
 							if (i == (mediaFileList.size() - 1) ){
@@ -572,6 +572,7 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 							}else{
 									ret += downloadFileByIndex(ce,i,false)+ "|";
 							}
+
 							int rowOffset = mediaFileList.size() - i;
 							System.out.println("Set filename :"+mediaFileList.get(i).getFileName()+" filenum :"+rowOffset);
 							updateReadingH2(mediaFileList.get(i).getFileName(),Integer.toString(size-rowOffset + 1));
@@ -600,8 +601,10 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 					}
 					break;
             case "dldFull":
+                System.out.println("&&&Calling downloadFileFull");
+                ce.respond("CaptureImageV2: Downloading Full Img");
                 downloadFileFull(ce, mediaFileList.size()-1);
-			    ce.respond("CaptureImageV2: DLD Full Success");
+			    System.out.println("&&&Exiting downloadFileFull");
             case "del":
 					break;
 			}
@@ -663,6 +666,70 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 	}
     private synchronized void downloadFileFull(final CoapExchange ce, final int index) {
         drvSetLock("DownloadFull");
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+        System.out.println("Attempting to Download Full Image File");
+        System.out.println("Index Of File For Download: "+index);
+        System.out.println("File Destination: "+destDir);
+        System.out.println("Size of Media Manager: "+mediaFileList.size());
+        System.out.println("&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&&");
+
+        mediaFileList.get(index).fetchFileData(destDir, null, new DownloadListener<String>() {
+            @Override
+            public void onFailure(DJIError error) {
+                System.out.println("##############Download Failed");
+                currentProgress = -1;
+                drvUnsetLock();
+            }
+
+            @Override
+            public void onProgress(long total, long current) {
+            }
+
+            @Override
+            public void onRateUpdate(long total, long current, long persize) {
+                int tmpProgress = (int) (1.0 * current / total * 100);
+                if (tmpProgress != currentProgress) {
+                    //mDownloadDialog.setProgress(tmpProgress);
+                    currentProgress = tmpProgress;
+                    System.out.println("##############Download Progress = "+tmpProgress);
+
+                }
+            }
+
+            @Override
+            public void onRealtimeDataUpdate(byte[] bytes, long l, boolean b) {
+
+            }
+
+            @Override
+            public void onStart() {
+                currentProgress = -1;
+                System.out.println("##############Download Starting");
+                //ShowDownloadProgressDialog();
+            }
+
+            @Override
+            public void onSuccess(String filePath) {
+                //HideDownloadProgressDialog();
+                //setResultToToast("Download File Success" + ":" + filePath);
+                //currentProgress = -1;
+                try{
+                    File folder = new File(filePath);
+                    File[] listOfFiles = folder.listFiles();
+                    for(int i = 0; i<listOfFiles.length; i++){
+                        if(listOfFiles[i].isFile()){
+                            listOfFiles[i].renameTo(tmpPic);
+                            listOfFiles[i].delete();
+                        }
+                    }
+                } catch (Exception e){
+                    e.printStackTrace();
+                }
+                drvUnsetLock();
+                System.out.println("Downloaded File To "+filePath);
+            }
+        });
+        /*
         mediaFileList.get(index).fetchFileData(destDir, null, new DownloadListener<String>(){
             @Override
             public void onFailure(DJIError error){
@@ -688,14 +755,27 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
                 drvUnsetLock();
             }
             @Override
-            public void onProgress(long total, long current){}
+            public void onProgress(long total, long current){
+                System.out.println("Progress");
+            }
 
             @Override
-            public void onRateUpdate(long total, long current, long persize){}
+            public void onRateUpdate(long total, long current, long persize){
+                System.out.println("Rate Update");
+
+            }
 
             @Override
-            public void onStart(){}
+            public void onStart(){
+                System.out.println("DL Start");
+            }
+
+            @Override
+            public void onRealtimeDataUpdate(byte[] a,long b, boolean c){
+                System.out.println("RTDataUpdate");
+            }
         });
+        */
         drvSpin();
     }
 	private synchronized String downloadFileByIndex(final CoapExchange ce, final int index,final boolean isLastFile){
@@ -706,6 +786,7 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 		}
 		complete = false;
 		imageEnc = "";
+        System.out.println("In DLD Callback");
 		drvSetLock("encode");
 		mediaFileList.get(index).fetchPreview(new CommonCallbacks.CompletionCallback() {
 						@Override
@@ -732,11 +813,12 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 								drvUnsetLock();
 						}
 				});
+        System.out.println("Callback Created");
 		/*while(!complete){
 			try{Thread.sleep(50);}catch(Exception e){}
 		}*/
 		drvSpin();
-		//System.out.println("Image Index: "+index+" Image Encoding: "+imageEnc);
+		System.out.println("Image Index: "+index+" Image Encoding: "+imageEnc);
 		return imageEnc;
 	}
 	//https://stackoverflow.com/questions/13562429/how-many-ways-to-convert-bitmap-to-string-and-vice-versa
@@ -786,6 +868,7 @@ public class CaptureImageV2Driver extends com.dji.sdk.sample.internal.controller
 		} else if (getProductInstance() instanceof HandHeld) {
 			camera = ((HandHeld) getProductInstance()).getCamera();
 		}
+        System.out.println("Got Camera Instance");
 
 		return camera;
 	}

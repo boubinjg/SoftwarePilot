@@ -179,7 +179,7 @@ public class MissionDriver extends com.dji.sdk.sample.internal.controller.AuavDr
 	private static int LISTEN_PORT = 0;
 	private int driverPort = 0;
 	private CoapServer cs;
-
+    private Waypoint homeWP;
 	private static Logger mdLogger = Logger.getLogger(MissionDriver.class.getName());
 	/**
 	 *		usageInfo += "help -- Add Usage Strings.<br>";
@@ -266,49 +266,123 @@ public class MissionDriver extends com.dji.sdk.sample.internal.controller.AuavDr
 			if(args[0].equals("dc=help")) {
 				ce.respond(getUsageInfo());
 			}
-			else if(args[0].equals("dc=initWaypoint")){
-				//float alt = 0;
-                //float lat = 0;
-                //float lon = 0;
+            else if(args[0].equals("dc=init")){
+                float alt = 0;
+                float lat = 0;
+                float lon = 0;
                 try {
-					System.out.println("Receiving waypoints");
-				    //lat = float(args[1].split('=')[1])
-			        //lon = float(args[2].split('=')[1])
-                    //alt = float(args[2].split('=')[1])
+					System.out.println("Receiving Home Waypoint");
+				    String lats = args[1].split("=")[1];
+                    String lons = args[2].split("=")[1];
+                    if(lats.charAt(0) != 'n') {
+                        lat = Float.parseFloat(lats);
+                        System.out.println("Latitude Positive: "+lat);
+                    } else {
+                        lat = -1.0f * Float.parseFloat(lats.substring(1));
+                        System.out.println("Latitude Negative: "+lat);
+                    }
+                    if(lons.charAt(0) != 'n') {
+                        lon = Float.parseFloat(lons);
+                        System.out.println("Longitude Positive: "+lons);
+
+                    } else {
+                        lon = -1.0f * Float.parseFloat(lons.substring(1));
+                        System.out.println("Longitude Negative: "+lons);
+                    }
+                    alt = Float.parseFloat(args[3].split("=")[1]);
+                    System.out.println("Home Lat: "+lat);
+                    System.out.println("Home Lon: "+lon);
+                    System.out.println("Home Alt: "+alt);
+                    homeWP = new Waypoint(lat, lon, alt);
+                    WaypointAction WPA = new WaypointAction(WaypointActionType.STAY, 32000);
+                    homeWP.addAction(WPA);
 				} catch(Exception e) {
 					System.out.println(e.getMessage());
-				}
+                    ce.respond("invalid waypoint format");
+			    }
 
-                Waypoint WaypointP1 = new Waypoint(40.154466f, -83.193903f, 5.0f);
-                Waypoint WaypointP2 = new Waypoint(40.154443f, -83.193988f, 5.0f);
+                Aircraft mAircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
+				FlightController fc = mAircraft.getFlightController();
 
-                if (builder == null){
-					builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
+                fc.setHomeLocationUsingAircraftCurrentLocation(new CommonCallbacks.CompletionCallback() {
+            				@Override
+            				public void onResult(DJIError mError) {
+              					if (mError != null){
+							        System.out.println("setHomeLocation Failed:"+ mError.getDescription());
+
+              					}
+            				}
+    			});
+                ce.respond("RTH Location Set");
+            } else if(args[0].equals("dc=initWaypoint")){
+				float alt = 0;
+                float lat = 0;
+                float lon = 0;
+                try {
+					System.out.println("Receiving waypoints");
+				    String lats = args[1].split("=")[1];
+                    String lons = args[2].split("=")[1];
+                    if(lats.charAt(0) != 'n') {
+                        lat = Float.parseFloat(lats);
+                        System.out.println("Latitude Positive: "+lat);
+                    } else {
+                        lat = -1.0f * Float.parseFloat(lats.substring(1));
+                        System.out.println("Latitude Negative: "+lat);
+                    }
+                    if(lons.charAt(0) != 'n') {
+                        lon = Float.parseFloat(lons);
+                        System.out.println("Longitude Positive: "+lons);
+
+                    } else {
+                        lon = -1.0f * Float.parseFloat(lons.substring(1));
+                        System.out.println("Longitude Negative: "+lons);
+                    }
+                    alt = Float.parseFloat(args[3].split("=")[1]);
+				} catch(Exception e) {
+					System.out.println(e.getMessage());
+                    ce.respond("invalid waypoint format");
+			    }
+
+                Waypoint w = new Waypoint(lat, lon, alt);
+                WaypointAction WPA = new WaypointAction(WaypointActionType.STAY, 32000);
+                w.addAction(WPA);
+                w.addAction(WPA);
+                w.addAction(WPA);
+                w.addAction(WPA);
+                //Waypoint w = new Waypoint(40.154466f, -83.193903f, 5.0f);
+                //Waypoint WaypointP2 = new Waypoint(40.154443f, -83.193988f, 5.0f);
+
+                //Waypoint WaypointP1 = new Waypoint(39.347010, -84.423896, 5.0f);
+                //Waypoint WaypointP2 = new Waypoint(39.346971, -84.423899, 5.0f);
+
+                //if (builder == null){
+				builder = new WaypointMission.Builder().finishedAction(tFinishedAction)
 									       .headingMode(tHeadingMode)
 									       .autoFlightSpeed(tSpeed)
 									       .maxFlightSpeed(tMaxSpeed)
 									       .flightPathMode(WaypointMissionFlightPathMode.NORMAL);
-				}else{
+				/*}else{
 					builder.finishedAction(tFinishedAction)
 						.headingMode(tHeadingMode)
 						.autoFlightSpeed(tSpeed)
 						.maxFlightSpeed(tMaxSpeed)
 						.flightPathMode(WaypointMissionFlightPathMode.NORMAL);
-				}
+				}*/
 				//waypointList.add(WaypointP1);
                 //waypointList.add(WaypointP2)
 
-                builder.addWaypoint(WaypointP1);
-                builder.addWaypoint(WaypointP2);
+                //builder.addWaypoint(WaypointP1);
+                //builder.addWaypoint(WaypointP2);
 
                 //builder.waypointList(waypointList).waypointCount(waypointList.size());
-
-				System.out.println("InitWaypoint: The number of waypoints in builder:"+builder.getWaypointList().size());
+                builder.addWaypoint(w);
+				builder.addWaypoint(homeWP);
+                System.out.println("InitWaypoint: The number of waypoints in builder:"+builder.getWaypointList().size());
 				if (builder.getWaypointList().size() > 0){
 					for(int i=0; i < builder.getWaypointList().size();i++){
-                        double lat = builder.getWaypointList().get(i).coordinate.getLatitude();
-                        double lon = builder.getWaypointList().get(i).coordinate.getLongitude();
-						System.out.println(lat + " " + lon);
+                        double curlat = builder.getWaypointList().get(i).coordinate.getLatitude();
+                        double curlon = builder.getWaypointList().get(i).coordinate.getLongitude();
+						System.out.println(curlat + " " + curlon);
 					}
 				}
 
@@ -329,25 +403,11 @@ public class MissionDriver extends com.dji.sdk.sample.internal.controller.AuavDr
 				}
 				System.out.println("UploadMission: The number of waypoints in builder:"+builder.getWaypointList().size());
 
-
 				System.out.println("UploadedMission: set up flight controller");
-				Aircraft mAircraft = (Aircraft)DJISDKManager.getInstance().getProduct();
-				FlightController fc = mAircraft.getFlightController();
-                    		fc.setHomeLocationUsingAircraftCurrentLocation(new CommonCallbacks.CompletionCallback() {
-            				@Override
-            				public void onResult(DJIError mError) {
-              					if (mError != null){
-							System.out.println("setHomeLocation Failed:"+ mError.getDescription());
-              					}
-            				}
-    				});
-                			//@Override
-                			//public void onUpdate(FlightControllerState djiFlightControllerCurrentState) {
-                			//    droneLocationLat = djiFlightControllerCurrentState.getAircraftLocation().getLatitude();
-                			//    droneLocationLng = djiFlightControllerCurrentState.getAircraftLocation().getLongitude();
-	    			if (instance == null){
-		    			instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
+				if (instance == null){
+		    		instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
 				}
+
 				DJIError error = instance.loadMission(builder.build());
 				if (error == null){
 					System.out.println("uploaded Mission Successfully");
@@ -404,7 +464,7 @@ public class MissionDriver extends com.dji.sdk.sample.internal.controller.AuavDr
 			}else if (args[0].equals("dc=pauseMission")){
 	    			if (instance == null){
 					instance = DJISDKManager.getInstance().getMissionControl().getWaypointMissionOperator();
-	    			}
+	    			    }
 		    		if(instance.getCurrentState() == WaypointMissionState.EXECUTING) {
 					instance.pauseMission(new CommonCallbacks.CompletionCallback() {
                     				@Override

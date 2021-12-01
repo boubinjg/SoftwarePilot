@@ -1,4 +1,4 @@
-package org.reroutlab.code.auav.drivers;
+package com.dji.sdk.sample.internal.controller;
 
 import java.util.concurrent.Semaphore;
 
@@ -158,8 +158,7 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 	private Semaphore checkRef = new Semaphore(1);
 	private String imageEnc; //base64 encoding for images to be sent over coap
 	private boolean complete;
-	protected VideoFeeder.VideoDataCallback mReceivedVideoDataCallBack = null;
-    protected TextureView mVideoSurface = null;
+	protected TextureView mVideoSurface = null;
     private Context context;
     protected DJICodecManager mCodecManager = null;
     /**
@@ -276,7 +275,7 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 											System.out.println("CaptureImageV2: Err! mMediaManager is null ");
 									}
 
-									mediaFileList = mMediaManager.getFileListSnapshot();
+									mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 
 									deleteFiles(ce);	// Semaphore used inside of the function
 
@@ -327,12 +326,12 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 
 					mMediaManager.refreshFileList(new djiCC().cb);
 					drvSpin();
-					mediaFileList = mMediaManager.getFileListSnapshot();
+					mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 					asynchCount++;
 
 					System.out.println("Updated File Count, took this many tries: "+asynchCount);
 					try{Thread.sleep(1000);}catch(Exception e){}
-					mediaFileList = mMediaManager.getFileListSnapshot();
+					mediaFileList = mMediaManager.getSDCardFileListSnapshot();
 					System.out.println("Media File List Size: "+mediaFileList.size());
 					//System.out.println("Cur File Name: "+mediaFileList.get(mediaFileList.size()-1).getFileName());
 					drvSetLock("LocationDriver");
@@ -414,7 +413,6 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 					break;
                 case "dc=vid":
                     System.out.println("In Vid");
-                    initVideoFeed();
                     ce.respond("Vid Returned");
                     break;
                 case "dc=vpc":
@@ -432,18 +430,6 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 					ce.respond("Error: CameraDriver unknown command\n");
 			}
 		}
-
-    void initVideoFeed(){
-        initVideoSurface();
-        System.out.println("Initializing Video Feed");
-        mReceivedVideoDataCallBack = new VideoFeeder.VideoDataCallback() {
-            @Override
-            public void onReceive(byte[] videoBuffer, int size) {
-                mCodecManager.sendDataToDecoder(videoBuffer, size);
-            }
-        };
-        VideoFeeder.getInstance().getPrimaryVideoFeed().setCallback(mReceivedVideoDataCallBack);
-    }
 
 	public bdResource() {
 			super("cr");	getAttributes().setTitle("cr");
@@ -553,7 +539,6 @@ public class CaptureImageV2Driver extends org.reroutlab.code.auav.drivers.AuavDr
 			drvSpin();
 			//System.out.println("CaptureImageV2: Ref "+timeStamp(cmdStartTime));
 
-			mediaFileList = mMediaManager.getFileListSnapshot();
 			//System.out.println("CaptureImageV2: GetFileList "+timeStamp(cmdStartTime));
 			switch (option){
 			case "dld":
