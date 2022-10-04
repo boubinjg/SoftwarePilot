@@ -1,4 +1,4 @@
-# ![SoftwarePilot Logo](http://jaysonboubin.com/SoftwarePilot.png)
+# ![SoftwarePilot Logo](http://jaysonboubin.com/images/sp.png)
 
 # SoftwarePilot v1.0
 
