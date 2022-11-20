@@ -1,1 +1,0 @@
-sudo docker run --rm -v /home/boubin/SoftwarePilot/DistributedRL/Data/Server$1:/home/mydata:Z -v /home/boubin/Images/:/home/imageData:Z --name $2 --network "host" -e SERVERNUM=$1 aggregator /bin/bash -c "bash run.sh"

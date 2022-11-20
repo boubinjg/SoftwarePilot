@@ -1,7 +1,0 @@
-apiVersion: scheduling.k8s.io/v1beta1
-kind: PriorityClass
-metadata:
-  name: drl5
-value: 150000000
-globalDefault: false
-description: "Use this class for DRL priority 5 pods."

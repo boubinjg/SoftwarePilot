@@ -1,3 +1,0 @@
-model_checkpoint_path: "/home/jayson/Github/SoftwarePilot/externalModels/Cracks/CrackDetect/model_complete"
-all_model_checkpoint_paths: "/home/jayson/Github/SoftwarePilot/externalModels/Cracks/CrackDetect/model"
-all_model_checkpoint_paths: "/home/jayson/Github/SoftwarePilot/externalModels/Cracks/CrackDetect/model_complete"

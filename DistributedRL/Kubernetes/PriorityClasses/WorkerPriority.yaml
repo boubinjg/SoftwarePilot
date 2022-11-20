@@ -1,7 +1,0 @@
-apiVersion: scheduling.k8s.io/v1beta1
-kind: PriorityClass
-metadata:
-  name: worker
-value: 500000000
-globalDefault: false
-description: "Use this class for Workers."

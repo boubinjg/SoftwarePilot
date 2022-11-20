@@ -1,9 +1,0 @@
-<component name="libraryTable">
-  <library name="__local_jars__:/Users/venkatamandadapu/drone/reroutlab.cstewart.code.auav/external/californium-core-1.1.0-SNAPSHOT.jar:unspecified@jar">
-    <CLASSES>
-      <root url="jar://$PROJECT_DIR$/../../external/californium-core-1.1.0-SNAPSHOT.jar!/" />
-    </CLASSES>
-    <JAVADOC />
-    <SOURCES />
-  </library>
-</component>
