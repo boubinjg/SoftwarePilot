@@ -1,0 +1,121 @@
+class Marble:
+    def __init__(self, extractors, budgets, goals):
+        self.extractors = extractors
+        self.budgets = budgets
+        self.goals = goals
+
+        # weight initialization
+        self.budgets_weights = [1]*len(budgets)
+        self.goals_weights = [1]*len(goals)
+
+    def map(self, data):
+        state_space_vector = []
+        for e in self.extractors:
+            # append extractor feature map
+            state_space_vector.append(e(data))
+
+        return state_space_vector
+
+    # Input -> Map
+    # Map -> Model
+    # Model -> Eval (Loss function)
+
+    def eval(self, feature_space):
+        goal_performance, finished = self.goalPerformance(feature_space)
+        budget_performance, overrun = self.budgetPerformance(feature_space, self.budgets)
+        loss = goal_performance * budget_performance
+
+        done = finished or overrun
+        return [loss, done]
+
+    # -1 to 1 (what they add up to doesn't matter)
+    # multiply by weight ^
+    def goalPerformance(self, feature_space):
+        total_performance = 0
+        total_finished = True
+
+        for i in range(len(self.goals)):
+            goal_performance, goal_finished = self.goals[i](feature_space)
+
+            total_performance += goal_performance * self.goals_weights[i]
+            total_finished = total_finished and goal_finished
+
+        return total_performance, total_finished
+
+    # clamp 1 and 0.01
+    # Divide
+    def budgetPerformance(self, feature_space):
+        total_performance = 1
+        total_overrun = False
+
+        for i in range(len(self.budgets)):
+            budget_performance, budget_overrun = self.budgets[i](feature_space)
+
+            total_performance *= budget_performance * self.budgets_weights
+            total_overrun = total_overrun or budget_overrun
+
+        return total_performance, total_overrun
+
+    def train(self, dataset):
+        pass
+
+    def update(self, loss):
+        pass
+
+    def inference(self, feature_space):
+        pass
+
+
+class MarbleQLearning(Marble):
+    def __init__(self, extractors, budgets, goals, num_epochs_hp, num_epochs_t):
+        super().__init__(extractors, budgets, goals)
+        self.num_epochs_hp = num_epochs_hp
+        self.num_epochs_t = num_epochs_t
+
+    def train(self, training_dataset, test_dataset):
+        self.goals_weights = [1]*len(self.goals)
+        self.goals_weights = [1] * len(self.goals)
+        best_goal_weights = self.goals_weights
+        best_budget_weights = self.budgets_weights
+        bestLoss = float('inf')
+
+        for i in range(self.num_epochs_hp):
+            for j in range(self.num_epochs_t):
+                for trace in training_dataset:
+                    feature_space = self.sim(trace)
+                    loss = self.eval(feature_space)
+                    self.update(feature_space, loss)
+
+            test_loss = self.getTestLoss(test_dataset)
+            if (test_loss < bestLoss):
+                bestLoss = test_loss
+                best_goal_weights = self.goals_weights
+                best_budget_weights = self.budgets_weights
+
+            self.bayesOpt(test_loss)
+
+        self.goals_weights = best_goal_weights
+        self.budgets_weights = best_budget_weights
+        return test_loss
+
+    def sim(self):
+        pass
+
+    def update(self, feature_space, loss):
+        pass
+
+    def getTestLoss(self, test_dataset):
+        pass
+
+    def bayesOpt(self, loss):
+        pass
+
+    def inference(self, feature_space):
+        pass
+
+    # TODO: finish all these functions
+    # TODO: consider moving simulate, update, and getTestLoss to the Marble class
+
+
+if __name__ == '__main__':
+    pass
