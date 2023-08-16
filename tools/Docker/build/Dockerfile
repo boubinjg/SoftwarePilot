@@ -20,6 +20,7 @@ RUN apt-get install -y python3.6 && \
     apt-get install -y python3-pip 
 
 #install DLIB and face_recognition
+RUN python3 -m pip install --upgrade pip
 RUN pip3 install face_recognition
 
 #install OpenCV
